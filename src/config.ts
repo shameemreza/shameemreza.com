@@ -32,7 +32,7 @@ export const AUTHOR = {
   name: 'Shameem Reza',
   title: 'Happiness Engineer at Automattic',
   bio: 'Happiness Engineer at Automattic and a member of the WordPress.org Plugins Team. I support WooCommerce merchants, review plugin submissions on WordPress.org and WooCommerce.com, and write about WordPress and WooCommerce.',
-  avatar: '/images/shameemreza.png',
+  avatar: '/images/shameemreza.webp',
   links: {
     github: 'https://github.com/shameemreza',
     linkedin: 'https://www.linkedin.com/in/shameemreza/',
