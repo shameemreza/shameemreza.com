@@ -28,6 +28,29 @@ draft: false
 
 যেহেতু শুরুতেই বলেছি যে ডায়ানামিক প্রোগ্রামিং বেশ কঠিন এবং বেশি বেশি অনুশীলন না করলে ভালো করা যায় না, বলা যায় বোঝাও যায় না।
 
-https://gist.github.com/shameemreza/c2abd20513765250081ccae806ae6ab7
+```travelling-salesman-problem
+//Assuming that there are 20 friends
+int dp[1<<20][20];
+//mask=frinds I already visited
+//at=last visited friend
+int Dp(int mask, int at)
+{
+  //I used reference. It helps me not
+  //writing dp[mask] [at] again and again.
+  int& ret = dp[mask] [at];
+  //Assume that we initilized dp with -1
+  if (ret !=-1) return ret;
 
+  //initialize ret with infinity
+  ret = 1000000000;
+  //n = number of friend
+  //dist contains distance between every two nodes
+  for (int i = 0; i<n; i++)
+    inf (!(mask & (1<<i)))
+    //mask | (1<<i) turns on i th bit in mask.
+    ret = MIN(re,
+      DP(mask | (1<<i), i) + dist[at][i]);
+  return ret;
+}
+```
 আমার বিশ্বাস ট্রাভেলিং সেলসম্যান সমস্যা এখন আর আগের মত কঠিন লাগবে না। সবার জন্য শুভ কামনা।।

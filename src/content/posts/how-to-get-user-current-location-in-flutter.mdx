@@ -27,7 +27,7 @@ Today, we are going to learn how we can easily implement a location service in o
 
 
 
-In this guide, we will use the most popular location service Flutter package called [geolocator](https://pub.dev/packages/geolocator). So, after creating a new Flutter project, add Geolocator package in your dependency. Its very easy to do, just open your ***pubspec.yaml*** and inside dependencies add bellow line:
+In this guide, we will use the most popular location service Flutter package called [geolocator](https://pub.dev/packages/geolocator). So, after creating a new Flutter project, add Geolocator package in your dependency. Its very easy to do, just open your `pubspec.yaml` and inside dependencies add bellow line:
 
 
 ```
@@ -38,7 +38,7 @@ geolocator: ^5.1.5
 
 After adding the dependency, Run pub get.
 
-Before going into main task, make sure your ***compile SDK version*** is minimum 28 for android. Also in your ***AndroidManifest.xml***, you must add the uses permission to allow the app to access the device location service.
+Before going into main task, make sure your `compile SDK version` is minimum 28 for android. Also in your `AndroidManifest.xml`, you must add the uses permission to allow the app to access the device location service.
 
 If you dont know how to set permission for Android and IOS, then follow follow bellow steps:
 
@@ -49,8 +49,10 @@ If you dont know how to set permission for Android and IOS, then follow follow b
 
 Add the following two lines, just above the \<application\> tag in your AndroidManifest.xml
 
-https://gist.github.com/shameemreza/1ffafd4be810466f307a4c4c764026cd
-
+```locationpermissionsandroid
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```
 AndroidManifest.xml can be found inside `<flutter-project-root-directory>/android/app/src/main/` folder.
 
 
@@ -60,8 +62,16 @@ AndroidManifest.xml can be found inside `<flutter-project-root-directory>/androi
 
 Add the following lines at the bottom of your info.plist to add the permissions.
 
-https://gist.github.com/shameemreza/c6faf7b66643a8897a8589e196fa96a4
+```locationpermissionsios
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs access to location when open.</string>
 
+<key>NSLocationAlwaysUsageDescription</key>
+<string>This app needs access to location when in the background.</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This app needs access to location when open and in the background.</string>
+```
 info.plist can be found inside `<flutter-project-root-directory>/ios/Runner/` folder
 
 That’s all for the permission configuration. Now we can go to our Flutter project and write the code to implement geo location in our app.

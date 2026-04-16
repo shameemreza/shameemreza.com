@@ -22,14 +22,60 @@ UseRef is another React hook that can be used to create a reference to a DOM nod
 
 Now that we know what forwardRef and useRef are, let's see how we can use them to expose component functions. In this example, we will create a custom input [react component](https://shameem.me/render-an-array-of-objects-in-react/) that will be used to validate the user's input. We will expose the input's value and isValid functions using forwardRef and useRef.
 
-https://gist.github.com/shameemreza/74b371fbb9d716fba7817684186efc39
+```jsx
+import { forwardRef, useRef } from 'react';
 
+const Input = forwardRef((props, ref) => {
+  const inputRef = useRef(null);
+
+  const getValue = () => {
+    return inputRef.current.value;
+  }
+
+  const isValid = () => {
+    const value = getValue();
+    return value !== '' && value.length >= 3;
+  }
+
+  return (
+    <input
+      type="text"
+      ref={inputRef}
+      {...props}
+    />
+  )
+});
+
+export { Input };
+```
 In the code above, we have defined a custom Input component that accepts two props, value, and onChange. We are using forwardRef to pass the ref from the parent component to the child component. We have also defined a useRef hook to create a reference to the input DOM node. We have defined two functions, getValue, and isValid, that will be used to access and validate the input's value.
 
 To use the Input component, we can pass a ref to it and use the getValue and isValid functions to access and validate the input's value. Here's an example of how we can use the Input component.
 
-https://gist.github.com/shameemreza/1e05d6e694ce5e4b0d11c421569020b2
+```jsx
+import { useRef } from 'react';
+import { Input } from './Input';
 
+const App = () => {
+  const inputRef = useRef(null);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const value = inputRef.current.getValue();
+    const isValid = inputRef.current.isValid();
+
+    console.log(value, isValid);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <Input ref={inputRef} />
+      <button type="submit">Submit</button>
+    </form>
+  )
+}
+```
 In the code above, we are using the Input component in a form. We are passing a ref to the Input component using useRef and the getValue and isValid functions to access and validate the input's value. We have also defined a handleSubmit function that will be called when the form is submitted.
 
 Here are some resources that you might find helpful to learn more about using forwardRef and useRef in React:

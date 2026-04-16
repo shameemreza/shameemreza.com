@@ -35,22 +35,88 @@ To render this array of objects in a React component, we'll follow these steps:
 
 We need to create a component to render the list of employees. We will create a functional component called EmployeeList that takes in the array of employees as a prop and renders a table with the employee information.
 
-https://gist.github.com/shameemreza/8a07e116d189667157f101aa46d13d14
+```javascript
+import React from "react";
 
+function EmployeeList() {
+  return (
+    <div>
+      {/* Render the employee list here */}
+    </div>
+  );
+}
+
+export default EmployeeList;
+```
 In this component, we first destructure the employees prop and use the `map()` method to create a new array of table rows (`<tr>`) with the employee information. We then render the table with the header row (`<thead>`) and the body rows (`<tbody>`).
 
 ### Step 2: Map through the array of objects
 
 We'll use the `map()` method to iterate through the employees array and create a new array of employee elements. In this example, we'll create a list of employees with their name, ages, and position displayed in a table.
 
-https://gist.github.com/shameemreza/1c12259e7745cf03776d57a2946b6592
+```javascript
+import React from "react";
 
+function EmployeeList() {
+  const employees = [
+    { name: "John Doe", age: 25, position: "Software Engineer" },
+    { name: "Jane Smith", age: 32, position: "Product Manager" },
+    { name: "Mike Johnson", age: 27, position: "UI/UX Designer" },
+    { name: "Sarah Lee", age: 30, position: "Marketing Manager" },
+  ];
+
+  const employeeList = employees.map((employee) => (
+    <tr key={employee.name}>
+      <td>{employee.name}</td>
+      <td>{employee.age}</td>
+      <td>{employee.position}</td>
+    </tr>
+  ));
+
+  return (
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody>{employeeList}</tbody>
+      </table>
+    </div>
+  );
+}
+
+export default EmployeeList;
+```
 ### Step 3: Render the list of employees
 
 Finally, we'll render the employee list in the EmployeeList component. To create a table body, we'll wrap the employeeList array inside a tbody element.
 
-https://gist.github.com/shameemreza/161a821e760dff9a578c515f824d5436
+```javascript
+import React from "react";
+import EmployeeList from "./EmployeeList";
 
+function App() {
+  const employees = [
+    { name: "John Doe", age: 25, position: "Software Engineer" },
+    { name: "Jane Smith", age: 32, position: "Product Manager" },
+    { name: "Mike Johnson", age: 27, position: "UI/UX Designer" },
+    { name: "Sarah Lee", age: 30, position: "Marketing Manager" },
+  ];
+
+  return (
+    <div>
+      <h1>Employee List</h1>
+      <EmployeeList employees={employees} />
+    </div>
+  );
+}
+
+export default App;
+```
 In this example, we imported the EmployeeList component and passed the employees array as a prop to the component.
 
 ### Step 4: Key Prop
@@ -61,20 +127,92 @@ In the example above, we used the `key` prop on the `tr` element to uniquely ide
 
 Once we have the list of employees, we can add some styles to make it look better. Here's an example of how we can add some CSS styles to the table to make it more visually appealing.
 
-https://gist.github.com/shameemreza/2114bc18b8007e7d155e27f2f080a8dc
+```css
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
 
+thead th {
+  background-color: #5f9ea0;
+  color: white;
+  text-align: left;
+  padding: 10px;
+}
+
+tbody td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+```
 With these styles applied, the table will have a better appearance.
 
 ### Step 6: Passing Props
 
 If we want to make the `EmployeeList` component reusable, we can pass the `employees` array as a prop. This way, we can reuse the component with different arrays of employees.
 
-https://gist.github.com/shameemreza/e305f0cf6bc365d8df501ef134dbb0f3
+```javascript
+import React from "react";
 
+function EmployeeList(props) {
+  const employees = props.employees;
+
+  const employeeList = employees.map((employee) => (
+    <tr key={employee.name}>
+      <td>{employee.name}</td>
+      <td>{employee.age}</td>
+      <td>{employee.position}</td>
+    </tr>
+  ));
+
+  return (
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Position</th>
+          </tr>
+        </thead>
+        <tbody>{employeeList}</tbody>
+      </table>
+    </div>
+  );
+}
+
+export default EmployeeList;
+```
 Now we can use the `EmployeeList` component with any array of employees by passing the array as a prop.
 
-https://gist.github.com/shameemreza/8e6c342e93a283b66245f23ac25295e6
+```javascript
+import React from "react";
+import EmployeeList from "./EmployeeList";
 
+function App() {
+  const employees = [
+    { name: "John Doe", age: 25, position: "Software Engineer" },
+    { name: "Jane Smith", age: 32, position: "Product Manager" },
+    { name: "Mike Johnson", age: 27, position: "UI/UX Designer" },
+    { name: "Sarah Lee", age: 30, position: "Marketing Manager" },
+  ];
+
+  return (
+    <div>
+      <h1>Employee List</h1>
+      <EmployeeList employees={employees} />
+    </div>
+  );
+}
+
+export default App;
+```
 In this example, we passed the `employees` array as a prop to the `EmployeeList` component.
 
 ## Extra Learning: Rendering array of objects using JavaScript map()
@@ -83,8 +221,25 @@ To render an array of objects in JavaScript, you can use the `map()` method to i
 
 Here is an example of how to use the `map()` method to render an array of objects in React:
 
-https://gist.github.com/shameemreza/66cb8e99efa4de559ea52a488b4f2fbe
+```javascript
+import React from "react";
 
+function EmployeeList(props) {
+  const employees = props.employees;
+
+  const employeeList = employees.map((employee) => (
+    <div key={employee.id}>
+      <h2>{employee.name}</h2>
+      <p>Age: {employee.age}</p>
+      <p>Position: {employee.position}</p>
+    </div>
+  ));
+
+  return <div>{employeeList}</div>;
+}
+
+export default EmployeeList;
+```
 In this example, we have a functional component called `EmployeeList` that takes in an array of employees as a prop. We use the `map()` method to iterate over each employee object in the array and create a new array of React elements.
 
 In the `map()` method, we create a new `<div>` element for each employee and set the key prop to a unique identifier for each employee. We then render the employee's name, age, and position as `<h2>` and `<p>` elements.

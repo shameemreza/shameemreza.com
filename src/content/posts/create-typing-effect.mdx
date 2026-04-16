@@ -20,8 +20,20 @@ draft: false
 
 টাইপড জেএস প্লাগিন সেটাপ করা খুব সহজ। এই প্লাগিন ব্যবহার করার জন্য তোমাকে নিচের কোড গুলো তোমার টেমপ্লেটে বা অ্যাপ্লিকেশনে যোগ করে দাও। ভালো হবে যদি তুমি হেড ট্যাগের মধ্যে রাখো।
 
-https://gist.github.com/shameemreza/2bb6a7a428154f3fc367114c44a24ac8
+```create-css-typing-effect-script
+<script src="typed.js"></script>
+<script>
+  $(function(){
+      $(".element").typed({
+        strings: ["First sentence.", "Second sentence."],
+        typeSpeed: 0
+      });
+  });
+</script>
+...
 
+<iv class="element"></div>
+```
 উপরের কোড গুলো যোগ করার পর যখনি তোমার সাইট বা টেমপ্লেট লোড হবে, প্রথমে প্রথম সেনটেন্স টাইপ শুরু হবে, এবং প্রথমটা শেষ হলে পরেরটা। তুমি চাইলে টাইপিং এর সময় কাস্টোমাইজ করতে পারবে, অর্থাৎ কত মিলিসেকেন্ড ধরে তোমার টাইপিং ইফেক্ট চলবে তা তুমি চাইলে সেট করতে পারবে।
 
 বিষয়টি ভালো করে ক্লিয়ার হতে তুমি গিট মার্কেট সাইট দেখতে পারোঃ [https://git.market/](https://git.market/)
@@ -34,12 +46,29 @@ https://gist.github.com/shameemreza/2bb6a7a428154f3fc367114c44a24ac8
 
 প্রথমে আমাদের একটি এইচটিএমল প্যারাগ্রাফ নিতে হবে, এবং তার মধ্যে আমরা ঐ লেখা গুলো রাখবো, যার মধ্যে টাইপিং ইফেক্ট ব্যবহার করবো।
 
-https://gist.github.com/shameemreza/ae692236c9911662fbe29fd71f8fe90b
-
+```create-css-typing-effect-html
+<p class="css-typing">This is a paragraph that is being typed by CSS animation.</p>
+```
 এবার ইফেক্ট তৈরি করার পালা। প্রথমে আমাদেরকে প্যারাগ্রাফের width ডিফাইন করতে হবে, তারপর ওভারফ্লো হিডেন, এবং সব শেষে অ্যানিমেশন ইফেক্ট।
 
-https://gist.github.com/shameemreza/b31b0c93303d38d4ce01d0227685fbb7
+```create-css-typing-effect-css
+.css-typing
+{
+    width: 30em;
+    white-space:nowrap;
+    overflow:hidden;
+    -webkit-animation: type 5s steps(50, end);
+    animation: type 5s steps(50, end);
+}
 
+@keyframes type{
+    from { width: 0; }
+}
+
+@-webkit-keyframes type{
+    from { width: 0; }
+}
+```
 অ্যানিমেশন ইফেক্ট প্যারাগ্রাফের সাইজ ৫০টি ফ্রেমের মধ্যে 0 থেকে বৃদ্ধি করে 30em, যার ফলে অ্যানিমেশন শুরু হলেই মনে হবে যে কেউ এক জন টাইপ করে দিচ্ছে।
 
 তুমি চাইলে যে কোন ভাবেই অর্থাৎ জেকুয়েরি প্লাগিন বা সিএসএস ব্যবহার করে টাইপিং ইফেক্ট তৈরি করতে প্যাঁরও, তবে আমার সাজেশন হবে সিএসএস ব্যবহার করা। কেননা শুধু সিএসএস ব্যবহার করলে তোমাকে না ভাবতে হবে সাইটের স্পিড নিয়ে, না ব্রাউজার সাপোর্ট নিয়ে।

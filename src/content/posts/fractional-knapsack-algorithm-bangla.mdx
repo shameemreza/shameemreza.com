@@ -107,18 +107,113 @@ WEIGHT | BENEFIT |
 
 যদি আইটেম ভ্যালু থাকে ১০ এবং ওয়েট থাকে ৫, আর তুমি যদি সম্পূর্ণ জিনিসই নিতে চাও, তাহলে বেনিফট হিসাবের পদ্ধতি হবেঃ
 
-https://gist.github.com/shameemreza/6ca79d1ea5d00eecff2e17a336f30226
-
+```fractional-knapsack-1
+benefit = (weight taken) x (total value of the item / total weight of the item)
+```
 আবার তুমি যদি কোন জিনিসের ১/২ নিতে চাও, তাহলে বেনিফিট হিসাব করতে হবেঃ``
 
-https://gist.github.com/shameemreza/a16e97b28fc615d97372f2b336e1e839
-
+```fractional-knapsack-2
+weight taken = 5 x (1/2) = 5/2 (as we are taking 1/2 item)
+```
 ইমপ্লিমেন্টেশন দেখলে আরো ভালো করে বুঝতে পারবেঃ
 
-https://gist.github.com/shameemreza/2d9fb4ab47252528486ebfe315d6c344
+```fractional-knapsack-implementation
+#include <stdio.h>
 
+struct Item {
+  char id[5];
+  int weight;
+  int value;
+  float density;
+};
+
+void fractionalKnapsack(Item items[], int n, int W);
+
+int main(void) {
+  //variables
+  int i, j;
+
+  //list items
+  Item items[6] = {
+    {"i1",  6, 6, 0},
+    {"i2", 10, 2, 0},
+    {"i3",  3, 1, 0},
+    {"i4",  5, 8, 0},
+    {"i5",  1, 3, 0},
+    {"i6",  3, 5, 0}
+  };
+
+  //temp item
+  Item temp;
+
+  //number of items
+  int n = 6;
+
+  //max weight limit of knapsack
+  int W = 16;
+
+  //compute desity = (value/weight)
+  for(i = 0; i < n; i++) {
+    items[i].density = float(items[i].value) / items[i].weight;
+  }
+
+  //sort by density in descending order
+  for(i = 1; i < n; i++) {
+    for(j = 0; j < n - i; j++) {
+      if(items[j+1].density > items[j].density) {
+        temp = items[j+1];
+        items[j+1] = items[j];
+        items[j] = temp;
+      }
+    }
+  }
+
+  fractionalKnapsack(items, n, W);
+
+  return 0;
+}
+
+void fractionalKnapsack(Item items[], int n, int W) {
+  int i, wt;
+  float value;
+
+  float totalWeight = 0, totalBenefit = 0;
+
+  for(i = 0; i < n; i++) {
+    if(items[i].weight + totalWeight <= W) {
+
+      totalWeight += items[i].weight;
+      totalBenefit += items[i].value;
+
+      printf("Selected Item: %s\tWeight: %d\tValue: %d\tTotal Weight: %f\tTotal Benefit: %f\n", items[i].id, items[i].weight, items[i].value, totalWeight, totalBenefit);
+
+    } else {
+      wt = (W - totalWeight);
+      value = wt * (float(items[i].value) / items[i].weight);
+
+      totalWeight += wt;
+      totalBenefit += value;
+
+      printf("Selected Item: %s\tWeight: %d\tValue: %f\tTotal Weight: %f\tTotal Benefit: %f\n", items[i].id, wt, value, totalWeight, totalBenefit);
+
+      break;
+    }
+  }
+
+  printf("Total Weight: %f\n", totalWeight);
+  printf("Total Benefit: %f\n", totalBenefit);
+}
+```
 উপরের কোডের আউটপুট আসবেঃ
 
-https://gist.github.com/shameemreza/aa18f631c1643cd2cecbdfd6b2563dc9
+```fractional-knapsack-output
+Selected Item: i5  Weight: 1  Value: 3        Total Weight: 1.000000  Total Benefit: 3.000000
+Selected Item: i6  Weight: 3  Value: 5        Total Weight: 4.000000  Total Benefit: 8.000000
+Selected Item: i4  Weight: 5  Value: 8        Total Weight: 9.000000  Total Benefit: 16.000000
+Selected Item: i1  Weight: 6  Value: 6        Total Weight: 15.000000  Total Benefit: 22.000000
+Selected Item: i3  Weight: 1  Value: 0.333333        Total Weight: 16.000000  Total Benefit: 22.333334
 
+Total Weight: 16.000000
+Total Benefit: 22.333334
+```
 আশাকরি ফ্র্যাকশনাল ন্যাপস্যাক অ্যালগরিদম নিয়ে তোমার মনে আর কোন প্রশ্ন নেই, যদি থাকে তবে অবশ্যয় জানাবে।

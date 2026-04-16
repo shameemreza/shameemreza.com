@@ -67,15 +67,285 @@ If you search on Google to find out spam words for email, comments then you will
 
 After researching on my site spam comment and some other site, I made a list of some Black list words which used to do spamming. Here is the list:
 
-https://gist.github.com/shameemreza/8ff4cb7208ddf15a89848d0335f33eb3
-
+```wordpress-spam-comment-black-list
+4U
+Claims you are a winner
+For instant access
+Accept credit cards
+Claims you registered with Some Kind of Partner
+For just $ (some amt)
+Act now! Don’t hesitate!
+Click below
+Free access
+Additional income
+Click here link
+Free cell phone
+Addresses on CD
+Click to remove
+Free consultation
+All natural
+Click to remove mailto
+Free DVD
+Amazing
+Compare rates
+Free grant money
+Apply Online
+Compete for your business
+Free hosting
+As seen on
+Confidentially on all orders
+Free installation
+Auto email removal
+Congratulations
+Free investment
+Avoid bankruptcy
+Consolidate debt and credit
+Free leads
+Be amazed
+Copy accurately
+Free membership
+Be your own boss
+Copy DVDs
+Free money
+Being a member
+Credit bureaus
+Free offer
+Big bucks
+Credit card offers
+Free preview
+Bill 1618
+Cures baldness
+Free priority mail
+Billing address
+Dear email
+Free quote
+Billion dollars
+Dear friend
+Free sample
+Brand new pager
+Dear somebody
+Free trial
+Bulk email
+Different reply to
+Free website
+Buy direct
+Dig up dirt on friends
+Full refund
+Buying judgments
+Direct email
+Get It Now
+Cable converter
+Direct marketing
+Get paid
+Call free
+Discusses search engine listings
+Get started now
+Call now
+Do it today
+Gift certificate
+Calling creditors
+Don’t delete
+Great offer
+Can’t live without
+Drastically reduced
+Guarantee
+Cancel at any time
+Earn per week
+Have you been turned down?
+Cannot be combined with any other offer
+Easy terms
+Hidden assets
+Cash bonus
+Eliminate bad credit
+Home employment
+Cashcashcash
+Email harvest
+Human growth hormone
+Casino
+Email marketing
+If only it were that easy
+Cell phone cancer scam
+Expect to earn
+In accordance with laws
+Cents on the dollar
+Fantastic deal
+Increase sales
+Check or money order
+Fast Viagra delivery
+Increase traffic
+Claims not to be selling anything
+Financial freedom
+Insurance
+Claims to be in accordance with some spam law
+Find out anything
+Investment decision
+Claims to be legal
+For free
+It's effective
+Join millions of Americans
+No questions asked
+Reverses aging
+Laser printer
+No selling
+Risk free
+Limited time only
+No strings attached
+Round the world
+Long distance phone offer
+Not intended
+S 1618
+Lose weight spam
+Off shore
+Safeguard notice
+Lower interest rates
+Offer expires
+Satisfaction guaranteed
+Lower monthly payment
+Offers coupon
+Save $
+Lowest price
+Offers extra cash
+Save big money
+Luxury car
+Offers free (often stolen) passwords
+Save up to
+Mail in order form
+Once in lifetime
+Score with babes
+Marketing solutions
+One hundred percent free
+Section 301
+Mass email
+One hundred percent guaranteed
+See for yourself
+Meet singles
+One time mailing
+Sent in compliance
+Member stuff
+Online biz opportunity
+Serious cash
+Message contains disclaimer
+Online pharmacy
+Serious only
+MLM
+Only $
+Shopping spree
+Money back
+Opportunity
+Sign up free today
+Money making
+Opt in
+Social security number
+Month trial offer
+Order now
+Special promotion
+More Internet traffic
+Order status
+Stainless steel
+Mortgage rates
+Orders shipped by priority mail
+Stock alert
+Multi level marketing
+Outstanding values
+Stock disclaimer statement
+Name brand
+Pennies a day
+Stock pick
+New customers only
+People just leave money laying around
+Stop snoring
+New domain extensions
+Please read
+Strong buy
+Nigerian
+Potential earnings
+Stuff on sale
+No age restrictions
+Print form signature
+Subject to credit
+No catch
+Print out and fax
+Supplies are limited
+No claim forms
+Produced and sent out
+Take action now
+No cost
+Profits
+Talks about hidden charges
+No credit check
+Promise you …!
+Talks about prizes
+No disappointment
+Pure profit
+Tells you it’s an ad
+No experience
+Real thing
+Terms and conditions
+No fees
+Refinance home
+The best rates
+No gimmick
+Removal instructions
+The following form
+No inventory
+Remove in quotes
+They keep your money — no refund!
+No investment
+Remove subject
+They’re just giving it away
+No medical exams
+Removes wrinkles
+This isn’t junk
+No middleman
+Reply remove subject
+This isn’t spam
+No obligation
+Requires initial investment
+University diplomas
+No purchase necessary
+Reserves the right
+Unlimited
+Unsecured credit/debt
+We honor all
+Will not believe your eyes
+Urgent
+Weekend getaway
+Winner
+US dollars
+What are you waiting for?
+Winning
+Vacation offers
+While supplies last
+Work at home
+Viagra and other drugs
+While you sleep
+You have been selected
+Wants credit card
+Who really wins?
+Your income
+We hate spam
+Why pay more?
+```
 ## Disable HTML in WordPress Comment
 
 
 As you know that we can use HTML tags inside WordPress comment. Spammer use this facility to add spam comment. They use HTML link tag to link their site or content. You can turn it off using a few lines of code. Copy code from below and paste into your site functions.php file and save it:
 
-https://gist.github.com/shameemreza/b7adf77c7df7460642613d89a7b2c3ec
-
+```disable-html-in-wordpress-comments
+function shameem_comment_post( $incoming_comment ) {
+$incoming_comment['comment_content'] = htmlspecialchars($incoming_comment['comment_content']);
+$incoming_comment['comment_content'] = str_replace( "'", '&apos;', $incoming_comment['comment_content'] );
+return( $incoming_comment );
+}
+function shameem_comment_display( $comment_to_display ) {
+$comment_to_display = str_replace( '&apos;', "'", $comment_to_display );
+return $comment_to_display;
+}
+add_filter( 'preprocess_comment', 'shameem_comment_post', '', 1);
+add_filter( 'comment_text', 'shameem_comment_display', '', 1);
+add_filter( 'comment_text_rss', 'shameem_comment_display', '', 1);
+add_filter( 'comment_excerpt', 'shameem_comment_display', '', 1);
+```
 Remember, you must need to disable ping backs and trackbacks from WordPress default comment setting options as shown earlier.
 
 ## Remove URL field from WordPress Comment form
@@ -83,8 +353,15 @@ Remember, you must need to disable ping backs and trackbacks from WordPress defa
 
 A great and main reason a spammer post spamming comment is to get link back from your site. To me best and right way to stop WordPress Spam comment is to remove URL field from comment form. You can do it very easily using some lines of code. Copy code from bellow and paste in your functions.php to remove URL field from WordPress comment form:
 
-https://gist.github.com/shameemreza/0d273d99e487e34234f3e414beb5fa77
-
+```removing-website-url-field
+add_filter('comment_form_default_fields', 'remove_url');
+ function remove_url($fields)
+ {
+ if(isset($fields['url']))
+ unset($fields['url']);
+ return $fields;
+ }
+```
 ## Disallow comments which coming from other sources
 
 
@@ -92,8 +369,14 @@ Trust me, Spammers are really smart. They will use different kind of tactics and
 
 To stop spam comment in WordPress which don’t come from your site, you will need to update your .htaccess file with some customization:
 
-https://gist.github.com/shameemreza/df7f2d70aa769f376fed05a35a3d3030
-
+```wordpress-spam-comment-htaccess
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} POST
+RewriteCond %{REQUEST_URI} .wp-comments-post\.php*
+RewriteCond %{HTTP_REFERER} !.*yourblog.com.* [OR]
+RewriteCond %{HTTP_USER_AGENT} ^$
+RewriteRule (.*) ^http://%{REMOTE_ADDR}/$ [R=301,L]
+```
 Dont forget to replace yourblog.com with your site URL.
 
 > Before changing any files, make sure you kept backup. Because anything may happen because of a small mistakes.
@@ -115,8 +398,11 @@ You can block IP from WordPress default setting as it is pretty easy, just copy,
 - Copy and paste the code:
 
 
-https://gist.github.com/shameemreza/1996ad862166d75f43df9f473edc8d4f
-
+```block-spammers-ip-address
+Order allow,deny
+Deny from 88.136.129.110
+Allow from all
+```
 - Change the IP address you wish to block
 - Save changes
 

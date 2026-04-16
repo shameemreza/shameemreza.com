@@ -90,12 +90,14 @@ It is a bit more technical than all others optimization tips since you will need
 
 Go to your website server root and open wp-config.php, paste the following piece of code to remove the revisions:
 
-https://gist.github.com/shameemreza/ac3fe66a3bc7ac73d0a7e75c3cfb5615
-
+```php
+define( 'WP_POST_REVISIONS', false );
+```
 If you still want to keep revisions but limit the number, replace false with the number of your choice. For example:
 
-https://gist.github.com/shameemreza/ca06d3af8deffe895fab8d86d64bf228
-
+```php
+define( 'WP_POST_REVISIONS', 3 );
+```
 Your articles will not add more than 3 revisions with the above code.
 
 ## 8. Install a WordPress Caching plugin
@@ -144,8 +146,14 @@ What is Hotlinking? It is a method to distribute your images not by hosting them
 
 You can block the hotlinking of images from your WordPress site. Just open your .htaccess file from your hosting root and paste the following code:
 
-https://gist.github.com/shameemreza/f27568ede24b03dca069704ff0969dd6
-
+```blockhotlinking
+#Hotlinking
+RewriteEngine on
+RewriteCond% {HTTP_REFERER}! ^ $
+RewriteCond% {HTTP_REFERER}! ^ Http (s)?: // (www \.)? Your-domain.com [NC]
+RewriteCond% {HTTP_REFERER}! ^ Http (s)?: // (www \.)? Google.com [NC]
+RewriteRule \. (Jpg | jpeg | png | gif) $ - [NC, F, L]
+```
 ## 11. Use lazy loading
 
 

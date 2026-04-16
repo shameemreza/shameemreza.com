@@ -22,25 +22,68 @@ Next.js makes it easy to build [SSR](https://nextjs.org/docs/basic-features/page
 
 ## Get Started with Server-side rendering in Next.js
 
-To [get started with Next.js](https://shameem.me/getting-started-with-next-js/) SSR, you can use the ***create-next-app*** command to create a new Next.js project. This command will create a new project with a basic file structure and a few example pages. Once you have your project set up, you can start building your application by creating new pages in the pages directory. Each page is a React component that will be rendered on the server.
+To [get started with Next.js](https://shameem.me/getting-started-with-next-js/) SSR, you can use the `create-next-app` command to create a new Next.js project. This command will create a new project with a basic file structure and a few example pages. Once you have your project set up, you can start building your application by creating new pages in the pages directory. Each page is a React component that will be rendered on the server.
 
-For example, let's create a new page called ***about.js*** in the pages directory. This page will display some information about our application.
+For example, let's create a new page called `about.js` in the pages directory. This page will display some information about our application.
 
-https://gist.github.com/shameemreza/a662be4cdb24ccc435d9c4fb677e0840
+```javascript
+import React from 'react'
 
-To navigate to this page, we can use the ***Link*** component provided by Next.js.
+const About = () => {
+  return (
+    <div>
+      <h1>About Our App</h1>
+      <p>Our app is the best thing since sliced bread.</p>
+    </div>
+  )
+}
 
-https://gist.github.com/shameemreza/49cfbae16f0e5b3bc743a4110de8c9a8
+export default About
+```
+To navigate to this page, we can use the `Link` component provided by Next.js.
 
+```javascript
+import Link from 'next/link'
+
+const Home = () => {
+  return (
+    <div>
+      <Link href="/about">
+        <a>About</a>
+      </Link>
+    </div>
+  )
+}
+
+export default Home
+```
 This is just a basic example, but it demonstrates how easy it is to create a new page with Next.js and navigate to it.
 
 You can also use the [getInitialProps](https://nextjs.org/docs/api-reference/data-fetching/get-initial-props) method to fetch data from an API and pass it to your pages as props. This method is called on the server before the page is rendered, allowing you to fetch data before sending the fully rendered page to the browser.
 
-https://gist.github.com/shameemreza/32106d71aa40cf6d013551c1d7a48319
+```javascript
+import axios from 'axios'
 
-In this example, we use the ***axios*** library to fetch data from an API and pass it to the ***About*** component as a prop.
+const About = ({ data }) => {
+  return (
+    <div>
+    <h1>About Our App</h1>
+    <p>Our app is the best thing since sliced bread.</p>
+    <p>Data from API: {data}</p>
+    </div>
+   )
+  }
 
-Next.js also offers a built-in development experience with hot module replacement, automatic code splitting, and more. You can start a development server with the ***npm run dev*** command, which will automatically reload the page whenever you make changes to your code.
+  About.getInitialProps = async () => {
+    const response = await axios.get('https://my-api.com/data')
+    return { data: response.data }
+}
+
+export default About
+```
+In this example, we use the `axios` library to fetch data from an API and pass it to the `About` component as a prop.
+
+Next.js also offers a built-in development experience with hot module replacement, automatic code splitting, and more. You can start a development server with the `npm run dev` command, which will automatically reload the page whenever you make changes to your code.
 
 In addition to its built-in features, Next.js also has a large and active community. There are many plugins and libraries available that can help you add additional functionality to your application. You can also find many online tutorials, articles, and other learning resources to help you get started with Next.js.
 

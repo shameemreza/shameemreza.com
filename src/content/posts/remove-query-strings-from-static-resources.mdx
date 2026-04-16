@@ -31,12 +31,31 @@ And why Query Strings Should be Removed? Though query strings might be helpful f
 
 If you want to remove query strings with code, simply copy this in themes *functions.php*.
 
-https://gist.github.com/shameemreza/21d0fb0e07ff63a7a82d08154f29feaa
-
+```remove-query-strings-wp
+// Remove query strings from static resources
+function shameem_remove_cssjs_ver( $src ) {
+    if( strpos( $src, '?ver=' ) )
+        $src = remove_query_arg( 'ver', $src );
+    return $src;
+}
+add_filter( 'style_loader_src', 'shameem_remove_cssjs_ver', 10, 2 );
+add_filter( 'script_loader_src', 'shameem_remove_cssjs_ver', 10, 2 );
+```
 After this, most of the query strings will be removed from static resources. But sometimes developers use WordPress version number as query strings. WordPress version strings may not removed by using the function. To remove WordPress version strings, add the following function.
 
-https://gist.github.com/shameemreza/6eed1740d30421de3a4aa9ec84d8a88a
-
+```remove-wp-version
+// Remove WP version strings from scripts and styles
+function shameem_remove_wp_version_strings( $src ) {
+    global $wp_version;
+    parse_str(parse_url($src, PHP_URL_QUERY), $query);
+    if ( !empty($query['ver']) && $query['ver'] === $wp_version ) {
+        $src = remove_query_arg('ver', $src);
+    }
+    return $src;
+}
+add_filter( 'script_loader_src', 'shameem_remove_wp_version_strings' );
+add_filter( 'style_loader_src', 'shameem_remove_wp_version_strings' );
+```
 Use both functions to completely remove query strings. And if all goes well, you should no longer see a warning about query strings in website performance test tools such as Pingdom.
 
 [caption id="attachment_3981" align="aligncenter" width="649"][![](/uploads/performance-query-done.png)](https://shameem.me/remove-query-strings-from-static-resources/performance-query-done/) Final Result[/caption]

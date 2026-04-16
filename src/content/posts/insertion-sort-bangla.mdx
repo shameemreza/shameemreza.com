@@ -23,8 +23,12 @@ draft: false
 
 ইনসার্শন সর্টিং এর অ্যালগোরিদমটি আগে দেখে নেওয়া যাকঃ
 
-https://gist.github.com/shameemreza/a669e8748e8442cae20374168744b04d
-
+```insertion-sort-algo
+// Sort an arr[] of size n
+insertionSort(arr, n)
+Loop from i = 1 to n-1.
+……a) Pick element arr[i] and insert it into sorted sequence arr[0…i-1]
+```
 সত্য বলতে শুধু বাস্তবে নয়, প্রোগ্রামিং করার সময়েও আমাদের ঠিক এক নিয়মে সর্টিং করতে হয়। এখন তোমার মনে প্রশ্ন আসতে পারে যে, অল্প ডেটা এর সর্টিং না হয় এভাবে করলাম, কিন্তু যদি আমাকে এর দশগুণ ডেটা দেওয়া হয়, ধরেনি এই দশগুণ হলো ১ লক্ষ সংখ্যা? তাহলে কিভাবে কি করবো? এতা ভাবলেই তো আমি চোখে শর্সে ফুল দেখছি? :)
 
 ঘাবড়ানোর কিছু নেই, আমি কিভাবে সর্টিং করতে হয় তা বললাম, এখনো তো এর ইমপ্লিমেন্টেশনের কথা বলিনি, অর্থাৎ প্রোগ্রামিং করে কিভাবে এই সর্টিং খুব সহজে করা যায়, তা নিয়ে কিন্তু এখনো কিচ্ছুই বলিনি।
@@ -91,26 +95,154 @@ https://gist.github.com/shameemreza/a669e8748e8442cae20374168744b04d
 
 উপরের ধাপ গুলোর সমন্বয়ে অ্যালগোরিদমটি যদি আমি আমার মত করে লিখি তাহলে হবেঃ
 
-https://gist.github.com/shameemreza/929553671cbf1d59599e2688979d1e21
-
+```insertion-sort-algo-step
+Step 1 − If it is the first element, it is
+already sorted. return 1;
+Step 2 − Pick next element
+Step 3 − Compare with all elements in the
+sorted sub-list
+Step 4 − Shift all the elements in the sorted
+sub-list that is greater than the 
+         value to be sorted
+Step 5 − Insert the value
+Step 6 − Repeat until list is sorted
+```
 আশাকরি ইনসার্শন সর্টিং তোমার কাছে এখন একদম ক্লিয়ার। এবার চলো কিভাবে কোডিং করে ইমপ্লিমেন্ট করতে পারো তা দেখা যাক।
 
 সি দিয়ে ইমপ্লিমেন্ট করলে কোড গুলো হবেঃ
 
-https://gist.github.com/shameemreza/6d51f71d5dabf7d0c27b65178535865a
-
+```insertion-sort-c
+// C program for insertion sort
+#include <stdio.h>
+#include <math.h>
+ 
+/* Function to sort an array using insertion sort*/
+void insertionSort(int arr[], int n)
+{
+   int i, key, j;
+   for (i = 1; i < n; i++)
+   {
+       key = arr[i];
+       j = i-1;
+ 
+       /* Move elements of arr[0..i-1], that are
+          greater than key, to one position ahead
+          of their current position */
+       while (j >= 0 && arr[j] > key)
+       {
+           arr[j+1] = arr[j];
+           j = j-1;
+       }
+       arr[j+1] = key;
+   }
+}
+ 
+// A utility function ot print an array of size n
+void printArray(int arr[], int n)
+{
+   int i;
+   for (i=0; i < n; i++)
+       printf("%d ", arr[i]);
+   printf("\n");
+}
+ 
+ 
+ 
+/* Driver program to test insertion sort */
+int main()
+{
+    int arr[] = {12, 11, 13, 5, 6};
+    int n = sizeof(arr)/sizeof(arr[0]);
+ 
+    insertionSort(arr, n);
+    printArray(arr, n);
+ 
+    return 0;
+}
+```
 **আউটপুটঃ** 5 6 11 12 13
 
 আর যাদের মোটামুটি পাইথন জানা আছে, তাদের জন্যঃ
 
-https://gist.github.com/shameemreza/b7a4aeab204e72cf6717099c6941307d
-
+```insertion-sort-python
+# Python program for implementation of Insertion Sort
+ 
+# Function to do insertion sort
+def insertionSort(arr):
+ 
+    # Traverse through 1 to len(arr)
+    for i in range(1, len(arr)):
+ 
+        key = arr[i]
+ 
+        # Move elements of arr[0..i-1], that are
+        # greater than key, to one position ahead
+        # of their current position
+        j = i-1
+        while j >=0 and key < arr[j] :
+                arr[j+1] = arr[j]
+                j -= 1
+        arr[j+1] = key
+ 
+ 
+# Driver code to test above
+arr = [12, 11, 13, 5, 6]
+insertionSort(arr)
+print ("Sorted array is:")
+for i in range(len(arr)):
+    print ("%d" %arr[i])
+```
 **আউটপুটঃ** 5 6 11 12 13
 
 আমরা চাইলে জাভা দিয়েও ইনসার্শন সর্টিং ইমপ্লিমেন্ট করতে পারিঃ
 
-https://gist.github.com/shameemreza/75d3d9187650db4b61042cc653954e75
-
+```insertion-sort-java
+// Java program for implementation of Insertion Sort
+class InsertionSort
+{
+    /*Function to sort array using insertion sort*/
+    void sort(int arr[])
+    {
+        int n = arr.length;
+        for (int i=1; i<n; ++i)
+        {
+            int key = arr[i];
+            int j = i-1;
+ 
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j>=0 && arr[j] > key)
+            {
+                arr[j+1] = arr[j];
+                j = j-1;
+            }
+            arr[j+1] = key;
+        }
+    }
+ 
+    /* A utility function to print array of size n*/
+    static void printArray(int arr[])
+    {
+        int n = arr.length;
+        for (int i=0; i<n; ++i)
+            System.out.print(arr[i] + " ");
+ 
+        System.out.println();
+    }
+ 
+    // Driver method
+    public static void main(String args[])
+    {        
+        int arr[] = {12, 11, 13, 5, 6};
+ 
+        InsertionSort ob = new InsertionSort();        
+        ob.sort(arr);
+         
+        printArray(arr);
+    }
+}
+```
 **আউটপুটঃ** 5 6 11 12 13
 
 কোড গুলো অনেক বড় হলেও অনেক সহজ। তবে তুমি চাইলে মাত্র কয়েক লাইন কোড লিখেও ইনসার্শন সর্ট ইমপ্লিমেন্ট করতে পারবে, কিন্তু সেক্ষেত্রে অ্যালগোরিদমের টাইম কমপ্লেক্সিটি হয়ে যাবে O(n2) । তবে আমি যে ভাবে ইমপ্লিমেন্ট করেছি সব, মানে সি, পাইথন বা জাভার ক্ষেত্রে টাইম কমপ্লেক্সিটি থাকবে O(n*n) ।
