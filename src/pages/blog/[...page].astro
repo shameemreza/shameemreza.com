@@ -2,16 +2,23 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { SITE, POSTS_PER_PAGE } from '../../config';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+  const sortedPosts = allPosts.sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+  );
+  return paginate(sortedPosts, { pageSize: POSTS_PER_PAGE });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const sortedPosts = allPosts.sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
-
 const categories = [...new Set(sortedPosts.map((p) => p.data.category))];
-
-const totalPages = Math.ceil(sortedPosts.length / POSTS_PER_PAGE);
-const posts = sortedPosts.slice(0, POSTS_PER_PAGE);
 
 function formatDate(d: Date): string {
   return d.toLocaleDateString('en-US', {
@@ -25,17 +32,34 @@ function estimateReadTime(description: string): number {
   return Math.max(3, Math.ceil(description.length / 40));
 }
 
+const pageNum = page.currentPage;
+const pageTitle = pageNum === 1 ? 'Blog' : `Blog — Page ${pageNum}`;
+
+const total = page.lastPage;
+const paginationPages: (number | string)[] = [];
+if (total <= 7) {
+  for (let i = 1; i <= total; i++) paginationPages.push(i);
+} else {
+  paginationPages.push(1);
+  if (pageNum > 3) paginationPages.push('...');
+  const start = Math.max(2, pageNum - 1);
+  const end = Math.min(total - 1, pageNum + 1);
+  for (let i = start; i <= end; i++) paginationPages.push(i);
+  if (pageNum < total - 2) paginationPages.push('...');
+  paginationPages.push(total);
+}
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
-  name: `Blog — ${SITE.name}`,
-  url: new URL('/blog/', SITE.url).toString(),
+  name: `${pageTitle} — ${SITE.name}`,
+  url: new URL(pageNum === 1 ? '/blog/' : `/blog/${pageNum}/`, SITE.url).toString(),
   description: 'Thoughts on WordPress, web development, and the tools I use.',
 };
 ---
 
 <BaseLayout
-  title="Blog"
+  title={pageTitle}
   description="Thoughts on WordPress, web development, and the tools I use."
   jsonLd={jsonLd}
 >
@@ -61,7 +85,7 @@ const jsonLd = {
 
     <div class="card-group">
       {
-        posts.map((post) => (
+        page.data.map((post: any) => (
           <a href={`/${post.id}/`} class="hover-card blog-full-item">
             <div class="card-bg" />
             <div>
@@ -79,19 +103,22 @@ const jsonLd = {
     </div>
 
     {
-      totalPages > 1 && (
+      total > 1 && (
         <nav class="pagination" aria-label="Blog pagination">
-          <span class="current" aria-current="page">
-            1
-          </span>
-          {Array.from({ length: Math.min(totalPages - 1, 4) }, (_, i) => (
-            <a href={`/blog/${i + 2}/`}>{i + 2}</a>
-          ))}
-          {totalPages > 5 && (
-            <>
-              <span>…</span>
-              <a href={`/blog/${totalPages}/`}>{totalPages}</a>
-            </>
+          {page.url.prev && (
+            <a href={page.url.prev} class="pag-prev">&larr; Prev</a>
+          )}
+          {paginationPages.map((p) =>
+            p === '...' ? (
+              <span class="ellipsis">&hellip;</span>
+            ) : p === pageNum ? (
+              <span class="current" aria-current="page">{p}</span>
+            ) : (
+              <a href={p === 1 ? '/blog/' : `/blog/${p}/`}>{p}</a>
+            )
+          )}
+          {page.url.next && (
+            <a href={page.url.next} class="pag-next">Next &rarr;</a>
           )}
         </nav>
       )
