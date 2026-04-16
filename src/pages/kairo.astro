@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, AUTHOR } from '../config';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Kairo',
+  applicationCategory: 'WordPress Theme',
+  operatingSystem: 'WordPress 6.4+',
+  url: new URL('/kairo/', SITE.url).toString(),
+  author: {
+    '@type': 'Person',
+    name: AUTHOR.name,
+    url: SITE.url,
+  },
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+};
+---
+
+<BaseLayout
+  title="Kairo"
+  description="Kairo is a minimal, fast WordPress block theme for personal websites and blogs. Full Site Editing, dark mode, local fonts, GDPR compliant, and accessibility ready. Free on WordPress.org."
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <div class="page-title">
+      <h1>Kairo</h1>
+      <p>A minimal, lightning-fast WordPress block theme for personal websites and blogs.</p>
+    </div>
+
+    <div class="kairo-actions">
+      <a href="https://wordpress.org/themes/kairo/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+        Download on WordPress.org
+      </a>
+      <a href="https://wp-themes.com/kairo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+        Live demo
+      </a>
+    </div>
+
+    <div class="prose" style="padding-top:24px">
+
+      <h2>Why Kairo</h2>
+      <p>
+        I built Kairo because most WordPress themes are either bloated or look the same. Kairo strips
+        everything back to what matters: clean typography, fast load times, and a writing-first layout.
+        It is 100% block-based, ships no PHP templates, and scores near-perfect on Core Web Vitals
+        out of the box.
+      </p>
+      <p>
+        Kairo is free, open source, and hosted on
+        <a href="https://wordpress.org/themes/kairo/" target="_blank" rel="noopener noreferrer">WordPress.org</a>.
+      </p>
+
+      <h2>Features</h2>
+      <ul>
+        <li><strong>Full Site Editing:</strong> 100% block-based with no PHP templates required.</li>
+        <li><strong>Light and dark mode:</strong> built-in dark mode toggle block.</li>
+        <li><strong>Performance first:</strong> local fonts, fluid spacing, and minimal CSS for optimal Core Web Vitals.</li>
+        <li><strong>GDPR compliant:</strong> self-hosted fonts with no external requests.</li>
+        <li><strong>Accessibility ready:</strong> WCAG 2.1 AA compliant with proper focus states and semantic HTML.</li>
+        <li><strong>Translation ready:</strong> fully translatable with proper text domains.</li>
+        <li><strong>Multiple hero layouts:</strong> five hero section patterns included.</li>
+        <li><strong>Blog-focused:</strong> designed specifically for personal blogs with excellent typography.</li>
+        <li><strong>Responsive:</strong> mobile-first design with fluid typography and spacing.</li>
+      </ul>
+
+      <h2>Block patterns</h2>
+      <p>
+        Kairo ships with ready-to-use block patterns so you can build pages without touching code.
+      </p>
+
+      <h3>Hero sections</h3>
+      <ul>
+        <li><strong>Photo Left:</strong> split layout with photo on left.</li>
+        <li><strong>Photo Right:</strong> split layout with photo on right.</li>
+        <li><strong>Photo Centered:</strong> centered layout with photo above content.</li>
+        <li><strong>Centered:</strong> text-only centered hero.</li>
+        <li><strong>With Newsletter:</strong> hero with integrated newsletter signup.</li>
+      </ul>
+
+      <h3>Posts</h3>
+      <ul>
+        <li><strong>Posts Grid:</strong> a grid layout for displaying blog posts.</li>
+        <li><strong>Posts List:</strong> simple list layout for blog posts.</li>
+        <li><strong>Posts Cards:</strong> card-style layout for blog posts.</li>
+        <li><strong>Posts Featured:</strong> highlight a featured post.</li>
+        <li><strong>Blog Archive:</strong> full archive page layout.</li>
+      </ul>
+
+      <h3>Gallery and video</h3>
+      <ul>
+        <li><strong>Gallery Grid:</strong> photo gallery in grid layout.</li>
+        <li><strong>Gallery Mosaic:</strong> photo gallery in mosaic layout.</li>
+        <li><strong>Video Featured:</strong> featured video embed.</li>
+        <li><strong>Video Grid:</strong> multiple video embeds in grid.</li>
+      </ul>
+
+      <h2>Style variations</h2>
+      <ul>
+        <li><strong>Default (Light):</strong> clean, minimal light theme.</li>
+        <li><strong>Dark:</strong> easy-on-the-eyes dark mode.</li>
+      </ul>
+
+      <h2>Requirements</h2>
+      <ul>
+        <li>WordPress 6.4 or higher.</li>
+        <li>PHP 7.4 or higher.</li>
+      </ul>
+
+      <h2>Support</h2>
+      <p>
+        Kairo is free and open source. For questions or bug reports, visit the
+        <a href="https://wordpress.org/support/theme/kairo/" target="_blank" rel="noopener noreferrer">WordPress.org support forum</a>.
+        You can also open an issue on
+        <a href="https://github.com/shameemreza/kairo" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+      <p>
+        If you enjoy Kairo, consider leaving a
+        <a href="https://wordpress.org/support/theme/kairo/reviews/#new-post" target="_blank" rel="noopener noreferrer">review on WordPress.org</a>.
+        It helps others discover the theme.
+      </p>
+
+    </div>
+  </main>
+</BaseLayout>
