@@ -1,0 +1,236 @@
+---
+import { NAV_LINKS } from '../config';
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="/">Shameem Reza</a>
+    <nav class="nav-links" aria-label="Main navigation">
+      {
+        NAV_LINKS.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn mobile-menu-btn" id="mobile-menu-toggle" type="button" aria-label="Menu" aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon-open">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon-close">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="theme-icon-sun"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="theme-icon-moon"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav-panel" id="mobile-nav" aria-label="Mobile navigation">
+  <nav class="mobile-nav-inner">
+    {
+      NAV_LINKS.map((link, i) => (
+        <a
+          href={link.href}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+          class="mobile-nav-link"
+          style={`--i: ${i}`}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
+<style>
+  [data-theme='dark'] .theme-icon-sun {
+    display: block;
+  }
+  [data-theme='dark'] .theme-icon-moon {
+    display: none;
+  }
+  .theme-icon-sun {
+    display: none;
+  }
+  .theme-icon-moon {
+    display: block;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+  }
+
+  .menu-icon-close {
+    display: none;
+  }
+
+  .mobile-menu-btn[aria-expanded='true'] .menu-icon-open {
+    display: none;
+  }
+
+  .mobile-menu-btn[aria-expanded='true'] .menu-icon-close {
+    display: block;
+  }
+
+  .mobile-nav-panel {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .mobile-menu-btn {
+      display: flex;
+      z-index: 201;
+      position: relative;
+    }
+
+    .mobile-nav-panel {
+      display: block;
+      position: fixed;
+      top: 56px;
+      right: 24px;
+      left: 24px;
+      max-width: 300px;
+      margin-left: auto;
+      z-index: 200;
+      background: var(--bg-alt);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      transform: translateY(-120%);
+      opacity: 0;
+      visibility: hidden;
+      transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+                  opacity 0.5s ease,
+                  visibility 0s 0.7s;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .mobile-nav-panel.open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1),
+                  opacity 0.5s ease,
+                  visibility 0s;
+      pointer-events: auto;
+    }
+
+    .mobile-nav-inner {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-nav-link {
+      display: block;
+      padding: 18px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink-sub);
+      text-decoration: none;
+      position: relative;
+      z-index: 2;
+      border-left: 6px solid;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translateY(-16px);
+      transition: opacity 0.4s ease, transform 0.4s ease, color 0.2s ease;
+      transition-delay: calc(0.15s + var(--i, 0) * 0.08s);
+    }
+
+    .mobile-nav-panel.open .mobile-nav-link {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .mobile-nav-link::after {
+      content: "";
+      position: absolute;
+      height: 100%;
+      left: 0;
+      top: 0;
+      width: 0;
+      z-index: -1;
+      transition: width 0.3s ease;
+    }
+
+    .mobile-nav-link:hover::after,
+    .mobile-nav-link:active::after {
+      width: 100%;
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link:active,
+    .mobile-nav-link[aria-current='page']:hover,
+    .mobile-nav-link[aria-current='page']:active {
+      color: #fff;
+    }
+
+    .mobile-nav-link:nth-child(1) { border-left-color: #3498db; }
+    .mobile-nav-link:nth-child(2) { border-left-color: #ffd071; }
+    .mobile-nav-link:nth-child(3) { border-left-color: #f0776c; }
+    .mobile-nav-link:nth-child(4) { border-left-color: #1abc9c; }
+
+    .mobile-nav-link:nth-child(1)::after { background: #3498db; }
+    .mobile-nav-link:nth-child(2)::after { background: #ffd071; }
+    .mobile-nav-link:nth-child(3)::after { background: #f0776c; }
+    .mobile-nav-link:nth-child(4)::after { background: #1abc9c; }
+
+    .mobile-nav-link[aria-current='page'] {
+      color: var(--accent-ink);
+      font-weight: 600;
+    }
+  }
+</style>

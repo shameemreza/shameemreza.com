@@ -1,0 +1,71 @@
+---
+title: "How to install and use Ionicons in WordPress"
+date: 2019-10-20T06:16:26Z
+description: "How to install and use Ionicons in WordPress"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+Ionicons is a beautifully crafted icon library created by the awesome people of [Ionic Framework](https://ionicframework.com/). Ionicons can be used on web, iOS, Android, and desktop apps, it also supports for SVG and web font.
+
+In this post I will show you how to install and use [Ionicons icons](https://ionicons.com/) in [WordPress](https://shameem.me/white-label-wordpress-design-services/) without using any plugin, just code.
+
+
+
+Nowadays it is very common to use an icon library to use them on our website. There are currently many options to choose from. Normally we are very familiar with [Font Awesome 5](https://fontawesome.com/) icons, but today i will show you how to use Ionicons in WordPress.
+
+This icon library is very common to see in the themes of [StudioPress](https://www.studiopress.com/), as it is very light and has very useful icons to use.
+
+## Install and use Ionicons in WordPress
+
+
+First of all, I recommend you take a look at whether your theme already uses an icon library, as if yes, you could already use the existing one or get rid of it to stay with Ionicons only. Using icon libraries impacts negatively (even slightly) the performance of our website, so you should always be careful to use only one of them.
+
+For this reason, you could search the "functions.php" words like "font-awesome", "dashicons "or even check if" ionicons " already appears.
+
+However, I will always recommend you to use only the dashicons library, which is the one that comes by default in any WordPress installation. Even if it is a very limited library, it is the lightest and will not negatively impact your website.
+
+But if you really like Ionicons icons and see them indispensable for your website, adding them is very easy.
+
+Let's get to it!
+
+
+## Use Ionicons icons in WordPress
+
+
+
+As I always recommend, add this code to your custom plugin or functions.php from your theme.
+
+
+```
+// Use Ionicons in WordPress
+add_action( 'wp_enqueue_scripts', 'shameem_enqueue_ionicons' );
+function shameem_enqueue_ionicons() {
+	wp_enqueue_style( 'ionicons', '//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css', array(), CHILD_THEME_VERSION );
+}
+```
+
+
+
+Next, if you want to use any of your icons, you need to enter the [Ionicons library](https://ionicons.com/) and select one.
+
+[![](/uploads/ionicons-1024x412.png)](https://shameem.me/how-to-install-and-use-ionicons-in-wordpress/ionicons/)
+
+Then a bar will appear at the bottom and we will give you Usage. Inside this page, we will go to the bottom of the page and select the code that appears in the section of " Basic usage»
+
+*\<i class="icon ion-md-flashlight"\>*
+
+And bingo! This icon will appear within the content you are implementing. This icon list will help you with a quick look to select the icon you like best and use the name of the relevant class.
+
+
+## Conclusion
+
+
+
+I am sure that you have learned how to install the library in our WordPress and above all how to use them in our content.
+
+Remember that it is not the only icon library available, there are others like the [Font Awesome](https://fontawesome.com/), [IcoFon](https://icofont.com/), [Fontello](http://fontello.com/), [IcoMoon](https://icomoon.io/) etc.
+
+Would you like to get more tutorials like this? Subscribe to my newsletter or leave your comment below.

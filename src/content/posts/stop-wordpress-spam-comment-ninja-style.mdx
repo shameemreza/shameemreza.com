@@ -1,0 +1,141 @@
+---
+title: "Stop WordPress Spam Comment in Ninja Style"
+date: 2018-10-11T04:20:41Z
+description: "Stop WordPress Spam Comment in Ninja Style"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+WordPress spam, Comment spam, Registration spam - These are the most common questions. I even saw people to use a lot of plugins or premium services to fight with WordPress Spam Comment.
+
+As like others WordPress users, I also facing this spam comment and its bothering me a lot. Few years ago I developed and released a WordPress Spam block plugin. But latter I removed that as this could be done by WordPress default setting and some others tweaking.
+
+
+
+I was happy with my One year without WordPress Spam protection plugin, but last few months again war has began with WordPress spam comment.
+
+So, I did bunch of research, applied some custom settings and code to see what actually works. And Probably I got the success to protect spam.
+
+Most popular WordPress related blog like [WP Tavern](https://wptavern.com), [Smashing Magazine](https://www.smashingmagazine.com/), [Torque](https://torquemag.io/) etc also suffer spam comment problem.
+
+Okay enough Talking, now lets move on to stop spam comment. And yap, as I said in Ninja Style.
+
+## Stop WordPress Spam Comment in Ninja Style
+
+
+There are a lot of WordPress Free and Premium plugin available to fight against Spam comment. I am not going to suggest you to install each and every plugin to increase your WordPress website loading time.
+
+## Akismet
+
+
+[Akisme](https://akismet.com/)t is a most strange and popular advanced anti-spam services available from company name Automattic. This plugin is using by millions of user, even you may say it has been installed with every installation of WordPress.
+
+[![](/uploads/Akismet-plugin-info-shameem.png)](https://shameem.me/stop-wordpress-spam-comment-ninja-style/akismet-plugin-info-shameem/)
+
+Its not so hard to install and activate Akismet plugin. But to use it full features, you will need an [Akismet.com API](https://akismet.com/get/) key. Dont worry, they had Free personal use package with others premium package. Here is the awesome easy step to enable Akismet:
+
+- Sign up for Akismet account or log in to an existing one
+- Get your API key
+- Navigate to *Settings -> Akismet*
+- Paste the API key
+- Ah, be cool and let the plugin fight spam for you
+
+
+Note that, Akismet has an option to silently discard the worst and most pervasive spam. I turn it one and save lot of times. You also may try it.
+
+[![](/uploads/akismet-setting-shameem.png)](https://shameem.me/stop-wordpress-spam-comment-ninja-style/akismet-setting-shameem/)
+
+## Tweaks in Discussion Settings
+
+
+Now its time to check WordPress default Comment settings. Depending on your site you can escape few settings as I used for mine.
+
+[![](/uploads/wordpress-comment-setting-shameem.png)](https://shameem.me/stop-wordpress-spam-comment-ninja-style/wordpress-comment-setting-shameem/)
+
+You also can disable comment by unchecking the allow people to comment on new article terms. Also you can control how you are going to treat your site comment which has too many links. I used 0 to check each comment which has links inside.
+
+Also if your site don’t get a lot of comments, it probably a good practice to schedule all the comments for manual approval. Because if Akismet cant detect the spam comment, manually you may check and marked as spam.
+
+## Stop comments with Black List Words
+
+
+If you search on Google to find out spam words for email, comments then you will get thousands of results. But Its a good practice to check each spam comment you got to get those words list. Because as much your [blog will be popular](https://shameem.me/free-resources-to-grow-your-blog/), your site spam comment will be increased.
+
+[![](/uploads/wordpress-comment-black-list-shameem.png)](https://shameem.me/stop-wordpress-spam-comment-ninja-style/wordpress-comment-black-list-shameem/)
+
+After researching on my site spam comment and some other site, I made a list of some Black list words which used to do spamming. Here is the list:
+
+https://gist.github.com/shameemreza/8ff4cb7208ddf15a89848d0335f33eb3
+
+## Disable HTML in WordPress Comment
+
+
+As you know that we can use HTML tags inside WordPress comment. Spammer use this facility to add spam comment. They use HTML link tag to link their site or content. You can turn it off using a few lines of code. Copy code from below and paste into your site functions.php file and save it:
+
+https://gist.github.com/shameemreza/b7adf77c7df7460642613d89a7b2c3ec
+
+Remember, you must need to disable ping backs and trackbacks from WordPress default comment setting options as shown earlier.
+
+## Remove URL field from WordPress Comment form
+
+
+A great and main reason a spammer post spamming comment is to get link back from your site. To me best and right way to stop WordPress Spam comment is to remove URL field from comment form. You can do it very easily using some lines of code. Copy code from bellow and paste in your functions.php to remove URL field from WordPress comment form:
+
+https://gist.github.com/shameemreza/0d273d99e487e34234f3e414beb5fa77
+
+## Disallow comments which coming from other sources
+
+
+Trust me, Spammers are really smart. They will use different kind of tactics and techniques to get what they want. They can send comment from others sources like using software, apps etc.
+
+To stop spam comment in WordPress which don’t come from your site, you will need to update your .htaccess file with some customization:
+
+https://gist.github.com/shameemreza/df7f2d70aa769f376fed05a35a3d3030
+
+Dont forget to replace yourblog.com with your site URL.
+
+> Before changing any files, make sure you kept backup. Because anything may happen because of a small mistakes.
+
+
+
+## Block spam by restricting IP address
+
+
+Though you can do it using some plugins, but why not to try without plugin? You can track and list some spammer's IP and block in two way without plugin:
+
+- Block IP using WordPress default Discussion setting
+- Block IP using .htaccess file
+
+
+You can block IP from WordPress default setting as it is pretty easy, just copy, paste and save. But using .htaccess file is bit complex. Actually not complex but world may be fallen down on your head if you do any mistakes.
+
+- Navigate to .htaccess file and open it
+- Copy and paste the code:
+
+
+https://gist.github.com/shameemreza/1996ad862166d75f43df9f473edc8d4f
+
+- Change the IP address you wish to block
+- Save changes
+
+
+
+## Stop Spam Comment using Plugin
+
+
+As I mentioned at the beaning, I don't like to use plugin for each and everything. But if you don't want to do a lot of things to fight with spam, then you may try any plugin from bellow list:
+
+- [WPBruiser](http://wordpress.org/plugins/goodbye-captcha/) (formerly Goodbye Captcha)
+- [Anti-spam](https://wordpress.org/plugins/anti-spam/)
+- [Anti-Spam by CleanTalk](https://wordpress.org/plugins/cleantalk-spam-protect/)
+- [WangGuard](https://wordpress.org/plugins/wangguard/)
+- [Anti-Spam Bee](https://wordpress.org/plugins/antispam-bee/)
+- [WordPress Zero Spam](https://wordpress.org/plugins/zero-spam/)
+- [Growmap Anti Spambot (GASP)](https://wordpress.org/plugins/growmap-anti-spambot-plugin/)
+
+
+Fight against WordPress spam comment is an ongoing battle. You always have to keep eye on the spam comments, always have to update the method you are using to fight with spam comment.
+
+Using my suggested method you can reduce the spam comment but not completely can remove it. Wishing you best of luck on WordPress spam comment battle.

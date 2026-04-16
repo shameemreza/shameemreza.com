@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE, AUTHOR, EXPERIENCE, PROJECTS, SOCIAL_LINKS } from '../config';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+function formatShortDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function estimateReadTime(description: string): number {
+  return Math.max(3, Math.ceil(description.length / 40));
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: SITE.url,
+  description: SITE.description,
+  author: {
+    '@type': 'Person',
+    name: AUTHOR.name,
+    jobTitle: 'Happiness Engineer',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Automattic',
+    },
+    url: SITE.url,
+    sameAs: SOCIAL_LINKS.map((l) => l.href),
+  },
+};
+---
+
+<BaseLayout
+  title={SITE.tagline}
+  description={SITE.description}
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <section class="hero">
+      <div class="hero-text">
+        <div class="hero-greeting">
+          <span class="dot"></span>
+          {AUTHOR.title}
+        </div>
+        <h1>WordPress, WooCommerce, and the <strong>plugins</strong> in between.</h1>
+        <p class="hero-bio">
+          Happiness Engineer at <a href="https://automattic.com">Automattic</a>,
+          supporting <a href="https://woocommerce.com">WooCommerce</a> merchants
+          and reviewing plugin submissions on <a href="https://make.wordpress.org/plugins/">WordPress.org</a>
+          and <a href="https://woocommerce.com/products/">WooCommerce.com</a>.
+          I also build plugins, themes, and code snippets for the WordPress ecosystem.
+        </p>
+      </div>
+      <div class="hero-cube-wrap">
+        <div class="hero-cube">
+          <div class="cube-face cube-front">
+            <img
+              src={AUTHOR.avatar}
+              alt={`Photo of ${AUTHOR.name}`}
+              width="150"
+              height="150"
+              loading="eager"
+            />
+          </div>
+          <div class="cube-face cube-back">
+            <span class="cube-label">Open Source</span>
+          </div>
+          <div class="cube-face cube-right">
+            <span class="cube-label">WordPress</span>
+          </div>
+          <div class="cube-face cube-left">
+            <span class="cube-label">WooCommerce</span>
+          </div>
+          <div class="cube-face cube-top">
+            <span class="cube-label">Automattic</span>
+          </div>
+          <div class="cube-face cube-bottom">
+            <span class="cube-label">Support</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Writing -->
+    <div class="section-divider reveal">
+      <h2 class="section-label">Recent Writing</h2>
+      <a href="/blog/" class="section-more">All articles →</a>
+    </div>
+    <div class="card-group reveal">
+      {
+        recentPosts.map((post) => (
+          <a
+            href={`/${post.id}/`}
+            class="hover-card post-item"
+          >
+            <div class="card-bg" />
+            <div>
+              <div class="post-item-cat">{post.data.category}</div>
+              <h3 class="post-item-title">{post.data.title}</h3>
+            </div>
+            <div class="post-item-meta">
+              {formatShortDate(post.data.date)} ·{' '}
+              {estimateReadTime(post.data.description)} min
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Experience -->
+    <div class="section-divider reveal">
+      <h2 class="section-label">Experience</h2>
+    </div>
+    <div class="card-group reveal">
+      {
+        EXPERIENCE.map((exp) => (
+          <a
+            href={exp.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover-card exp-item"
+          >
+            <div class="card-bg" />
+            <div class="exp-period">{exp.period}</div>
+            <div>
+              <h3 class="exp-title">
+                {exp.title} · {exp.company}{' '}
+                <span class="arrow">↗</span>
+              </h3>
+              <p class="exp-desc">{exp.description}</p>
+              <div class="tech-tags">
+                {exp.tech.map((t) => (
+                  <span class="tech-tag">{t}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Projects -->
+    <div class="section-divider reveal">
+      <h2 class="section-label">Open Source</h2>
+      <a
+        href={AUTHOR.links.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="section-more">All projects →</a
+      >
+    </div>
+    <div class="card-group reveal">
+      {
+        PROJECTS.map((project) => (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover-card project-item"
+          >
+            <div class="card-bg" />
+            <h3 class="project-title">
+              {project.title} <span class="arrow">↗</span>
+            </h3>
+            <p class="project-desc">{project.description}</p>
+            <div class="tech-tags">
+              {project.tech.map((t) => (
+                <span class="tech-tag">{t}</span>
+              ))}
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <div style="padding-top:48px" class="reveal">
+      <div class="social-row">
+        {
+          SOCIAL_LINKS.map((link) => (
+            <a href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label} ↗
+            </a>
+          ))
+        }
+      </div>
+      <p class="domain-note">
+        Previously <s>shameem.dev</s> · <s>shameem.blog</s> · <s>shameem.me</s>
+        , now here.
+      </p>
+    </div>
+  </main>
+</BaseLayout>

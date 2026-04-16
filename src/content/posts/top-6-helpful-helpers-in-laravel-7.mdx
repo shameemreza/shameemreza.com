@@ -1,0 +1,159 @@
+---
+title: "Top 6 Helpful Helpers in Laravel 7"
+date: 2020-04-07T00:28:09Z
+description: "Top 6 Helpful Helpers in Laravel 7"
+category: "Development"
+categorySlug: "development"
+tags: []
+draft: false
+---
+
+Laravel is one of the most popular Frameworks which allows you to develop applications on the [Back-end using PHP](https://shameem.me/learn-php-for-wordpress-development-full-guide/) Programming Language. It has many Helpers that give us a convenient way to work with strings, arrays, routes, etc.
+
+It is almost impossible to know or memorize all Laravel Helper and I want to share with you in this Post some Helpers that will be very useful in development using Laravel.
+
+## Whats is Helpers in Laravel?
+
+
+Before starting, I prefer to let the official Laravel site talk about the helpers.
+
+> Laravel includes a variety of global "helper" PHP functions. Many of these functions are used by the framework itself; however, you can use them in your own applications if you see fit.
+
+
+Basically, helpers in Laravel are built-in utility functions that you can call from anywhere within your application. If they had not been provided by the framework's core, you could have ended up developing your own help classes.
+
+Although the kernel already offers a variety of helpers, there is always a chance that you will need yours and would like to develop one so that you don't have to repeat the same code here and there, making it easier to maintain.
+
+To get to know Laravel Helpers better, I am going to put the name of the Helper, its URL to the Laravel documentation, a description and a code example.
+
+## Arr::divide()
+
+
+This helper allows you to divide an Array into 2 Arrays, where the first Array contains the keys and the second Array contains the values, let's see an example below.
+
+```
+// We import the support for this Helper
+use Illuminate\Support\Arr;
+ 
+// We use the method Arr::divide() 
+[$keys, $values] = Arr::divide(['name' => 'Shameem Reza', 'price' => '3.40']);
+ 
+// We obtain the keys and values separately
+$keys: ['name', 'price']
+$values: ['Shameem Reza', '3.40']
+```
+
+
+
+## blank()
+
+
+This helper checks if a value is blank, a blank value means null, which is, a string that only contains blank spaces, an array or an empty string. Let's look at an example below.
+
+```
+// We analyze if there are blank or null values
+blank('');
+blank('   '); //Here we have blank spaces
+blank(null);
+ 
+// If there is a blank value or blank spaces we get 'true'
+blank(0);
+blank(true);
+blank(false);
+```
+
+
+The opposite of this Helper is the [filled()](https://laravel.com/docs/7.x/helpers#method-filled) function.
+
+## Str::slug()
+
+
+This helper helps you to generate a friendly URL from a certain String, for example:
+
+```
+$url = Str::slug('Shameem Reza');
+ 
+// We get the following friendly URL
+gelatina-de-fresa
+```
+
+
+By default, the spaces between the words are replaced by hyphens in the middle (-), but you can configure if you want it to be another character, passing a second argument in the Helper, for example, I will tell you to use the character (+).
+
+```
+$url = Str::slug('Shameem Reza', '+');
+ 
+// We get the following friendly URL
+shameem+reza
+```
+
+
+
+## Arr::has()
+
+
+This helper helps us to verify if one or more elements exist in an Array, using the dot notation. For example to check if there are multiple elements, just pass an array instead of a String to the Arr::has ) method:
+
+```
+// We import the support for this Helper 
+use Illuminate\Support\Arr;
+ 
+$products = ['drinks' => ['Name' => 'Strawberry Juice', 'price' => '3.60']];
+ 
+$check = Arr::has($products, 'drinks.name'); 
+// We get true
+ 
+$check = Arr::has($products, ['drinks.name', 'drinks.price']); 
+// We get true
+ 
+$check = Arr::has($products, ['drinks.name', 'drinks.stock']); 
+// We get false, because the 'stock' field does not exist in the variable $products
+```
+
+
+
+## Str::uuid
+
+
+This helper helps you to generate a Universally Unique IDentifier that means universal unique identifier and is an automatically generated String, this could be useful for many tasks such as generating a random name to the files that are uploaded to the server, among other tasks, let's see an example below:
+
+```
+// We import the support for this helper
+use Illuminate\Support\Str;
+ 
+// We use the helper
+echo($imagename) Str::uuid(); 
+ 
+// We get a random identifier
+6e358c39-9663-4a1f-b911-4fd6baaa5b1c
+```
+
+
+
+## optional()
+
+
+This helper allows us to access properties or calling methods on an object that is passed as an argument, any argument is accepted by this function.
+
+If the object that was passed to this helper is null(null), the properties and methods will return null instead of causing an error.
+
+```
+// Example of using the optional() helper
+print optional($dessert->name)->category;
+```
+
+
+In the above code, if the dessert name is set, the full name of the dessert will be printed. If for some reason there is no dessert name, it will not give an error and nothing will print.
+
+## Conclusion
+
+
+These are the top 6 Laravel helpers that I wanted to share with you, if you have any other in mind that you want to share, you can do so in the comments on this Post.
+
+## Notes:
+
+
+
+- The helpers showed in this Post, can be modified, become obsolete or continue in force, this does not depend on me, but on the Developers that support Laravel.
+- Don't forget that we must use Technology to do Good things for the World.
+- [Add Form Validation in Laravel](https://coderadvise.com/how-to-add-form-validation-in-laravel/)

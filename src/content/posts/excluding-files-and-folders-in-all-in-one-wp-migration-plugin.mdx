@@ -1,0 +1,86 @@
+---
+title: "Excluding Files and Folders in All-in-One WP Migration Plugin"
+date: 2021-08-26T19:05:32Z
+description: "Excluding Files and Folders in All-in-One WP Migration Plugin"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+All In One WP Migration plugin is one of the best popular plugins for WordPress sites moving from one host to another. Like other WordPress Developers, the All in One WP Migration WordPress Plugin is my go-to solution for moving sites.
+
+Everything on the earth has a limitation. The same things are applicable for the All In One WP Migration plugin as well.
+
+Such as, If you face Uploading size limit issues using the All In One WP Migration plugin's free version, you can follow my other post on it where I shared how to resolve the [All In One WP Migration plugins uploads limit problem](https://shameem.me/increase-upload-limit-for-all-in-one-wp-migration-plugin/).
+
+Today, I will share another trick for the [All In One WP Migration plugin](https://wordpress.org/plugins/all-in-one-wp-migration/) in this post. We will learn to exclude files and folders while migrating the WordPress website using the All-in-One WP Migration WordPress Plugin.
+
+There is two way you can exclude folders when backing up with All In One WP Migration.
+
+1. Exclude Files and Folder using Plugin
+2. Exclude Files and Folder using Code
+
+
+
+## How to excluding folders All-in-One WP Migration WordPress Plugin using Code
+
+
+If you are an advanced WordPress user and are familiar with code editing, this method will be easy for you.
+
+First, open your theme's functions.php file from **Appearance => Theme Editor => functions.php**
+
+Now, copy Code from bellow and paste it at the bottom of the fucntions.php files. Don't for to save it.
+
+```
+add_filter('ai1wm_exclude_content_from_export', function($exclude_filters) {
+
+  $exclude_filters[] = 'themes/your-theme-name/folder-name';
+
+  return $exclude_filters;
+
+});
+```
+
+
+
+## Plugin to Exclude Folders from All In One WP Migration
+
+
+When making backups in WordPress with All in One Migration, the Plugin only considers the WordPress folders. So if you have other folders, for example, in the root of your site and they do not correspond to WordPress, it will not consider them part of the backup.
+
+However, if you consider it part of the backup, other folders such as *wp-content* where the most significant number of WordPress files are stored.
+
+Although the *wp-content* folder is a WordPress folder, some subfolders may not be interested in being part of the backup, for example, folders that create other plugins or image folders.
+
+All In One WP Migration has Hooks that could exclude subfolders from the *wp-content* folder, which I showed above. However, there is a more straightforward way to do the exclusion through a plugin.
+
+The Plugin that we will use will be [Folder Excluder for AIO WP Migration](https://wordpress.org/plugins/aio-files-excluder/), and it is a free plugin found in the WordPress plugin repository.
+
+[![](/uploads/Folder-Excluder-for-AIO-WP-Migration-1024x456.png)](https://shameem.me/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/folder-excluder-for-aio-wp-migration/#main)
+
+After installing and activating this Plugin, we can locate the configuration screen in the WordPress administration menu, in **Settings>****AIO WP Migration Folder Excluder**.
+
+[![](/uploads/AIO-WP-Migration-Folder-Excluder-setting-1024x765.png)](https://shameem.me/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder-setting/#main)
+
+Upon opening AIO WP Migration Folder Excluder options, you will see all the configurations available, which is quite simple. You have to add the [relative path of the folders](https://shameem.me/fix-upload-path-error-in-wordpress/) under wp-content that you want to exclude; you** **can separate the paths with a comma.
+
+[![](/uploads/AIO-WP-Migration-Folder-Excluder-1024x472.png)](https://shameem.me/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder/#main)
+
+When saving, you will see that all the folder paths to exclude will appear in the lower section.
+
+[![](/uploads/AIO-WP-Migration-Folder-Excluder-screen-1024x622.png)](https://shameem.me/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder-screen/#main)
+
+All those folders under wp-content will be excluded when you make a new backup with the All in all WP Migration plugin.
+
+## Do you want to exclude the uploads folder?
+
+
+By default, the Plugin does not exclude folders from the WordPress core, so if you want to exclude the uploads folder, a possible alternative is to rename it temporarily and exclude it with the exclusion plugin, make the backup and then rename it to its original name again.
+
+## Conclusion
+
+
+As you have seen, the All in One WP Migration plugin by default packages all WordPress folders, including everything found in wp-content, which is the folder that comes with most in a typical WordPress installation.
+
+However, you can exclude subfolders from this folder using the Folder Excluder for the AIO WP Migration plugin.

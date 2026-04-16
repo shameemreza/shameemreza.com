@@ -1,0 +1,244 @@
+---
+title: "Solving All-in-One WP Migration Plugin Upload Size Limit Problem"
+date: 2019-09-18T10:04:49Z
+description: "Solving All-in-One WP Migration Plugin Upload Size Limit Problem"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+**Last Updated: March 2026**
+
+All-in-One WP Migration is an awesome and powerful plugin for WordPress, especially for [WordPress Developer](https://shameem.me). Today I will show you how to remove the 512 MB upload limit for the [All-in-One WP Migration Plugin](https://wordpress.org/plugins/all-in-one-wp-migration/) and increase it to unlimited.
+
+Before going to the step-by-step way to solve the All-in-One WP Migration Plugin Upload Size Limit Problem, let's see the issue first. If you are familiar with WordPress or working on WordPress as a developer like me, you might need to transfer a site from one hosting to another hosting or [local development](https://shameem.me/how-to-delete-database-in-phpmyadmin/) to a live server.
+
+Many plugins are available to migrate WordPress sites from one hosting to another. Here are the 8 Best WordPress Migration Plugins:
+
+- [WordPress Duplicator](https://wordpress.org/plugins/duplicator/)
+- [BackupBuddy](https://ithemes.com/purchase/backupbuddy/)
+- [All-in-One WP Migration](https://wordpress.org/plugins/all-in-one-wp-migration/)
+- [UpdraftPlus WordPress Backup Plugin](https://updraftplus.com/migrator/)
+- [WP Migrate DB](https://wordpress.org/plugins/wp-migrate-db/)
+- [VaultPress](https://vaultpress.com/)
+- [Migrate Guru](https://wordpress.org/plugins/migrate-guru/)
+- [WP Clone](https://wordpress.org/plugins/wp-clone-by-wp-academy/)
+
+I have already used almost all of the migration plugins mentioned above. Though I used my own developed migration plugin most of the time, if I go with other solutions, then All-in-One WP Migration is my first choice to transfer or migrate the WordPress site.
+
+Now let's be clear about why this post has been written. If you are a regular user of **All-in-One WP Migration**, then I am sure that you face an Upload Size limit issue. Even if your Internet connection is slow like mine, you will face bigger issues in restoring the backup, which is bigger than 512 MB to 600 MB.
+
+All-in-One WP Migration has a total of three options:
+
+- Export
+- Import
+- Backups
+
+You can export the whole website backup in any way, such as direct download, storing in Dropbox, Google Drive, etc. You will also get the same options when you import the backup.
+
+[![](/uploads/export-options.png)](https://shameem.me/increase-upload-limit-for-all-in-one-wp-migration-plugin/export-options/#main)
+
+You can export and download any file size, does not matter it is 512 MB or 2 GB. You will face an upload size limit issue only once you try to upload a backup file of more than 512 MB. Because by default, All-in-One WP Migration allows importing a maximum of 512 MB backups.
+
+## How to increase the upload size limit of All-in-One WP Migration step by step (2026 Updated Methods)
+
+Good news - the free version of All-in-One WP Migration already uploads your backup in small 5 MB chunks behind the scenes. The only thing blocking you is a JavaScript check in the browser that compares your total file size against your server's reported limit. Once you remove that check, the chunked uploader handles the rest, even for files that are several gigabytes.
+
+I have found **three methods** that work with the latest version of the plugin (7.x and above). Pick whichever suits you best:
+
+1. Using my free Upload Unlocker plugin (easiest)
+2. Using a code snippet (no plugin needed)
+3. Editing your .htaccess or php.ini file (server-level)
+
+First, let's learn to increase the upload size limit of All-in-One WP Migration using htaccess.
+
+## Method 1: Increase Upload Size Using .htaccess
+
+This method raises your server's PHP limits. It's useful if you are also hitting limits with other plugins or the WordPress media uploader.
+
+As per the All-in-One WP Migration plugin author help guide, you can increase the upload size limit by adding a few lines of code in the `.htaccess` file. If you follow this way, then you must have root access to the website.
+
+**Step-by-step guide:**
+
+1. First, login into your CPanel or hosting panel.
+2. Now click on File Manager to open the website root. Note that you must need to enable showing hidden files in the file manager.
+
+[![](/uploads/show-hidden-files.png)](https://shameem.me/increase-upload-limit-for-all-in-one-wp-migration-plugin/show-hidden-files/#main)
+
+3. Once you enable the show hidden files options, you will see the .htaccess file in the file list. You need to option the .htaccess file on the editor as shown below.
+
+[![](/uploads/edit-htaccess.png)](https://shameem.me/increase-upload-limit-for-all-in-one-wp-migration-plugin/edit-htaccess/#main)
+
+4. Copy the codes below and paste them at the bottom of your .htaccess file. Make sure you click on the Save button.
+
+```
+php_value upload_max_filesize 256M
+php_value post_max_size 256M
+php_value memory_limit 512M
+php_value max_execution_time 600
+php_value max_input_time 600
+```
+
+**For Nginx or PHP-FPM (.user.ini):**
+
+If your hosting uses Nginx instead of Apache, create or edit a `.user.ini` file in your WordPress root directory:
+
+```
+upload_max_filesize = 256M
+post_max_size = 256M
+memory_limit = 512M
+max_execution_time = 600
+max_input_time = 600
+```
+
+That's it. If you go to the import options of the All-in-One WP Migration plugin, you will see that your upload size limit has been increased.
+
+## Method 2: Use the Upload Unlocker Plugin (Recommended)
+
+This is the easiest method. I built a small free plugin called **Upload Unlocker for All in All Migration** that does everything automatically. No code editing, no file manager needed.
+
+But in All-in-One WP Migration Backup option also has an upload limit issue. Now I will show you how to increase the upload size limit in All-in-One WP Migration backup restore options.
+
+**What this plugin does:**
+
+- Removes the file size restriction on the Import page (makes it unlimited).
+- Enables the one-click "Restore" button on the Backups page.
+- Boosts PHP memory limit so large imports have enough room.
+- Does NOT modify any All-in-One WP Migration files — it only uses WordPress hooks.
+
+**Step-by-step installation:**
+
+**STEP 1:** Download the Upload Unlocker plugin from [here](https://github.com/shameemreza/upload-unlocker-for-aiam).
+
+[Download Upload Unlocker for All in All Migration](https://github.com/shameemreza/upload-unlocker-for-aiam)
+
+**STEP 2:** Go to your WordPress Dashboard → **Plugins → Add New → Upload Plugin** and upload the zip file.
+
+**STEP 3:** Click Activate.
+
+**STEP 4:** Make sure All-in-One WP Migration (free version) is also active.
+
+**STEP 5:** Go to **All-in-One WP Migration → Import** and import your backup. You will see that the upload size limit message is gone and replaced with "Maximum upload file size: Unlimited".
+
+[![](/uploads/preview-1024x366.png)](https://shameem.me/increase-upload-limit-for-all-in-one-wp-migration-plugin/preview/)
+
+That's it! You can now import backup files of any practical size.
+
+**Bonus:** The plugin also enables the "Restore" button on the **Backups** page. If you have backup files in your **wp-content/ai1wm-backups** folder, you can click Restore directly without downloading and re-uploading.
+
+## Method 3: Use a Code Snippet (No Plugin Needed)
+
+If you prefer not to install another plugin, you can add a code snippet to your theme's `functions.php` file or use a code snippets plugin like [SnipDrop](https://github.com/shameemreza/snipdrop).
+
+Copy and paste this code:
+
+```
+// Raise the WordPress-reported upload limit on migration pages.
+add_filter( 'upload_size_limit', function ( $limit ) {
+    $page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+    if ( str_starts_with( $page, 'ai1wm_' ) ) {
+        return 9007199254740991; // Effectively unlimited
+    }
+    return $limit;
+} );
+
+// Replace the upsell text with a simple confirmation.
+add_filter( 'ai1wm_pro', function () {
+    return '
+
+Maximum upload file size: Unlimited.
+
+';
+}, 20 );
+
+// Override the client-side file-size gate and enable backup restore.
+add_action( 'admin_enqueue_scripts', function () {
+    if ( wp_script_is( 'ai1wm_import', 'enqueued' ) || wp_script_is( 'ai1wm_import', 'registered' ) ) {
+        wp_add_inline_script(
+            'ai1wm_import',
+            'if(typeof ai1wm_uploader!=="undefined"){ai1wm_uploader.max_file_size=Math.max(ai1wm_uploader.max_file_size,9007199254740991);}',
+            'after'
+        );
+    }
+    if ( wp_script_is( 'ai1wm_backups', 'enqueued' ) || wp_script_is( 'ai1wm_backups', 'registered' ) ) {
+        $js = '(function(){if(typeof Ai1wm==="undefined"||typeof Ai1wm.Import==="undefined")return;'
+            . 'Ai1wm.FreeExtensionRestore=function(a,s){'
+            . 'var m=new Ai1wm.Import();'
+            . 'm.setParams([{name:"storage",value:Date.now().toString()},{name:"archive",value:a},{name:"ai1wm_manual_restore",value:"1"}]);'
+            . 'm.start([{name:"priority",value:10}]);};})();';
+        wp_add_inline_script( 'ai1wm_backups', $js, 'after' );
+    }
+}, 99 );
+
+// Raise PHP memory limit on migration pages.
+add_action( 'admin_init', function () {
+    $page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+    if ( str_starts_with( $page, 'ai1wm_' ) ) {
+        wp_raise_memory_limit( 'admin' );
+    }
+} );
+```
+
+**How this code works:**
+
+- The first block raises the WordPress upload limit to unlimited, but only on All-in-One WP Migration pages. Your regular Media Library is not affected.
+- The second block replaces the "Your host restricts uploads" message with a clean "Unlimited" confirmation.
+- The third block removes the JavaScript file size check that blocks large uploads, and enables the Restore button on the Backups page.
+- The last block increases the PHP memory limit so your import doesn't get killed mid-way.
+
+After adding the code snippet, go to **All-in-One WP Migration → Import,** and you will see the limit has been increased.
+
+**Important note:** Method 1 only raises the server-reported limit. If your backup file is larger than what the server reports, you will still see the size limit message on the Import page. For the best experience, combine Method 1 with Method 2 or Method 3 above.
+
+## Why the Old Method (Editing constants.php) No Longer Works
+
+If you found this article before 2024, you might remember that I recommended downloading version 6.77 of the plugin and editing the `constants.php` file to change the `AI1WM_MAX_FILE_SIZE` value. That method worked great for years, but it no longer works because:
+
+- **The constant was removed.** Starting from version 7.71, the plugin removed the `AI1WM_MAX_FILE_SIZE` constant entirely. The file size check moved to JavaScript in the browser.
+- **Version 6.77 is no longer available.** The old version I hosted on GitHub was taken down.
+
+The good news is that the new methods above are actually better. They work with the latest version of the plugin, don't require editing any plugin files, and survive plugin updates.
+
+## Frequently Asked Questions
+
+**Q: Do I need to use an old version of All-in-One WP Migration?**
+
+No! The methods above work with the latest version. In fact, I recommend always using the latest version for security and compatibility.
+
+**Q: Will the plugin method survive updates?**
+
+Yes. Since the Upload Unlocker plugin uses WordPress hooks and does not modify any All-in-One WP Migration files, it will continue working even after the base plugin updates.
+
+**Q: Will the code snippet method survive theme updates?**
+
+If you added the code to your theme's `functions.php`, it will be lost when you update the theme. I recommend either using a child theme or installing a code snippets plugin like [SnipDrop](https://github.com/shameemreza/snipdrop) to keep the code safe.
+
+**Q: Can I import a 5 GB backup file?**
+
+Yes! Since the plugin uploads in small 5 MB chunks, even very large files work. The total file size doesn't matter; each individual request to the server is only 5 MB. Just make sure you have enough disk space on the server.
+
+**Q: Does this enable the Restore button on the Backups page?**
+
+Yes! Both the plugin (Method 1) and the code snippet (Method 2) enable the one-click Restore button. If you have backup files in your `wp-content/ai1wm-backups` folder, you can restore them directly.
+
+**Q: Is this safe to use?**
+
+Absolutely. The plugin and code snippet only use standard WordPress APIs, filters, and script hooks that WordPress provides for exactly this kind of customization. No core files are touched.
+
+## Tips for Advanced Users
+
+If you are an advanced user and want to understand what's happening under the hood:
+
+- The free plugin's import page uses `wp_max_upload_size()` to set a JavaScript variable called `ai1wm_uploader.max_file_size`. When your selected file is bigger, it blocks the upload. Our solution raises this value.
+- The free plugin provides an `ai1wm_pro` filter that controls the message shown below the import area. We hook into this to show the new limit.
+- The free plugin's Backups page checks for a JavaScript class called `Ai1wm.FreeExtensionRestore`. If it exists, clicking "Restore" uses it instead of showing the upgrade prompt. Our solution defines this class and feeds the backup file into the existing import pipeline.
+- All of these are standard WordPress hooks (`add_filter`, `wp_add_inline_script`, `add_action`) - the same mechanism used by thousands of WordPress plugins.
+
+If you need to exclude some files or folders from the All in All WP Migration plugin backup, please read my other article showing you how to [exclude files and folders in the All in All WP Migration Plugin](https://shameem.me/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/).
+
+That's it. If you have questions about the All-in-One WP Migration plugin or cannot solve the plugin upload size problem, please let me know by posting your comment below.
+
+You may check this top [plugin to increase and optimize your WordPress website](https://shameem.me/top-10-wordpress-speed-optimization-plugins/) loading speed.
+
+Wishing you the best of luck.

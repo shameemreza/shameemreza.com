@@ -1,0 +1,254 @@
+---
+title: "How to Set Up PHPStan for WordPress and WooCommerce?"
+date: 2025-09-04T14:35:00Z
+description: "Learn how to set up PHPStan for WordPress and WooCommerce with the right config, stubs, and bootstrap so it actually understands your code."
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+When reviewing WooCommerce.com product submissions, one of the most common blockers I see is **PHPStan failures**. Developers push great ideas, but the extension doesn't pass static analysis because WordPress functions aren't recognized, WooCommerce classes are missing, or the analysis level is too strict without a baseline.
+
+The good news is: [PHPStan](https://phpstan.org/) isn't hard to set up, and use. With the right config, you can catch bugs early and pass reviews without surprises. I'm writing this while using macOS, but the same setup works on Linux and Windows too. The commands and configs don't change.
+
+### Installing PHPStan the right way
+
+First, I recommend installing PHPStan globally for quick checks anywhere on your system:
+
+```
+composer global require phpstan/phpstan
+```
+
+Make sure global composer bin is in PATH:
+
+```
+echo 'export PATH="$HOME/.composer/vendor/bin:$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+This gives you a global phpstan command. But for real projects, always add PHPStan locally too, so the config travels with your code.
+
+Once done, inside your plugin folder, run:
+
+```
+composer require --dev phpstan/phpstan
+composer require --dev phpstan/extension-installer
+composer require --dev szepeviktor/phpstan-wordpress
+composer require --dev php-stubs/woocommerce-stubs
+composer config allow-plugins.phpstan/extension-installer true
+```
+
+This gives PHPStan its brain (the core), then teaches it about WordPress and WooCommerce. Without those stubs, you'll keep seeing `Function add_action not found` or `Class WC_Order not found`.
+
+If you want to learn more about WordPress extensions for PHPStan, you can check out the repo here: [https://github.com/szepeviktor/phpstan-wordpress](https://github.com/szepeviktor/phpstan-wordpress)
+
+### Adding a config file
+
+Next, create a `phpstan.neon` in your extension root. Start at level 0. That's important, don't jump to level 8 on day one.
+
+```
+includes:
+  # The WordPress extension is auto-included via extension-installer
+  # - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+  level: 0 # Start with 0, increase gradually (0-9)
+
+  paths:
+    - .
+    - includes/
+    - templates/
+
+  excludePaths:
+    - vendor/
+    - node_modules/
+    - tests/
+    - build/
+    - languages/
+    - assets/
+
+  # WordPress-specific settings
+  bootstrapFiles:
+    - phpstan-bootstrap.php
+    # For WooCommerce projects:
+    - vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+
+  treatPhpDocTypesAsCertain: false
+
+  # Common WordPress ignores
+  ignoreErrors:
+    # Ignore HPOS compatibility class (WooCommerce)
+    - '#Class Automattic\\WooCommerce\\Internal\\DataStores\\Orders\\CustomOrdersTableController not found#'
+
+    # Ignore dynamic properties on WC objects
+    - "#Access to an undefined property WC_#"
+```
+
+This tells PHPStan where to look, what to ignore, and how to load WooCommerce symbols.
+
+### Defining plugin constants
+
+PHPStan doesn't know what `ABSPATH` or `MY_PLUGIN_DIR` is unless you tell it. That's where a simple bootstrap file comes in.
+
+```
+<?php
+/**
+ * PHPStan Bootstrap File
+ *
+ * Defines constants for static analysis without loading WordPress.
+ */
+
+// Define WordPress constants
+if ( ! defined( 'ABSPATH' ) ) {
+    define( 'ABSPATH', dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/' );
+}
+
+if ( ! defined( 'WP_DEBUG' ) ) {
+    define( 'WP_DEBUG', false );
+}
+
+// Define your plugin constants
+// Replace YOUR_PLUGIN with your actual plugin prefix
+if ( ! defined( 'YOUR_PLUGIN_VERSION' ) ) {
+    define( 'YOUR_PLUGIN_VERSION', '1.0.0' );
+}
+
+if ( ! defined( 'YOUR_PLUGIN_FILE' ) ) {
+    define( 'YOUR_PLUGIN_FILE', __DIR__ . '/your-plugin-main-file.php' );
+}
+
+if ( ! defined( 'YOUR_PLUGIN_DIR' ) ) {
+    define( 'YOUR_PLUGIN_DIR', __DIR__ . '/' );
+}
+
+if ( ! defined( 'YOUR_PLUGIN_URL' ) ) {
+    // This is just for PHPStan, not used at runtime
+    define( 'YOUR_PLUGIN_URL', 'https://example.com/wp-content/plugins/your-plugin/' );
+}
+
+if ( ! defined( 'YOUR_PLUGIN_BASENAME' ) ) {
+    define( 'YOUR_PLUGIN_BASENAME', 'your-plugin/your-plugin.php' );
+}
+
+// WooCommerce constants are provided by woocommerce-stubs: https://github.com/php-stubs/woocommerce-stubs
+```
+
+Keep it minimal. You're not loading WordPress here, just giving PHPStan what it needs to parse your code.
+
+Create composer.json
+
+If you don't have one already, create one like:
+
+```
+{
+  "name": "yourname/your-plugin",
+  "description": "Your WordPress/WooCommerce Plugin",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10",
+    "szepeviktor/phpstan-wordpress": "^1.3",
+    "phpstan/extension-installer": "^1.3",
+    "php-stubs/woocommerce-stubs": "^8.0",
+    "squizlabs/php_codesniffer": "^3.7",
+    "wp-coding-standards/wpcs": "^3.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse",
+    "phpstan-baseline": "vendor/bin/phpstan analyse --generate-baseline",
+    "phpcs": "vendor/bin/phpcs --standard=WordPress-Extra .",
+    "phpcbf": "vendor/bin/phpcbf --standard=WordPress-Extra ."
+  }
+}
+```
+
+### Running analysis
+
+If you did everything correctly, it's time to tun. Now try:
+
+```
+vendor/bin/phpstan analyse
+```
+
+At level 0, it'll catch undefined functions, missing classes, and other low-hanging bugs. Fix those, then move up:
+
+```
+vendor/bin/phpstan analyse --level=1
+vendor/bin/phpstan analyse --level=2
+```
+
+The idea is simple: fix everything at your current level, then raise the bar.
+
+If you want to analyze specific files or directories, you can run:
+
+```
+vendor/bin/phpstan analyse includes/
+```
+
+If you want to show progress, that also easy, just run:
+
+```
+vendor/bin/phpstan analyse --verbose
+```
+
+You even can generate baseline for existing issues running:
+
+```
+vendor/bin/phpstan analyse --generate-baseline
+```
+
+### Common errors you'll hit
+
+- `Function add_action not found` → Install `szepeviktor/phpstan-wordpress`.
+- `Function WC() not found` → Add `php-stubs/woocommerce-stubs`.
+- `Constant MY_PLUGIN_DIR not found` → Define it in `phpstan-bootstrap.php`.
+- `Access to an undefined property WC_Order::$something` → Prefer real getters, or ignore temporarily in `phpstan.neon`.
+
+However, you may also get false positive. You can use inline comments to ignore specific lines:
+
+```
+// @phpstan-ignore-next-line
+$value = $undefined_variable;
+
+// Or with specific error
+/** @phpstan-ignore-line */
+$value = $undefined_variable;
+```
+
+### CI and reviews
+
+If you want to mirror review checks, run PHPStan in GitHub Actions. Here’s a minimal workflow:
+
+```
+name: PHPStan
+on: [push, pull_request]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+      - run: composer install --no-progress
+      - run: vendor/bin/phpstan analyse --level=2
+```
+
+That way, every push gets checked automatically.
+
+### Wrapping up
+
+Static analysis can feel strict at first, but once you set it up, it saves you from subtle bugs and review rejections. Start at level 0, define the basics, and climb step by step.
+
+The next time you submit your extension to WooCommerce.com, PHPStan won't be the reason it gets rejected.

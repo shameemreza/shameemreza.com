@@ -1,0 +1,217 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  SITE,
+  AUTHOR,
+  EXPERIENCE,
+  SKILLS,
+  DOMAINS,
+  SOCIAL_LINKS,
+} from '../config';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: `About — ${SITE.name}`,
+  url: new URL('/about/', SITE.url).toString(),
+  mainEntity: {
+    '@type': 'Person',
+    name: AUTHOR.name,
+    jobTitle: 'Happiness Engineer',
+    worksFor: { '@type': 'Organization', name: 'Automattic' },
+    url: SITE.url,
+    sameAs: SOCIAL_LINKS.map((l) => l.href),
+    knowsAbout: [...SKILLS],
+  },
+};
+---
+
+<BaseLayout
+  title="About"
+  description={`About ${AUTHOR.name}. Happiness Engineer at Automattic and member of the WordPress.org Plugins Team. Supporting WooCommerce merchants, reviewing plugin submissions, and building plugins and themes.`}
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <div class="about-header">
+      <div class="about-avatar">
+        <img
+          src={AUTHOR.avatar}
+          alt={`Photo of ${AUTHOR.name}`}
+          width="72"
+          height="72"
+          loading="eager"
+        />
+      </div>
+      <div class="about-header-text">
+        <h1>{AUTHOR.name}</h1>
+        <p>Happiness Engineer at Automattic. Member of the WordPress.org Plugins Team. Plugin builder. Writer.</p>
+      </div>
+    </div>
+
+    <div class="about-body">
+      <div class="prose">
+        <p>
+          I'm a Happiness Engineer at <a
+            href="https://automattic.com"
+            target="_blank"
+            rel="noopener noreferrer">Automattic</a
+          >, the company behind WordPress.com, WooCommerce, Jetpack, and Tumblr.
+          I help merchants turn WooCommerce chaos into calm with clear solutions,
+          code snippets, and technical breakdowns.
+        </p>
+
+        <h2>What I do at Automattic</h2>
+        <p>
+          I handle the complex technical cases that need both deep product knowledge
+          and hands-on coding skills. Subscription renewals failing silently, payment
+          gateways that stop processing mid-launch, checkout pages breaking after a
+          routine update. I work across <a
+            href="https://woocommerce.com"
+            target="_blank"
+            rel="noopener noreferrer">WooCommerce</a
+          > Subscriptions, Bookings, Memberships, AutomateWoo, Product Bundles,
+          WooPayments, Stripe, PayPal, and more.
+        </p>
+        <p>
+          I'm also a <strong>Woo Marketplace Product Ambassador</strong>, working between
+          the support team and the Marketplace product team. I review plugin submissions
+          to WooCommerce.com for code quality, security, and UX. I bring merchant feedback
+          into the product roadmap and prepare the support team for new launches.
+        </p>
+
+        <h2>What I build</h2>
+        <p>
+          The problems I see in support often become the products I build.
+          That's how <a
+            href="https://github.com/shameemreza/happyaccess"
+            target="_blank"
+            rel="noopener noreferrer">HappyAccess</a
+          > was born, a plugin for secure temporary admin access through OTP and magic links.
+          Same with <a
+            href="https://github.com/shameemreza/snipdrop"
+            target="_blank"
+            rel="noopener noreferrer">SnipDrop</a
+          >, tested WooCommerce code snippets with one-click install. I've also built
+          <a
+            href="https://github.com/shameemreza/assistify-for-woocommerce"
+            target="_blank"
+            rel="noopener noreferrer">Assistify for WooCommerce</a
+          > and the <a
+            href="https://wordpress.org/themes/kairo/"
+            target="_blank"
+            rel="noopener noreferrer">Kairo Theme</a
+          >. All available on WordPress.org and GitHub.
+        </p>
+
+        <h2>WordPress.org contributions</h2>
+        <p>
+          I'm a member of the <a
+            href="https://make.wordpress.org/plugins/"
+            target="_blank"
+            rel="noopener noreferrer">WordPress.org Plugins Team</a
+          >, where I review plugin submissions on WordPress.org for code quality,
+          security, and guideline compliance. I also provide support in the plugin
+          forums for WooCommerce (7M+ active installs), WooPayments, Stripe, PayPal
+          Payments, Google for WooCommerce, and more. Beyond that, I'm active as a
+          plugin developer, theme author, pattern author, and translation contributor.
+        </p>
+
+        <h2>Before Automattic</h2>
+        <p>
+          I freelanced for 10 years through <a
+            href="https://www.upwork.com/freelancers/shameemreza"
+            target="_blank"
+            rel="noopener noreferrer">Upwork</a
+          > and Elance. 60+ projects for clients across North America, Europe, the
+          Middle East, and Asia. Custom WordPress development, WooCommerce stores,
+          payment integrations, and full-stack applications. Top Rated with 100% Job Success.
+        </p>
+
+        <h2>What drives me</h2>
+        <ul>
+          <li>Turning complex challenges into simple, actionable solutions.</li>
+          <li>Helping businesses overcome technical roadblocks effortlessly.</li>
+          <li>Bridging the gap between users and technology with clear, empathetic communication.</li>
+        </ul>
+        <p>
+          For me, support is more than troubleshooting. It's about making technology
+          work for people. Removing roadblocks, simplifying processes, and helping
+          merchants get the most out of their online stores.
+        </p>
+
+        <h2>Beyond work</h2>
+        <p>
+          I'm a father and husband from Khulna, Bangladesh, grateful for a family that
+          keeps me grounded. I graduated with a BSc in Computer Science and hold a
+          Postgraduate Certificate in Project Management. When I'm not debugging,
+          I'm probably exploring a new city, learning a new language, or overthinking
+          my next side project.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-divider">
+      <h2 class="section-label">Experience</h2>
+    </div>
+    <div class="card-group">
+      {
+        EXPERIENCE.map((exp) => (
+          <a
+            href={exp.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover-card exp-item"
+          >
+            <div class="card-bg" />
+            <div class="exp-period">{exp.period}</div>
+            <div>
+              <h3 class="exp-title">
+                {exp.title} · {exp.company}{' '}
+                <span class="arrow">↗</span>
+              </h3>
+              <p class="exp-desc">{exp.description}</p>
+              <div class="tech-tags">
+                {exp.tech.map((t) => (
+                  <span class="tech-tag">{t}</span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <section class="skills-section">
+      <h2>Tools & Technologies</h2>
+      <div class="skills-grid">
+        {SKILLS.map((skill) => <span class="skill-pill">{skill}</span>)}
+      </div>
+    </section>
+
+    <section class="domains-section">
+      <h2>My Domains</h2>
+      {
+        DOMAINS.map((d) => (
+          <div class="domain-item">
+            <span class="d-old">{d.old}</span>
+            <span class="d-arrow">→</span>
+            <span class="d-new">{d.new}</span>
+            <span class="d-label">301</span>
+          </div>
+        ))
+      }
+    </section>
+
+    <div style="padding-top:32px">
+      <div class="social-row">
+        {
+          SOCIAL_LINKS.map((link) => (
+            <a href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label} ↗
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,49 @@
+---
+title: "Exposing React Component functions with fowardRef and useRef"
+date: 2023-04-02T14:08:29Z
+description: "Exposing React Component functions with fowardRef and useRef"
+category: "Development"
+categorySlug: "development"
+tags: []
+draft: false
+---
+
+React is a popular JavaScript library that allows developers to build user interfaces for web applications. It uses a component-based architecture, where each component is a reusable piece of code that can be used to build complex UIs. In this post, we will be discussing two useful React hooks, forwardRef, and useRef, that can be used to expose component functions. We will explore what these hooks do, how to use them, and their benefits.
+
+## What is forwardRef?
+
+ForwardRef is a React hook that allows you to pass a ref from a parent component to a child component. This is useful when you need to access a child component's DOM node or component instance from the parent component. ForwardRef is used when you want to customize a child component's behavior or access its properties.
+
+## What is useRef?
+
+UseRef is another React hook that can be used to create a reference to a DOM node or a component instance. This hook is useful when storing a reference to a component instance or DOM node and accessing it later. UseRef returns a mutable object that persists for the entire lifecycle of a component.
+
+## Exposing Component Functions with ForwardRef and useRef
+
+Now that we know what forwardRef and useRef are, let's see how we can use them to expose component functions. In this example, we will create a custom input [react component](https://shameem.me/render-an-array-of-objects-in-react/) that will be used to validate the user's input. We will expose the input's value and isValid functions using forwardRef and useRef.
+
+https://gist.github.com/shameemreza/74b371fbb9d716fba7817684186efc39
+
+In the code above, we have defined a custom Input component that accepts two props, value, and onChange. We are using forwardRef to pass the ref from the parent component to the child component. We have also defined a useRef hook to create a reference to the input DOM node. We have defined two functions, getValue, and isValid, that will be used to access and validate the input's value.
+
+To use the Input component, we can pass a ref to it and use the getValue and isValid functions to access and validate the input's value. Here's an example of how we can use the Input component.
+
+https://gist.github.com/shameemreza/1e05d6e694ce5e4b0d11c421569020b2
+
+In the code above, we are using the Input component in a form. We are passing a ref to the Input component using useRef and the getValue and isValid functions to access and validate the input's value. We have also defined a handleSubmit function that will be called when the form is submitted.
+
+Here are some resources that you might find helpful to learn more about using forwardRef and useRef in React:
+
+- [React Docs: Forwarding Refs](https://react.dev/reference/react/forwardRef)
+- [React Docs: useRef Hook](https://react.dev/learn/manipulating-the-dom-with-refs)
+- [Kent C. Dodds: How to Use React's useRef Hook](https://kentcdodds.com/blog/useref-is-not-a-panacea/)
+- [Dave Ceddia: useRef in React: A Complete Guide](https://daveceddia.com/useeffect-vs-useref/)
+- [Robin Wieruch: How to use React Ref](https://www.robinwieruch.de/react-ref/)
+
+These resources cover a range of topics related to using forwardRef and useRef in React, including how to pass refs between components, how to create references to DOM nodes and component instances, and best practices for using these hooks effectively.
+
+## Conclusion
+
+In this post, we have discussed two useful React hooks, forwardRef, and useRef, that can be used to expose component functions. We have seen how we can use these hooks to create a custom input component that exposes its value and isValid functions. We have also seen how we can use these functions to access the input's value and validate it from a parent component. Using forwardRef and useRef can make your React components more flexible and reusable.
+
+Exposing React component functions with forwardRef and useRef can be a powerful technique to enhance your React components' functionality. These hooks allow you to pass refs and create references to DOM nodes and component instances, which can be used to expose component functions to the parent component. These hooks can help make your React components more reusable and flexible, allowing easier code maintenance. So, if you haven't used these hooks yet, give them a try in your next React project!

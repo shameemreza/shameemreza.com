@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, AUTHOR } from '../config';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `Now — ${SITE.name}`,
+  url: new URL('/now/', SITE.url).toString(),
+  description: 'What I\'m doing right now. Inspired by nownownow.com.',
+};
+
+interface GitHubEvent {
+  type: string;
+  repo: { name: string };
+  payload: {
+    action?: string;
+    ref?: string;
+    ref_type?: string;
+    commits?: { message: string }[];
+    pull_request?: { title: string; html_url: string };
+    issue?: { title: string; html_url: string };
+    release?: { tag_name: string; html_url: string };
+    review?: { state: string };
+  };
+  created_at: string;
+}
+
+function describeEvent(event: GitHubEvent): string | null {
+  const repo = event.repo.name.replace('shameemreza/', '');
+  switch (event.type) {
+    case 'PushEvent': {
+      const count = event.payload.commits?.length || 0;
+      const msg = event.payload.commits?.[0]?.message?.split('\n')[0] || '';
+      if (count === 1) return `Pushed to ${repo}: "${msg}"`;
+      return `Pushed ${count} commits to ${repo}`;
+    }
+    case 'CreateEvent':
+      if (event.payload.ref_type === 'repository') return `Created repository ${repo}`;
+      if (event.payload.ref_type === 'branch') return `Created branch ${event.payload.ref} in ${repo}`;
+      if (event.payload.ref_type === 'tag') return `Tagged ${event.payload.ref} in ${repo}`;
+      return null;
+    case 'PullRequestEvent':
+      return `${event.payload.action === 'opened' ? 'Opened' : event.payload.action === 'closed' ? 'Merged' : 'Updated'} PR in ${repo}: "${event.payload.pull_request?.title}"`;
+    case 'IssuesEvent':
+      return `${event.payload.action === 'opened' ? 'Opened' : 'Closed'} issue in ${repo}: "${event.payload.issue?.title}"`;
+    case 'IssueCommentEvent':
+      return `Commented on issue in ${repo}: "${event.payload.issue?.title}"`;
+    case 'WatchEvent':
+      return `Starred ${event.repo.name}`;
+    case 'ForkEvent':
+      return `Forked ${event.repo.name}`;
+    case 'ReleaseEvent':
+      return `Released ${event.payload.release?.tag_name} of ${repo}`;
+    case 'PullRequestReviewEvent':
+      return `Reviewed PR in ${repo}: "${event.payload.pull_request?.title}"`;
+    case 'PullRequestReviewCommentEvent':
+      return `Commented on PR in ${repo}`;
+    case 'DeleteEvent':
+      return null;
+    default:
+      return null;
+  }
+}
+
+function eventUrl(event: GitHubEvent): string {
+  if (event.payload.pull_request?.html_url) return event.payload.pull_request.html_url;
+  if (event.payload.issue?.html_url) return event.payload.issue.html_url;
+  if (event.payload.release?.html_url) return event.payload.release.html_url;
+  return `https://github.com/${event.repo.name}`;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+let githubEvents: { description: string; url: string; date: string }[] = [];
+
+try {
+  const res = await fetch('https://api.github.com/users/shameemreza/events?per_page=30', {
+    headers: { 'User-Agent': 'shameemreza.com' },
+  });
+  if (res.ok) {
+    const events: GitHubEvent[] = await res.json();
+    githubEvents = events
+      .map((e) => {
+        const desc = describeEvent(e);
+        if (!desc) return null;
+        return { description: desc, url: eventUrl(e), date: formatDate(e.created_at) };
+      })
+      .filter((e): e is NonNullable<typeof e> => e !== null)
+      .slice(0, 10);
+  }
+} catch {
+  // Build continues without GitHub data
+}
+---
+
+<BaseLayout
+  title="Now"
+  description="What I'm doing right now. Inspired by nownownow.com."
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <div class="page-title">
+      <h1>Now</h1>
+      <p>What I'm focused on right now.</p>
+      <p class="now-updated">
+        Last updated: <time datetime="2026-04-15">April 15, 2026</time>
+      </p>
+    </div>
+
+    <div class="prose" style="padding-top:24px">
+      <h2>Work</h2>
+      <p>
+        Happiness Engineer at <strong>Automattic</strong>, supporting WooCommerce
+        merchants with complex technical issues across Subscriptions, Bookings,
+        WooPayments, and more. Also reviewing plugin submissions on WooCommerce.com
+        as a Woo Marketplace Product Ambassador.
+      </p>
+
+      <h2>Plugin reviews</h2>
+      <p>
+        Recently joined the <a href="https://make.wordpress.org/plugins/" target="_blank" rel="noopener noreferrer">WordPress.org Plugins Team</a>
+        as a plugin reviewer. Reviewing plugin submissions for code quality, security,
+        and guideline compliance.
+      </p>
+
+      <h2>Building</h2>
+      <ul>
+        <li>This site, rebuilt from scratch with <strong>Astro</strong>.</li>
+        <li><strong>HappyAccess</strong>, secure temporary admin access for WordPress.</li>
+        <li><strong>SnipDrop</strong>, tested code snippets for WooCommerce.</li>
+        <li>Contributing to WooCommerce and WordPress open-source projects.</li>
+      </ul>
+
+      <h2>Learning</h2>
+      <ul>
+        <li>Getting deeper into Astro and static site architecture.</li>
+        <li>Web performance optimization for WordPress sites.</li>
+        <li>Accessibility patterns for complex UI components.</li>
+      </ul>
+
+      <h2>Reading</h2>
+      <ul>
+        <li><em>Refactoring UI</em> by Adam Wathan and Steve Schoger.</li>
+        <li>WordPress core trac tickets and plugin review guidelines.</li>
+      </ul>
+    </div>
+
+    <div class="gh-activity" style="margin-top:40px">
+      <div class="gh-activity-header">
+        <h2>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Recent GitHub activity
+        </h2>
+        <a href={AUTHOR.links.github} target="_blank" rel="noopener noreferrer" class="gh-profile-link">
+          View profile ↗
+        </a>
+      </div>
+      {githubEvents.length > 0 ? (
+        <div class="gh-events-grid">
+          {githubEvents.map((event) => (
+            <a href={event.url} target="_blank" rel="noopener noreferrer" class="gh-event-card">
+              <span class="gh-event-desc">{event.description}</span>
+              <time>{event.date}</time>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="gh-empty">Could not load GitHub activity. Check my <a href={AUTHOR.links.github} target="_blank" rel="noopener noreferrer">profile</a> instead.</p>
+      )}
+    </div>
+
+    <div class="prose" style="padding-top:32px">
+      <hr />
+      <p>
+        This page is inspired by <a
+          href="https://nownownow.com/about"
+          target="_blank"
+          rel="noopener noreferrer">nownownow.com</a
+        >.
+      </p>
+    </div>
+  </main>
+</BaseLayout>

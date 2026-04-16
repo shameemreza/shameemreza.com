@@ -1,0 +1,155 @@
+---
+title: "How to Improve Largest Contentful Paint (LCP)?"
+date: 2021-11-04T05:09:03Z
+description: "How to Improve Largest Contentful Paint (LCP)?"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+Largest Contentful Paint (LCP) is a Core Web Vitals metric: it measures the time it takes for the largest item to become visible in the viewport. Until the LCP is loaded, you will hardly see anything on the page. The LCP element is always located above the waterline, that is to say, at the top of the page being loaded.
+
+While the LCP is typically an image or a block of text, it can also be a video or animation. The LCP element can also differ depending on whether the same page is requested on a smartphone or desktop.
+
+![](/uploads/shameem-website-speed-1024x451.png)
+
+As you might expect, "the largest element" is the most important in the user experience and actual or perceived loading speed. If the largest element on the page is not loading quickly, the user experience will not be good.
+
+Often you will even leave the site! Because, how long do you stare at a nearly blank page, waiting for the page to load?
+
+When browsing a site, a few seconds of waiting for less can make a huge difference, which is why Google has included LCP in one of its "Core Web Vitals" metrics, which measure the quality of your performance and User experience.
+
+LCP represents 25% of the overall PageSpeed ​​Insights score: by improving its performance, you will probably improve your rating, and with it, your user experience and your SEO score.
+
+In short, LCP is one of the most important performance metrics today.
+
+## What are the causes of slow "Largest Contentful Paint"?
+
+
+Measurement tools like PageSpeed ​​Insights or Search Console (in the Core Web Vitals report) will tell you how long it takes for the LCP to load.
+
+The most common causes of a bad LCP are:
+
+## 1. Slow server response times
+
+
+A slow server will negatively affect all of your website load speed metrics, not just the LCP.
+
+Even if all your resources are optimized, it will be useless if you have a poorly performing server.
+
+## 2. JavaScript and CSS block rendering
+
+
+Suppose you are adding a lot of plugins to your website or have chosen a very elaborate theme. In that case, you may need to reconsider some choices: adding JavaScript and CSS (especially above the waterline) strongly affects loading times.
+
+Whenever a browser encounters a synchronous script or an external stylesheet, it delays the final rendering of a web page.
+
+## 3. Resource loading time
+
+
+Images, videos, and blocks of text displayed above the waterline also directly affect load time.
+
+Large elements, such as the Hero Header (a large, often imposing banner with texts, buttons, etc.), must be optimized to reduce loading times.
+
+4. Client-side rendering
+
+Client-side rendering is popular with many web developers. Using JavaScript allows web pages to be rendered directly in the browser. However, JavaScript impacts LCP because the browser must first load all critical JavaScript before rendering.
+
+## How to improve the "Largest Contentful Paint"?
+
+
+Here are some ways to improve the loading time of your LCP.
+
+## 1. Migrate to a better server
+
+
+LCP is a measure of content. So it makes sense that one of the best ways to improve it is to start with how long it takes to fetch the content on your server.
+
+If your server response time is poor when performing performance scans, switch it up!
+
+If you are using WordPress, then you can choose [WordPress optimized Hosting](https://shameem.me/fastcomet-wordpress-hosting-full-review-and-personal-opinion/). I have listed all the [best WordPress hosting](https://shameem.me/top-5-best-wordpress-optimized-hosting-in-2021/) providers, and you can choose from one of them.
+
+## 2. Set up a CDN
+
+
+A [CDN](https://en.wikipedia.org/wiki/Content_delivery_network) is a content delivery network that stores your content on servers spread across the globe: rather than having your content stored in one place, when a user requests a page, the content is served from the closest server to him.
+
+So if your LCP element is a large image file, your visitor from Madrid will not have to wait for the file to be routed by cable from your server in Strasbourg.
+
+Less distance to travel = less time to deliver content.
+
+I am using [BunnyCDN](https://shameem.me/go/bunnycdn/) for my website, which is very cheap with good performance. If you don't want to spend money, you can also use the Cloudflare free package.
+
+[![](/uploads/bunnycdn-home-1024x489.png)](https://shameem.me/go/https://shameem.me/go/bunnycdn//)
+
+## 3. Set up a cache system
+
+
+If your CDN uses edge servers, you can cache your content, so it doesn't have to be reloaded every time.
+
+If your CDN does not have such servers, you can still cache your content, managing it directly with your host.
+
+You can use WPRocket or any cache plugin on your WordPress website. But if you chose [Rocket Hosting](https://shameem.me/rocket-hosting-is-it-the-best-wordpress-hosting/), then you don't need to worry about optimization.
+
+## 4. Serve cached HTML content through a service worker
+
+
+You can use a "service-worker" to serve the cached content first to make this even faster. So if your LCP is a cached image, the service worker will run in the browser's background and intercept requests from the server.
+
+It is thus possible to cache the HTML page's content and update the cache only when the content has changed, which makes it possible to deliver the Largest Contentful Paint even faster than with a simple CDN.
+
+## 5. Make content faster
+
+
+When a browser renders your content, it must first parse the HTML markup to transform it. However, if the latter encounters external style sheets or synchronous JavaScript tags in its path, it will interrupt this task to process these external resources.
+
+Scripts and stylesheets are resources that block rendering and therefore delay LCP. To prevent these resources from blocking your LCP from loading, report all non-critical JavaScript and CSS.
+
+You could also delete any unused CSS on that page or move it to another stylesheet.
+
+## 6. Optimize, compress and shrink all the content you can
+
+
+The goal of LCP is to make useful content appear on screen as quickly as possible. The loading time of the page elements has a direct effect on the LCP.
+
+Smaller files allow faster loading. Each byte gained improves LCP, so you have to hunt down too heavy content and lighten your entire site as much as possible.
+
+## Optimize and compress images
+
+
+Improved image loading and rendering times directly speed up LCP. To do this, convert the images to lighter formats such as JPEG or WebP, or compress them.
+
+Try to serve them at the exact dimensions provided in your code, such as the srcset attributes. Do not use images that are not useful.
+
+Check out my other post, where I listed the [best WordPress plugin to optimize](https://shameem.me/top-10-wordpress-speed-optimization-plugins/) your WordPress website images and resources.
+
+## Preload important resources
+
+
+Even if you load optimized and compressed content, some elements of these resources may be embedded in a file that takes a long time for the browser to load.
+
+A text file can take extra seconds to load because the required font is in an external style sheet.
+
+If you have resources that need to be prioritized, such as the items that make up your LCP, try to get them back as soon as possible. Preload the critical assets that make up the first viewport, such as fonts, images above the waterline, and critical CSS or JavaScript paths.
+
+## Compress text files
+
+
+For text compression, there are compression algorithms that will reduce the weight of HTML, CSS, JavaScript, and text files as they are sent between the server and the browser.
+
+## Reduce the weight of your JS and CSS
+
+
+Downloading Javascript and CSS stylesheets prevents your site content from being visible or interactive quickly. Even though JavaScript is asynchronous and doesn't block rendering, it will "fight" for bandwidth while downloading, which reduces mobile performance.
+
+## Conclusion
+
+
+Now, as we know that Google rates the experience as visible, stable, and interactive content, it's important to reduce the size of all those assets as much as possible. It is a job of minification that eliminates all unnecessary spaces and line breaks from your files to reduce their weight.
+
+Be careful; this also means that you have to hunt for unused scripts and stylesheets: unnecessary minified content is content that shouldn't have to be loaded at all, optimized or not!
+
+There are many tools to help you compress your JavaScript scripts and stylesheets. If you are using WordPress, here is a list of a few of them.
+
+You can also find a [WordPress freelancer](https://shameem.me) who will do this manually to get even better performance.

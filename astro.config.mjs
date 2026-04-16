@@ -1,0 +1,21 @@
+import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
+import rehypeExternalLinks from 'rehype-external-links';
+
+export default defineConfig({
+  site: 'https://shameemreza.com',
+  trailingSlash: 'always',
+  integrations: [mdx(), sitemap()],
+  markdown: {
+    shikiConfig: {
+      theme: 'catppuccin-mocha',
+    },
+    rehypePlugins: [
+      [rehypeExternalLinks, {
+        target: '_blank',
+        rel: ['noopener', 'noreferrer'],
+      }],
+    ],
+  },
+});

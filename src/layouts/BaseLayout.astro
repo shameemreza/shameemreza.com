@@ -1,0 +1,126 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
+import '@fontsource/geist-sans/400.css';
+import '@fontsource/geist-sans/500.css';
+import '@fontsource/geist-sans/600.css';
+import '@fontsource/geist-sans/700.css';
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  article?: boolean;
+  publishDate?: Date;
+  modifiedDate?: Date;
+  category?: string;
+  tags?: string[];
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, image, article, publishDate, modifiedDate, category, tags, jsonLd } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      image={image}
+      article={article}
+      publishDate={publishDate}
+      modifiedDate={modifiedDate}
+      category={category}
+      tags={tags}
+    />
+    {jsonLd && <JsonLd data={jsonLd} />}
+    <ViewTransitions />
+  </head>
+  <body>
+    <div class="spotlight" id="spotlight"></div>
+    <Header />
+    <slot />
+    <Footer />
+
+    <script is:inline>
+      (function () {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
+    <script>
+      function initPage() {
+        const btn = document.getElementById('theme-toggle');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            const current = document.documentElement.dataset.theme;
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.dataset.theme = next;
+            localStorage.setItem('theme', next);
+          });
+        }
+
+        const menuBtn = document.getElementById('mobile-menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        function closeMobileMenu() {
+          mobileNav?.classList.remove('open');
+          menuBtn?.setAttribute('aria-expanded', 'false');
+        }
+        if (menuBtn && mobileNav) {
+          menuBtn.addEventListener('click', () => {
+            const isOpen = mobileNav.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', String(isOpen));
+          });
+          mobileNav.querySelectorAll('a').forEach((link) => {
+            link.addEventListener('click', closeMobileMenu);
+          });
+        }
+
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                obs.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.08 }
+        );
+        document
+          .querySelectorAll('.reveal')
+          .forEach((el) => obs.observe(el));
+      }
+
+      document.addEventListener('mousemove', (e) => {
+        const s = document.getElementById('spotlight');
+        if (s) {
+          s.style.setProperty('--mx', e.clientX + 'px');
+          s.style.setProperty('--my', e.clientY + 'px');
+        }
+      });
+
+      document.addEventListener('astro:before-preparation', () => {
+        document.getElementById('mobile-nav')?.classList.remove('open');
+        document.getElementById('mobile-menu-toggle')?.setAttribute('aria-expanded', 'false');
+      });
+
+      document.addEventListener('astro:page-load', initPage);
+    </script>
+  </body>
+</html>

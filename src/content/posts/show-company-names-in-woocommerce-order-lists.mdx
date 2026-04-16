@@ -1,0 +1,64 @@
+---
+title: "How to show Company Names in WooCommerce Order Lists?"
+date: 2024-07-08T01:38:24Z
+description: "How to show Company Names in WooCommerce Order Lists?"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+In my role as a WooCommerce Technical Support Engineer, I frequently address a variety of unique requests from different users.
+
+Recently, a user sought assistance showing the company name in the order list, where WooCommerce typically shows the customer name. After giving some trials, I shared a solution using a custom code snippet.
+
+In this post, I'll share how you can achieve this.
+
+## Problem
+
+By default, WooCommerce shows the customer's name in the order list. However, some businesses prefer to see the company name, especially when dealing with B2B transactions. This can improve order management and make it easier to identify orders.
+
+[![](/uploads/show-company-names-in-woocommerce-order-1024x555.webp)](https://shameem.me/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce-order/)
+
+## Solution
+
+We can use the `woocommerce_admin_order_buyer_name` filter to show the company name instead of the customer name in the order list. If the company name is provided, using this filter we will modify the order list to show it. If not, it will default back to the customer's name.
+
+## Code Snippet
+
+Here is the code snippet to show the customer's company name in the order list:
+
+```
+// Show company instead of name in the orders list
+add_filter( 'woocommerce_admin_order_buyer_name', function( string $buyer, WC_Order $order ): string {
+return trim( $order->get_billing_company() );
+}, 10, 2 );
+```
+
+This snippet uses the `woocommerce_admin_order_buyer_name` filter to replace the default name with the company name from the billing details.
+
+However, if you want to ensure that the order list still shows the customer's name when the company name isn't provided, you can use this version with a fallback function:
+
+```
+// Show company instead of name in the orders list
+add_filter( 'woocommerce_admin_order_buyer_name', function( string $buyer, WC_Order $order ): string {
+$company = trim( $order->get_billing_company() );
+if ( empty( $company ) ) {
+return $buyer;
+} else {
+return $company;
+}
+}, 10, 2 );
+```
+
+[![](/uploads/show-company-names-in-woocommerce.gif)](https://shameem.me/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce/)
+
+## Implementation
+
+You can add this code snippet to your child theme's functions.php or use a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/).
+
+## Conclusion
+
+Showing the company name in the WooCommerce order list can greatly enhance order management for B2B transactions. Using this simple code snippet, you can customize your WooCommerce store to suit your business needs better.
+
+Happy customizing!

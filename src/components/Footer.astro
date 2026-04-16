@@ -1,0 +1,13 @@
+---
+import { FOOTER_LINKS } from '../config';
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>&copy; {new Date().getFullYear()} Shameem Reza</span>
+    <nav class="footer-links" aria-label="Footer navigation">
+      {FOOTER_LINKS.map((link) => <a href={link.href}>{link.label}</a>)}
+      <a href="/sitemap-index.xml">Sitemap</a>
+    </nav>
+  </div>
+</footer>

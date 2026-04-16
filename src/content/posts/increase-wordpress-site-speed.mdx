@@ -1,0 +1,187 @@
+---
+title: "12 Tips to Optimize WordPress Speed & Performance"
+date: 2021-12-20T06:57:55Z
+description: "12 Tips to Optimize WordPress Speed & Performance"
+category: "WordPress"
+categorySlug: "wordpress"
+tags: []
+draft: false
+---
+
+Website loading speed is one of the important factors for search engine ranking. We also know that a slow website is a reason for the high bounce rate and lost visitors.
+
+To avoid bounce rates and lose visitors, it is important to optimize the speed of your site. After proper optimization, Your pages will load faster, and navigation will be smoother for your visitors.
+
+Don't panic; there are ways available to improve the speed of your site, especially if it is a WordPress site.
+
+Here are 12 simple tips to optimize your WordPress website loading speed and performance.
+
+## 1. Regularly update your WordPress site
+
+
+WordPress frequently releases updates with many improvements and bug fixing.
+
+Properly updating your WordPress site is also important to keep it running at speed and performance.
+
+## 2. Optimize your images to increase the speed of your WordPress
+
+
+Images are very important to illustrate your pages and articles. However, they can have a backlash if they are oversized.
+
+What is the point of importing a 2000px wide image when the typical blog post width is around 600px? Always be sure to resize your images using photo editing software or an image resizing site.
+
+I like to recommend [Adobe Photoshop](https://shameem.me/block-adobe-photoshop-cc-activation-using-windows-hosts-file/), and if you don't want to install any software, you may use online tools such as Canva and [PicMaker](https://shameem.me/picmaker-best-youtube-thumbnail-makers/).
+
+[PicMaker Lifetime Deals on Appsumo => $69.00](https://shameem.me/go/picmaker/)
+
+The format of your images is also important. I always prefer to use JPG format instead of PNG. All PNG formate photo is heavier (and therefore harmful for the speed of your site), although their quality is higher and it supports transparency.
+
+You can also install an [image compression plugin](https://shameem.me/top-5-best-wordpress-optimized-hosting-in-2021/) to resize them automatically during upload and save time.
+
+## 3. Don't Use Videos directly to WordPress
+
+
+Video Presentation is effective marketing content for your website, and I am not telling you not to add a video to your website. However, the best way is to add a video to your website is to use a third-party website such as Youtube.
+
+As I said above, avoid hosting videos directly on your site, as this consumes a lot of bandwidth.
+
+Besides, the videos will slow down and weigh down your WordPress site's backups, which is quite annoying.
+
+So prefer to go through a video host like [Youtube](https://www.youtube.com/channel/UCqi7h6Q9B8-z8rBPdNY1vGw), Dailymotion, or Vimeo and integrate your videos on your pages. To do this, all you need to do is copy and paste the link of a video into the WordPress editor, which will automatically take care of the integration.
+
+## 4. Display Post Excerpt to improve your speed
+
+
+By default, a WordPress site displays the full text of each post on your home page or blog page.
+
+[![](/uploads/Post-Excerpt.png)](https://shameem.me/increase-wordpress-site-speed/post-excerpt/#main)
+
+If you show the full content of articles, it will take time to load the full website. Suppose you are showing 10 posts on your website homepage. Once someone visits your website, it will load 10 contents with all the images and videos at once.
+
+It's best to show post excerpts rather than full content to increase your website loading performance.
+
+You can set this up easily from your WordPress dashboard by going through **Settings> Reading**.
+
+## 5. Divide your comments into several pages
+
+
+Do your readers leave many comments on your articles? Well done, that means your blog is successful and is probably managing to generate leads.
+
+Another side of the coin: many comments on an article cause the page to slow down.
+
+[![](/uploads/Break-comments-into-pages-1024x439.png)](https://shameem.me/increase-wordpress-site-speed/break-comments-into-pages/#main)
+
+Again, a simple change in WordPress settings can solve the problem: go to **Settings> Discussion**, and check break comments into pages.
+
+It will have the effect of posting fewer comments at a time and therefore improve the speed of your site.
+
+## 6. Limit revisions of your WordPress posts
+
+
+A Post Revisions will create each time you save a draft article; revisions allow you to roll back the text to an earlier version.
+
+[![](/uploads/WppostRevisions.png)](https://shameem.me/increase-wordpress-site-speed/wppostrevisions/#main)
+
+They can be useful in some cases, but WordPress has the disadvantage of saving an unlimited number.
+
+So you can potentially end up with dozens of revisions that take up a lot of space and therefore slow down your site. Fortunately, It can be limited as well.
+
+It is a bit more technical than all others optimization tips since you will need to access the *wp-config.php* file on your site to achieve it.
+
+Go to your website server root and open wp-config.php, paste the following piece of code to remove the revisions:
+
+https://gist.github.com/shameemreza/ac3fe66a3bc7ac73d0a7e75c3cfb5615
+
+If you still want to keep revisions but limit the number, replace false with the number of your choice. For example:
+
+https://gist.github.com/shameemreza/ca06d3af8deffe895fab8d86d64bf228
+
+Your articles will not add more than 3 revisions with the above code.
+
+## 8. Install a WordPress Caching plugin
+
+
+WordPress pages are dynamic: they are built on demand whenever someone wants to view an article or page on your website.
+
+To create your pages, WordPress needs to go through a process of going back and forth to the database, finding the required information, putting it together, and then displaying it to the user.
+
+Your server retrieves information from the MySQL database and the PHP files of your FTP. It then gathers this information into HTML content served to the user.
+
+This process, which has several steps, can slow down your website, especially if several people visit it simultaneously.
+
+That is why all WordPress sites should use a [caching plugin](https://shameem.me/top-10-wordpress-speed-optimization-plugins/). Caching can make your WordPress site 2-5 times faster!
+
+Once the page is built for the first time, the Plugin keeps an HTML version of the page and serves it to the next user, simply with a single request instead of (often) several dozen.
+
+## 8. Use a content delivery network (CDN)
+
+
+Users in different geographic locations may experience different loading speeds on your site because of the location of your hosting server. If your host's server is located in the USA, a visitor from the USA will generally see faster loading times than a US visitor.
+
+[Using a content delivery network (CDN)](https://shameem.me/best-wordpress-cdn-providers/) can help speed up load times for all of your visitors - it's a network made up of servers spread across the globe. Each server stores the "static" files that make up your website.
+
+These static files are files such as images, stylesheets, and JavaScript.
+
+With a CDN, when a user visits your website, they receive these static files from the server closest to them. Your hosting server will also be faster since the CDN will handle a large part of the requests.
+
+I am using [BunnyCDN](https://shameem.me/go/bunnycdn/) and Cloudflare on my website. BunnyCDN has 14 days trial, which you can use to test. If you are satisfied, you can upgrade to a premium package. Normally, using $10, you could use BunnyCDN for a Year. A very cheap and fastest CDN provider for WordPress.
+
+[Get BunnyCDN 14 Days Trial](https://shameem.me/go/bunnycdn/)
+
+## 9. Optimize the WordPress database
+
+
+After using WordPress for a few years, your database will have a lot of information that you probably don't need anymore: deleted plugins, article revisions, etc. Getting rid of all that unnecessary or obsolete data will lighten your database and make it more efficient.
+
+A large number of plugins allow you to clean your WordPress database. Some will also optimize the structure of your database. You can read my other post, listing the [best WordPress plugin to optimize](https://shameem.me/top-10-wordpress-speed-optimization-plugins/) the database.
+
+## 10. Disable Hotlinking of Your Content
+
+
+If you create great content on your WordPress site, especially photos, the sad truth is that it will likely get stolen sooner or later. There are many ways to steal content on the Internet; hotlinking is the most popular and worst way.
+
+What is Hotlinking? It is a method to distribute your images not by hosting them in turn on its server but directly from the URL on your site. If anyone uses images or videos from your website, you will lose bandwidth once someone visits their website.
+
+You can block the hotlinking of images from your WordPress site. Just open your .htaccess file from your hosting root and paste the following code:
+
+https://gist.github.com/shameemreza/f27568ede24b03dca069704ff0969dd6
+
+## 11. Use lazy loading
+
+
+If your site has many images and several videos in very long blog posts, your site could benefit from lazy loading.
+
+Instead of showing all of your images and videos simultaneously, the site will only show those visible on the user's screen.
+
+When a user scrolls through the site, it loads the images visible in the browser's display area. You can upload images, videos, and even WordPress comments and Gravatars.
+
+Again, many plugins exist, often with their advantages and disadvantages.
+
+## 12. Update Your PHP version
+
+
+WordPress is written in the PHP programming language. It is a server-side language installed and running on your hosting server.
+
+All good hosting services use the most stable PHP version on their servers. However, your hosting company may be using a slightly older version of PHP.
+
+It's a shame because the new PHP 7 version is twice as fast as the previous ones. Using the latest PHP will boost your website performance. I recommend using PHP 8 since WordPress core, All [WordPress themes](https://shameem.me/generatepress-best-and-fastest-wordpress-theme/), and Plugin supports it.
+
+[![](/uploads/SiteHealthStatus-1024x489.png)](https://shameem.me/increase-wordpress-site-speed/sitehealthstatus/#main)
+
+Go to the Tools> Site health section, which will tell you if you are using the correct version of PHP.
+
+## BONUS TIPS: USE WORDPRESS OPTIMIZE HOSTING PROVIDER
+
+
+Good Web Hosting is very important for a fast-loading website. [WordPress Optimize hosting provider](https://shameem.me/top-5-best-wordpress-optimized-hosting-in-2021/) will not only load your website faster, but it will also take care of your website backup, security, Free CDN, and many other things.
+
+If you have a good budget, you can use WordPress Optimize hosting providers like [Kinsta](https://shameem.me/go/kinsta/).
+
+But if you are like me, then go with [FastComet](https://shameem.me/fastcomet-wordpress-hosting-full-review-and-personal-opinion/). It is another best Hosting provider for WordPress websites. It has a super loading speed and ensures the website's security. You also don't need to worry about your website backup as well.
+
+Some people like to have a cloud VPS server to host their WordPress website. But managing cloud VPS like Digital Ocean is a little bit complex. In this case, I recommend using [CloudWays](https://shameem.me/go/cloudways/) which offers a managed Cloud VPS server with an easy-to-manage user interface.
+
+## Conclusion
+
+
+With these 12 tips, you can improve the performance and speed of your WordPress website. But, if you're still struggling, the best thing to do is hire a [professional WordPress developer](https://shameem.me).

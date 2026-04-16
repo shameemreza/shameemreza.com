@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE, POSTS_PER_PAGE } from '../../config';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const categories = [...new Set(sortedPosts.map((p) => p.data.category))];
+
+const totalPages = Math.ceil(sortedPosts.length / POSTS_PER_PAGE);
+const posts = sortedPosts.slice(0, POSTS_PER_PAGE);
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function estimateReadTime(description: string): number {
+  return Math.max(3, Math.ceil(description.length / 40));
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: `Blog — ${SITE.name}`,
+  url: new URL('/blog/', SITE.url).toString(),
+  description: 'Thoughts on WordPress, web development, and the tools I use.',
+};
+---
+
+<BaseLayout
+  title="Blog"
+  description="Thoughts on WordPress, web development, and the tools I use."
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <div class="page-title">
+      <h1>Writing</h1>
+      <p>Thoughts on WordPress, web development, and the tools I use.</p>
+    </div>
+
+    <div class="filter-bar">
+      {
+        categories.map((cat) => {
+          const slug = sortedPosts.find((p) => p.data.category === cat)?.data
+            .categorySlug;
+          return (
+            <a href={`/${slug}/`} class="filter-pill">
+              {cat}
+            </a>
+          );
+        })
+      }
+    </div>
+
+    <div class="card-group">
+      {
+        posts.map((post) => (
+          <a href={`/${post.id}/`} class="hover-card blog-full-item">
+            <div class="card-bg" />
+            <div>
+              <div class="blog-full-cat">{post.data.category}</div>
+              <h2 class="blog-full-title">{post.data.title}</h2>
+              <p class="blog-full-excerpt">{post.data.description}</p>
+              <div class="blog-full-meta">
+                {formatDate(post.data.date)} ·{' '}
+                {estimateReadTime(post.data.description)} min read
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      totalPages > 1 && (
+        <nav class="pagination" aria-label="Blog pagination">
+          <span class="current" aria-current="page">
+            1
+          </span>
+          {Array.from({ length: Math.min(totalPages - 1, 4) }, (_, i) => (
+            <a href={`/blog/${i + 2}/`}>{i + 2}</a>
+          ))}
+          {totalPages > 5 && (
+            <>
+              <span>…</span>
+              <a href={`/blog/${totalPages}/`}>{totalPages}</a>
+            </>
+          )}
+        </nav>
+      )
+    }
+  </main>
+</BaseLayout>

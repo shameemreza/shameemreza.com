@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, AUTHOR, SOCIAL_LINKS } from '../config';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: `Contact — ${SITE.name}`,
+  url: new URL('/contact/', SITE.url).toString(),
+};
+---
+
+<BaseLayout
+  title="Contact"
+  description={`Want to reach ${AUTHOR.name}? Find me on LinkedIn, GitHub, X, and WordPress.org.`}
+  jsonLd={jsonLd}
+>
+  <main class="container">
+    <div class="page-title">
+      <h1>Hey, glad you're here.</h1>
+      <p>
+        I know you want to reach out, and I appreciate that.
+      </p>
+    </div>
+
+    <div class="prose" style="padding-top:8px">
+      <p>
+        But here's the thing: I don't have a contact form, and I don't share my email
+        publicly. Not because I'm unfriendly, but because my inbox has seen enough
+        SEO pitches, guest post offers, and "quick partnership" emails to last a lifetime.
+      </p>
+
+      <h2>What I won't do</h2>
+      <ul>
+        <li>SEO services, backlink requests, or guest posts.</li>
+        <li>Paid freelance work. I'm not taking clients right now.</li>
+        <li>Any service to "improve" my site. It's open source, so if you spot something, feel free to <a href="https://github.com/shameemreza/shameemreza.com" target="_blank" rel="noopener noreferrer">open a PR on GitHub</a>.</li>
+        <li>Anything that starts with "Dear Sir/Madam."</li>
+      </ul>
+
+      <h2>What I will do</h2>
+      <p>
+        If you want to say hi, talk about WordPress or WooCommerce, ask for guidance,
+        share feedback on my work, or just have a genuine conversation, ping me on
+        <a
+          href="https://www.linkedin.com/in/shameemreza/"
+          target="_blank"
+          rel="noopener noreferrer">LinkedIn</a
+        >. That's where I actually respond.
+      </p>
+    </div>
+
+    <div class="contact-methods" style="padding-top:32px">
+      {
+        SOCIAL_LINKS.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contact-card"
+          >
+            <h2>{link.label}</h2>
+            <span class="arrow">↗</span>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="prose" style="padding-top:40px">
+      <p>
+        For WordPress or WooCommerce support questions, please use the official
+        <a
+          href="https://wordpress.org/support/"
+          target="_blank"
+          rel="noopener noreferrer">WordPress.org forums</a
+        > or <a
+          href="https://woocommerce.com/my-account/contact-support/"
+          target="_blank"
+          rel="noopener noreferrer">WooCommerce support</a
+        >. That's literally my day job.
+      </p>
+    </div>
+  </main>
+</BaseLayout>

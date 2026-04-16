@@ -1,0 +1,153 @@
+---
+title: "What is Laravel Collective and how to use it"
+date: 2019-01-14T18:11:52Z
+description: "What is Laravel Collective and how to use it"
+category: "Development"
+categorySlug: "development"
+tags: []
+draft: false
+---
+
+Laravel has many agile development tools that make life easier for [developers](https://shameem.me) with this Framework. One of these is Laravel Collective, which became very popular for its ability to help a lot to handle HTML elements cleanly and without rewriting much code.
+
+In this article, I will teach you about the Laravel Collective tool and how to use it in Laravel.
+
+First, let's explain what Laravel Collective is, then how to use it and what you can do with this tool.
+
+
+## What is Laravel Collective?
+
+
+
+It is a set of elements for HTML Forms such as Labels, Buttons, Form Lists, Radio Buttons, Checkboxes, etc. On the other hand, it has Annotations, Remote SSH, Iron Queue and Command Bus for other types of tasks.
+
+Although Laravel Collective has other services, this tool became more popular due to the use of the elements for mentioned forms.
+
+
+## How to use Laravel Collective?
+
+
+
+For this, you have to install and deploy Laravel Framework correctly. Then enter the folder of your project and being inside, open your command console and run the following command to install Laravel Collective. Press Enter and let it finish installing.
+
+
+```
+composer require "laravelcollective/html":"^5.6.0"
+```
+
+
+
+Note: Since I use Laravel version 5.6, you can see that I finally put ^ 5.6.0
+
+Now go to the config folder, and inside it, open the file called app.php
+
+
+```
+/config
+├── app.php // Open this file
+/database
+```
+
+
+
+Go to the Providers part and add the following line
+
+
+```
+'providers' => [
+// ...
+CollectiveHtmlHtmlServiceProvider::class,
+// ...
+],
+```
+
+
+
+Then in the same file app.php go to the part of Aliases and add these 2 lines
+
+
+```
+'aliases' => [
+// ...
+'Form' => CollectiveHtmlFormFacade::class,
+'Html' => CollectiveHtmlHtmlFacade::class,
+// ...
+],
+```
+
+
+
+With this, we have installed and deployed Laravel Collective, ready to use.
+
+
+## Use of Laravel Collective
+
+
+
+As I mentioned above, with Laravel Collective, we can create elements for HTML forms; for this, we will first start a form.
+
+
+```
+{!! Form::open(['route'=>'postres.store', 'method'=>'STORE', 'files' => true, 'role' => 'form']) !!}
+// Here it places the elements of the Form
+{!! Form::close() !!}
+```
+
+
+
+Now we are going to add 4 elements to our form; these elements are:
+
+
+- 2 Text Box
+- 1 File Selector
+- 1 When of Text
+
+
+
+This would be as follows:
+
+
+```
+// 2 Text Boxes
+{!! Form::label('firstname', 'First Name:', array('class' => 'boldfont')) !!}
+{!! Form::text('firstname',null,['class'=>'form-control', 'placeholder'=>'Chocolate cake', 'required' => 'required']) !!} {!! Form::label('price', 'Price:', array('class' => 'underlined')) !!} {!! Form::text('price',null,['class'=>'form-control', 'placeholder'=>'4.50', 'required' => 'required']) !!} // 1 File Selector {!! Form::label('path', 'Select an image:', array('class' => 'boldfont')) !!} {!! Form::file('image',null, array('required' => 'true')) !!} // Text Box {!! Form::label('description', 'Description:', array('class' => 'boldfont')) !!} {{ Form::textarea('description', null, ['placeholder'=>'Enter a description here ...', 'required' => 'required']) }}
+```
+
+
+
+And if we put them inside our previously created form, we add separation with the label and it would be like this:
+
+
+```
+{!! Form::open(['route'=>'desserts.store', 'method'=>'STORE', 'files' => true, 'role' => 'form']) !!}
+
+// 2 Text Boxes
+{!! Form::label('firstname', 'First name:', array('class' => 'boldfont')) !!}
+{!! Form::text('firstname',null,['class'=>'form-control', 'placeholder'=>'Chocolate cake', 'required' => 'required']) !!}
+
+{!! Form::label('price', 'Price:', array('class' => 'underlined')) !!}
+{!! Form::text('price',null,['class'=>'form-control', 'placeholder'=>'4.50', 'required' => 'required']) !!}
+
+{!! Form::label('path', 'Select an image:', array('class' => 'boldfont')) !!}
+{!! Form::file('image',null, array('required' => 'true')) !!}
+
+{!! Form::label('description', 'Description:', array('class' => 'boldfont')) !!}
+
+{{ Form::textarea('description', null, ['placeholder'=>'Enter a description here ...', 'required' => 'required']) }}
+{!! Form::close() !!}
+```
+
+
+
+The Laravel Collective engine renders the content by converting it to HTML Form tags.
+
+If you want to know more or use other elements, you can access the [official Laravel Collective page](https://laravelcollective.com/docs/master/html).
+
+
+## Notes
+
+
+
+
+- Some versions of Laravel Collective with Compatible with the new versions of Laravel Framework.
+- The Laravel Collective tool may cease to exist or not; that does not depend on us but on its creators.

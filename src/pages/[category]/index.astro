@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE } from '../../config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map((p) => p.data.categorySlug))];
+
+  return categories.map((slug) => {
+    const filtered = posts
+      .filter((p) => p.data.categorySlug === slug)
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+    const categoryName = filtered[0]?.data.category || slug;
+    return {
+      params: { category: slug },
+      props: { posts: filtered, categoryName },
+    };
+  });
+}
+
+const { posts, categoryName } = Astro.props;
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function estimateReadTime(description: string): number {
+  return Math.max(3, Math.ceil(description.length / 40));
+}
+---
+
+<BaseLayout
+  title={categoryName}
+  description={`All posts in ${categoryName} on ${SITE.name}.`}
+>
+  <main class="container">
+    <div class="page-title">
+      <h1>{categoryName}</h1>
+      <p>
+        All posts filed under {categoryName}.
+      </p>
+      <a href="/blog/" class="back-to-blog">← Back to all posts</a>
+    </div>
+
+    <div class="card-group">
+      {
+        posts.map((post: any) => (
+          <a href={`/${post.id}/`} class="hover-card blog-full-item">
+            <div class="card-bg" />
+            <div>
+              <div class="blog-full-cat">{post.data.category}</div>
+              <h2 class="blog-full-title">{post.data.title}</h2>
+              <p class="blog-full-excerpt">{post.data.description}</p>
+              <div class="blog-full-meta">
+                {formatDate(post.data.date)} ·{' '}
+                {estimateReadTime(post.data.description)} min read
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,365 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE, AUTHOR, GISCUS, MAILCHIMP_URL } from '../config';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  category: string;
+  categorySlug: string;
+  tags?: string[];
+  featuredImage?: string;
+  featuredImageAlt?: string;
+}
+
+const {
+  title,
+  description,
+  date,
+  updated,
+  category,
+  categorySlug,
+  tags = [],
+  featuredImage,
+} = Astro.props;
+
+const readingTime = Math.ceil(
+  (Astro.slots.has('default')
+    ? (await Astro.slots.render('default')).length / 5
+    : 1000) / 200
+);
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const currentSlug = Astro.url.pathname.replace(/\/$/, '').split('/').pop();
+const relatedPosts = allPosts
+  .filter((p) => p.data.categorySlug === categorySlug && p.id !== currentSlug)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 2);
+
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+const currentIndex = sortedPosts.findIndex((p) => p.id === currentSlug);
+const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: date.toISOString(),
+  ...(updated && { dateModified: updated.toISOString() }),
+  author: {
+    '@type': 'Person',
+    name: AUTHOR.name,
+    url: SITE.url,
+    sameAs: [AUTHOR.links.github, AUTHOR.links.linkedin, AUTHOR.links.x],
+  },
+  publisher: {
+    '@type': 'Person',
+    name: AUTHOR.name,
+    url: SITE.url,
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': new URL(Astro.url.pathname, SITE.url).toString(),
+  },
+  ...(featuredImage && {
+    image: new URL(featuredImage, SITE.url).toString(),
+  }),
+  articleSection: category,
+  ...(tags.length > 0 && { keywords: tags.join(', ') }),
+  inLanguage: 'en-US',
+};
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatShortDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function estimateReadTime(desc: string): number {
+  return Math.max(3, Math.ceil(desc.length / 40));
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={featuredImage}
+  article={true}
+  publishDate={date}
+  modifiedDate={updated}
+  category={category}
+  tags={tags}
+  jsonLd={jsonLd}
+>
+  <div class="progress-bar" id="progress-bar"></div>
+  <main class="container">
+    <header class="post-page-header">
+      <p class="post-cat">
+        <a href={`/${categorySlug}/`}>{category}</a> · {readingTime} min read
+      </p>
+      <h1>{title}</h1>
+      <div class="post-meta">
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        {
+          updated && (
+            <>
+              <span>&middot;</span>
+              <span>
+                Updated{' '}
+                <time datetime={updated.toISOString()}>
+                  {formatDate(updated)}
+                </time>
+              </span>
+            </>
+          )
+        }
+      </div>
+    </header>
+
+    <article class="prose">
+      <slot />
+    </article>
+
+    <div class="share-row">
+      <span>Share:</span>
+      <button class="share-btn" data-share="copy">Copy Link</button>
+      <a
+        class="share-btn"
+        href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(new URL(Astro.url.pathname, SITE.url).toString())}`}
+        target="_blank"
+        rel="noopener noreferrer">X</a
+      >
+      <a
+        class="share-btn"
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(new URL(Astro.url.pathname, SITE.url).toString())}`}
+        target="_blank"
+        rel="noopener noreferrer">LinkedIn</a
+      >
+    </div>
+
+    <!-- Newsletter CTA -->
+    <div class="post-newsletter">
+      <div class="nl-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2" />
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+        </svg>
+      </div>
+      <h2>Your Friday WooCommerce briefing</h2>
+      <p>
+        What changed this week, what broke, and what you should try.
+        Plugin news, store fixes, and opinions. No fluff, no affiliate spam.
+      </p>
+      <form class="nl-form" action={MAILCHIMP_URL} method="post" target="_blank">
+        <input
+          type="email"
+          name="EMAIL"
+          placeholder="you@example.com"
+          required
+          autocomplete="email"
+          aria-label="Email address"
+        />
+        <button type="submit">Subscribe</button>
+      </form>
+      <span class="nl-note">Sent every Friday. Unsubscribe in one click.</span>
+    </div>
+
+    <!-- Ko-fi -->
+    <div class="post-kofi">
+      <span class="kofi-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+          <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+          <line x1="6" y1="2" x2="6" y2="4" />
+          <line x1="10" y1="2" x2="10" y2="4" />
+          <line x1="14" y1="2" x2="14" y2="4" />
+        </svg>
+      </span>
+      <p>
+        This blog is independent and ad-free.
+        If a post saved you time or taught you something new,
+        <a href="https://ko-fi.com/shameemreza" target="_blank" rel="noopener noreferrer">
+          a coffee goes a long way</a>.
+      </p>
+    </div>
+
+    <!-- Prev / Next navigation -->
+    {
+      (prevPost || nextPost) && (
+        <nav class="post-nav" aria-label="Post navigation">
+          {prevPost ? (
+            <a href={`/${prevPost.id}/`} class="pn-item">
+              <div class="pn-label">← Previous</div>
+              <div class="pn-title">{prevPost.data.title}</div>
+            </a>
+          ) : (
+            <div />
+          )}
+          {nextPost ? (
+            <a href={`/${nextPost.id}/`} class="pn-item next">
+              <div class="pn-label">Next →</div>
+              <div class="pn-title">{nextPost.data.title}</div>
+            </a>
+          ) : (
+            <div />
+          )}
+        </nav>
+      )
+    }
+
+    <!-- Related posts -->
+    {
+      relatedPosts.length > 0 && (
+        <section class="related-section">
+          <div class="section-divider" style="padding-top:0">
+            <h2 class="section-label">Keep Reading</h2>
+          </div>
+          <div class="related-grid">
+            {relatedPosts.map((post) => (
+              <a href={`/${post.id}/`} class="related-card">
+                <div class="rc-cat">{post.data.category}</div>
+                <h3>{post.data.title}</h3>
+                <div class="rc-meta">
+                  {formatShortDate(post.data.date)} ·{' '}
+                  {estimateReadTime(post.data.description)} min
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- Comments (Giscus) -->
+    <section class="post-comments" id="comments">
+      <div class="section-divider" style="padding-top:24px">
+        <h2 class="section-label">Join the Conversation</h2>
+      </div>
+      <p class="comments-intro">
+        Have thoughts, questions, or a different take? I'd love to hear from you.
+      </p>
+      <div
+        id="giscus-container"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+      >
+      </div>
+      <p class="comments-note">
+        Powered by <a href="https://giscus.app" target="_blank" rel="noopener noreferrer">Giscus</a> &middot;
+        Sign in with GitHub to comment. &middot;
+        <a href="/privacy/">Privacy policy</a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    function initPost() {
+      const bar = document.getElementById('progress-bar');
+      if (bar) {
+        const onScroll = () => {
+          const scrollTop = window.scrollY;
+          const docHeight =
+            document.documentElement.scrollHeight - window.innerHeight;
+          const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+          bar.style.width = progress + '%';
+        };
+        window.addEventListener('scroll', onScroll);
+        document.addEventListener('astro:before-preparation', () => {
+          window.removeEventListener('scroll', onScroll);
+        }, { once: true });
+      }
+
+      const copyBtn = document.querySelector('[data-share="copy"]');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          await navigator.clipboard.writeText(window.location.href);
+          const original = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            copyBtn.textContent = original;
+          }, 2000);
+        });
+      }
+
+      document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+        if (pre.querySelector('.code-copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.className = 'code-copy-btn';
+        btn.textContent = 'Copy';
+        btn.setAttribute('aria-label', 'Copy code to clipboard');
+        pre.style.position = 'relative';
+        pre.appendChild(btn);
+        btn.addEventListener('click', async () => {
+          const code = pre.querySelector('code');
+          if (code) {
+            await navigator.clipboard.writeText(code.textContent || '');
+            btn.textContent = 'Copied!';
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+            }, 2000);
+          }
+        });
+      });
+
+      const container = document.getElementById('giscus-container');
+      const repoId = container?.dataset.repoId;
+      const categoryId = container?.dataset.categoryId;
+      if (container && repoId && categoryId && !container.querySelector('script')) {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        const script = document.createElement('script');
+        script.src = 'https://giscus.app/client.js';
+        script.setAttribute('data-repo', container.dataset.repo || '');
+        script.setAttribute('data-repo-id', repoId);
+        script.setAttribute('data-category', container.dataset.category || 'General');
+        script.setAttribute('data-category-id', categoryId);
+        script.setAttribute('data-mapping', 'pathname');
+        script.setAttribute('data-strict', '0');
+        script.setAttribute('data-reactions-enabled', '1');
+        script.setAttribute('data-emit-metadata', '0');
+        script.setAttribute('data-input-position', 'bottom');
+        script.setAttribute('data-theme', isDark ? 'noborder_dark' : 'noborder_light');
+        script.setAttribute('data-lang', 'en');
+        script.setAttribute('crossorigin', 'anonymous');
+        script.async = true;
+        container.appendChild(script);
+      }
+
+      const observer = new MutationObserver(() => {
+        const iframe = document.querySelector<HTMLIFrameElement>('.giscus-frame');
+        if (iframe?.contentWindow) {
+          const newTheme = document.documentElement.dataset.theme === 'dark'
+            ? 'noborder_dark'
+            : 'noborder_light';
+          iframe.contentWindow.postMessage(
+            { giscus: { setConfig: { theme: newTheme } } },
+            'https://giscus.app'
+          );
+        }
+      });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+      document.addEventListener('astro:before-preparation', () => {
+        observer.disconnect();
+      }, { once: true });
+    }
+
+    document.addEventListener('astro:page-load', initPost);
+  </script>
+</BaseLayout>
