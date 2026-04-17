@@ -4,7 +4,7 @@ date: 2019-05-09T10:10:58Z
 description: "Learn PHP for WordPress Development (Full Guide)"
 category: "WordPress"
 categorySlug: "wordpress"
-tags: []
+featuredImage: "/uploads/learn-php-for-wordpress-development-full-guide.jpg"
 draft: false
 ---
 
@@ -27,7 +27,7 @@ WordPress also uses HTML, CSS and Javascript. HTML is used to give the structure
 
 Finally, WordPress also uses [MySQL](https://www.mysql.com/) as the database. MySQL is used for example to retrieve the last 10 entries, or all entries in a particular category of the database.
 
-Well, yes, the bad news is that this is a considerable amount of knowledge. The good news is you don't need to know everything to start with WordPress, in fact, you can start working with very little. You can [learn programming](https://shameem.me) through WordPress by just copying and pasting examples from documentation.
+Well, yes, the bad news is that this is a considerable amount of knowledge. The good news is you don't need to know everything to start with WordPress, in fact, you can start working with very little. You can [learn programming]() through WordPress by just copying and pasting examples from documentation.
 
 ## Some tips for the one who starts programming
 
@@ -60,7 +60,7 @@ When the browser visits a page that uses PHP, an intermediate step is used. Firs
 
 Let's see a practical example with real PHP code:
 
-[![](/uploads/phpexmaple.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/phpexmaple/)
+[![](/uploads/phpexmaple.png)](/learn-php-for-wordpress-development-full-guide/phpexmaple/)
 
 Without any knowledge of PHP code, we can get some information about this. Just by looking at it, one can interpret that in a particular set of circumstances it will show “good night”, and in others it will show “Good Morning”.
 
@@ -77,17 +77,17 @@ With that last paragraph in mind, you can recognize PHP everywhere in WordPress.
 
 Let's compare the first line of this file (discard the comment at the top)…
 
-[![](/uploads/wp-content-file-1024x316.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-content-file/)
+[![](/uploads/wp-content-file-1024x316.png)](/learn-php-for-wordpress-development-full-guide/wp-content-file/)
 
 ... With the output generated when you visit the page:
 
-[![](/uploads/wp-content-output-1024x229.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-content-output/)
+[![](/uploads/wp-content-output-1024x229.png)](/learn-php-for-wordpress-development-full-guide/wp-content-output/)
 
 We can understand from the comparison that the_id() function is replaced by the ID of the article in question. The post_class () function adds a lot of classes for the HTML element. These help us to stylize our entrances later on. It is not important at this stage to know why these specific classes are added, We are only becoming familiar with functions.
 
 Later, looking at the lines from 24 to 28 we can also see an if statement:
 
-[![](/uploads/php-in-wp-content-1024x313.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/php-in-wp-content/)
+[![](/uploads/php-in-wp-content-1024x313.png)](/learn-php-for-wordpress-development-full-guide/php-in-wp-content/)
 
 The IF statement contains is_single(). This is a function that returns 'true ‘if you are looking at a single “single post page” entry page, otherwise you will return ’false'. When it is true, and we are on a single page, we use the_title() function to issue the title.
 
@@ -103,13 +103,13 @@ The elements within the parenthesis are called arguments. Each function has diff
 
 Based on this, we now understand what is happening on line 25 of the content.php file:
 
-[![](/uploads/wp-content-php-files-1024x379.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-content-php-files/)
+[![](/uploads/wp-content-php-files-1024x379.png)](/learn-php-for-wordpress-development-full-guide/wp-content-php-files/)
 
 The function displays the title, but an H1 opening tag is attached to it and the final tag is attached.
 
 The result of this code is the following in the browser:
 
-[![](/uploads/content-title-1024x363.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/content-title/)
+[![](/uploads/content-title-1024x363.png)](/learn-php-for-wordpress-development-full-guide/content-title/)
 
  
 
@@ -158,7 +158,7 @@ If you create a child theme based on Twenty Fourteen, you can still customize it
 
 Creating a child theme is a child's play. You just need to create a new folder in the themes directory and the name you want to give it. For our example, we will create a folder called “child-theme”. Inside this folder we create two files; **style.css** and **functions.php**. Open the style sheet and use the following to create the child theme:
 
-[![](/uploads/wpw-child-theme-1024x570.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wpw-child-theme/)
+[![](/uploads/wpw-child-theme-1024x570.png)](/learn-php-for-wordpress-development-full-guide/wpw-child-theme/)
 
 You can actually use what you want in the example above, the only restriction is the line that starts with “Template". This should contain the directory name of the main theme.
 
@@ -168,7 +168,7 @@ At this point you can change to your child theme, but your place will be devoid 
 
 The next step is to load the styles of the main theme. This can be done with “enquue” for the style sheet of the parent theme. Don't worry too much about this. You can copy and paste the following code into your child theme in the functions.php file. Note that this loads the styles of the parent theme.
 
-[![](/uploads/child-theme-code-1024x345.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/child-theme-code/)
+[![](/uploads/child-theme-code-1024x345.png)](/learn-php-for-wordpress-development-full-guide/child-theme-code/)
 
 Right now your child theme is exactly the same as your parent theme. Now you can start modifying whatever you want. You can use the stylesheet to override styles or add your additional rules. If you want to modify the index file, for example, all you need to do is create it.
 
@@ -189,7 +189,7 @@ The loop takes all the entries that the query has returned and passes through ea
 
 Let's look at the basic code for a loop and how it passes line by line:
 
-[![](/uploads/wordpress-loop-1024x878.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wordpress-loop/)
+[![](/uploads/wordpress-loop-1024x878.png)](/learn-php-for-wordpress-development-full-guide/wordpress-loop/)
 
 The first line uses an if statement along with the have_posts() function to find out if there is an entry for the query. If there is no entry, the code is executed after the “else” section, which notifies the user that there are no entries.
 
@@ -210,13 +210,13 @@ It is rare to learn first about custom queries, but seen, it is one of the most 
 
 You can create a custom query using the wp_query class. We haven't talked about the classes, but their use is quite simple. Here is an example that shows the programmed entries of a specific category. You can use this to display a section of “next items in this category”.
 
-[![](/uploads/wp-custom-qieries.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-custom-qieries/)
+[![](/uploads/wp-custom-qieries.png)](/learn-php-for-wordpress-development-full-guide/wp-custom-qieries/)
 
 As you can see, this is quite simple. To modify this for your needs by modifying the content of $args array. There are plenty of parameters you can use to restrict entries depending on your publishing date, based on their authors, categories, custom fields and much more. Check out the wp_query documentation for a complete list.
 
 Now that we have a custom query we can use a custom loop to display the content. All we need to do is add the have_posts() and the_post() prefix that works with the name of the variable that contains the query and an " arrow”:
 
-[![](/uploads/wp-custom-query-1024x515.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-custom-query/)
+[![](/uploads/wp-custom-query-1024x515.png)](/learn-php-for-wordpress-development-full-guide/wp-custom-query/)
 
 Note that the else part of the loop has not been used and an HTML list is used instead of divs. From this loop it is intended to list a list of posts below a complete individual post, it is better not to show anything if there are no entries. In addition, a simple list with links in that place should be enough for users to click on them.
 
@@ -235,7 +235,7 @@ Filters allow you to modify the data before use. For example, a filter can be us
 
 A great example of an action hook is wp_footer. This action takes place just before a theme's closing body label. It allows you to add your own content to the end of a theme without modifying the footer file of the theme itself. In the functions.php from your theme you could use the following to add a tracking code to your site:
 
-[![](/uploads/google-code-1024x598.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/google-code/)
+[![](/uploads/google-code-1024x598.png)](/learn-php-for-wordpress-development-full-guide/google-code/)
 
 The first line tells WordPress that we would like to add our my_tracking_code() function to the hook wp_footer. When WordPress loads a page and sees the wp_footer hook, it looks at all the functions linked to it and executes them.
 
@@ -247,7 +247,7 @@ To show how filters work, we will modify the content of a post with one. The_con
 
 The following code adds the text “checked by” automatically after each individual entry (or more precisely, at any time the content of the full post is displayed).
 
-[![](/uploads/wp-filter-1024x494.png)](https://shameem.me/learn-php-for-wordpress-development-full-guide/wp-filter/)
+[![](/uploads/wp-filter-1024x494.png)](/learn-php-for-wordpress-development-full-guide/wp-filter/)
 
 Note that the function at this time has received a parameter. Each filter and action can have one or more parameters. You'll have to check the documentation to see what the particular hook we're using can do. To get a list of the actions and filters I recommend the reference [actions](http://codex.wordpress.org/Plugin_API/Action_Reference) and the reference [filter](http://codex.wordpress.org/Plugin_API/Filter_Reference).
 
