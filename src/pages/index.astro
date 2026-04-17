@@ -5,7 +5,10 @@ import { SITE, AUTHOR, EXPERIENCE, PROJECTS, SOCIAL_LINKS } from '../config';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const recentPosts = allPosts
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .sort((a, b) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return b.data.date.getTime() - a.data.date.getTime();
+  })
   .slice(0, 5);
 
 function formatShortDate(d: Date): string {

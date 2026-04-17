@@ -6,18 +6,20 @@ import type { GetStaticPaths } from 'astro';
 
 export const getStaticPaths = (async ({ paginate }) => {
   const allPosts = await getCollection('posts', ({ data }) => !data.draft);
-  const sortedPosts = allPosts.sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime()
-  );
+  const sortedPosts = allPosts.sort((a, b) => {
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return b.data.date.getTime() - a.data.date.getTime();
+  });
   return paginate(sortedPosts, { pageSize: POSTS_PER_PAGE });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
-const sortedPosts = allPosts.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
+const sortedPosts = allPosts.sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.date.getTime() - a.data.date.getTime();
+});
 const categories = [...new Set(sortedPosts.map((p) => p.data.category))];
 
 function formatDate(d: Date): string {
@@ -89,7 +91,10 @@ const jsonLd = {
           <a href={`/${post.id}/`} class="hover-card blog-full-item">
             <div class="card-bg" />
             <div>
-              <div class="blog-full-cat">{post.data.category}</div>
+              <div class="blog-full-cat">
+                {post.data.featured && <span class="featured-badge">Featured</span>}
+                {post.data.category}
+              </div>
               <h2 class="blog-full-title">{post.data.title}</h2>
               <p class="blog-full-excerpt">{post.data.description}</p>
               <div class="blog-full-meta">

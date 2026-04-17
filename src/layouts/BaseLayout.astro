@@ -3,6 +3,7 @@ import { ViewTransitions } from 'astro:transitions';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CommandPalette from '../components/CommandPalette.astro';
 import JsonLd from '../components/JsonLd.astro';
 import '../styles/global.css';
 
@@ -14,11 +15,10 @@ interface Props {
   publishDate?: Date;
   modifiedDate?: Date;
   category?: string;
-  tags?: string[];
   jsonLd?: Record<string, unknown>;
 }
 
-const { title, description, image, article, publishDate, modifiedDate, category, tags, jsonLd } =
+const { title, description, image, article, publishDate, modifiedDate, category, jsonLd } =
   Astro.props;
 ---
 
@@ -44,16 +44,30 @@ const { title, description, image, article, publishDate, modifiedDate, category,
       publishDate={publishDate}
       modifiedDate={modifiedDate}
       category={category}
-      tags={tags}
     />
     {jsonLd && <JsonLd data={jsonLd} />}
     <ViewTransitions />
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-LH8G76J11S"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-LH8G76J11S', { send_page_view: false });
+
+      document.addEventListener('astro:page-load', function () {
+        gtag('event', 'page_view', {
+          page_title: document.title,
+          page_location: window.location.href,
+        });
+      });
+    </script>
   </head>
   <body>
     <div class="spotlight" id="spotlight"></div>
     <Header />
     <slot />
     <Footer />
+    <CommandPalette />
 
     <script is:inline>
       (function () {

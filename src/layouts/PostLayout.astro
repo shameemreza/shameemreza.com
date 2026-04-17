@@ -10,7 +10,6 @@ interface Props {
   updated?: Date;
   category: string;
   categorySlug: string;
-  tags?: string[];
   featuredImage?: string;
   featuredImageAlt?: string;
 }
@@ -22,7 +21,6 @@ const {
   updated,
   category,
   categorySlug,
-  tags = [],
   featuredImage,
 } = Astro.props;
 
@@ -72,7 +70,6 @@ const jsonLd = {
     image: new URL(featuredImage, SITE.url).toString(),
   }),
   articleSection: category,
-  ...(tags.length > 0 && { keywords: tags.join(', ') }),
   inLanguage: 'en-US',
 };
 
@@ -101,7 +98,6 @@ function estimateReadTime(desc: string): number {
   publishDate={date}
   modifiedDate={updated}
   category={category}
-  tags={tags}
   jsonLd={jsonLd}
 >
   <div class="progress-bar" id="progress-bar"></div>

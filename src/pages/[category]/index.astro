@@ -10,7 +10,10 @@ export async function getStaticPaths() {
   return categories.map((slug) => {
     const filtered = posts
       .filter((p) => p.data.categorySlug === slug)
-      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+      .sort((a, b) => {
+        if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+        return b.data.date.getTime() - a.data.date.getTime();
+      });
     const categoryName = filtered[0]?.data.category || slug;
     return {
       params: { category: slug },
