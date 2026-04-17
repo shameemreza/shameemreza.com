@@ -1,0 +1,302 @@
+---
+---
+
+<div class="cmd-palette-overlay" id="cmd-overlay" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="cmd-palette">
+    <div class="cmd-input-wrap">
+      <input
+        type="text"
+        id="cmd-input"
+        placeholder="Search posts..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="cmd-esc">Esc</kbd>
+    </div>
+    <div class="cmd-results" id="cmd-results"></div>
+    <div class="cmd-empty" id="cmd-empty">No results found.</div>
+  </div>
+</div>
+
+<script>
+  let searchData: Array<{
+    type: string;
+    title: string;
+    description?: string;
+    href: string;
+    category?: string;
+  }> = [];
+  let selectedIndex = 0;
+  let visibleItems: HTMLElement[] = [];
+  let loaded = false;
+
+  async function loadIndex() {
+    if (loaded) return;
+    try {
+      const res = await fetch('/search-index.json');
+      searchData = await res.json();
+      loaded = true;
+    } catch {
+      searchData = [];
+    }
+  }
+
+  function openPalette() {
+    const overlay = document.getElementById('cmd-overlay');
+    const input = document.getElementById('cmd-input') as HTMLInputElement;
+    if (!overlay || !input) return;
+
+    loadIndex();
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    input.value = '';
+    renderResults('');
+    requestAnimationFrame(() => input.focus());
+  }
+
+  function closePalette() {
+    const overlay = document.getElementById('cmd-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderResults(query: string) {
+    const container = document.getElementById('cmd-results');
+    const empty = document.getElementById('cmd-empty');
+    if (!container || !empty) return;
+
+    const q = query.toLowerCase().trim();
+    const words = q ? q.split(/\s+/).filter(Boolean) : [];
+    const posts = searchData.filter((i) => i.type === 'post');
+    const filtered = words.length
+      ? posts.filter((item) => {
+          const haystack = [
+            item.title,
+            item.description ?? '',
+            item.category ?? '',
+          ].join(' ').toLowerCase();
+          return words.every((w) => haystack.includes(w));
+        })
+      : posts;
+
+    container.innerHTML = '';
+    empty.style.display = filtered.length === 0 && q ? 'block' : 'none';
+
+    if (filtered.length > 0) {
+      const shown = q ? filtered : filtered.slice(0, 8);
+      const group = createGroup('Posts', shown);
+      container.appendChild(group);
+    }
+
+    visibleItems = Array.from(container.querySelectorAll('.cmd-item'));
+    selectedIndex = 0;
+    updateSelection();
+  }
+
+  function createGroup(
+    label: string,
+    items: typeof searchData
+  ): DocumentFragment {
+    const frag = document.createDocumentFragment();
+    const heading = document.createElement('div');
+    Object.assign(heading.style, {
+      fontSize: '11px', fontWeight: '600', textTransform: 'uppercase',
+      letterSpacing: '0.05em', color: 'var(--ink-sub)', opacity: '0.6',
+      padding: '10px 16px 4px',
+    });
+    heading.textContent = label;
+    frag.appendChild(heading);
+
+    items.forEach((item) => {
+      const el = document.createElement('a');
+      el.className = 'cmd-item';
+      el.href = item.href;
+      Object.assign(el.style, {
+        display: 'flex', alignItems: 'center', gap: '8px',
+        padding: '10px 16px', textDecoration: 'none', color: 'var(--ink)',
+        cursor: 'pointer', transition: 'background 0.08s ease',
+      });
+
+      const title = document.createElement('span');
+      Object.assign(title.style, {
+        flex: '1', fontSize: '14px', overflow: 'hidden',
+        textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+      });
+      title.textContent = item.title;
+      el.appendChild(title);
+
+      if (item.category) {
+        const cat = document.createElement('span');
+        Object.assign(cat.style, {
+          fontSize: '11px', color: 'var(--ink-sub)', opacity: '0.6',
+          flexShrink: '0',
+        });
+        cat.textContent = item.category;
+        el.appendChild(cat);
+      }
+
+      el.addEventListener('click', () => closePalette());
+
+      el.addEventListener('mouseenter', () => {
+        selectedIndex = visibleItems.indexOf(el);
+        updateSelection();
+      });
+
+      frag.appendChild(el);
+    });
+
+    return frag;
+  }
+
+  function updateSelection() {
+    visibleItems.forEach((el, i) => {
+      const isSelected = i === selectedIndex;
+      el.style.background = isSelected ? 'var(--bg-alt)' : '';
+    });
+    visibleItems[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function initCommandPalette() {
+    const overlay = document.getElementById('cmd-overlay');
+    const input = document.getElementById('cmd-input') as HTMLInputElement;
+    const searchBtn = document.getElementById('search-toggle');
+    const modLabel = document.getElementById('search-kbd-mod');
+    if (modLabel) {
+      const isMac = navigator.platform?.toUpperCase().includes('MAC');
+      modLabel.textContent = isMac ? '\u2318K' : 'Ctrl K';
+    }
+
+    if (!overlay || !input) return;
+
+    searchBtn?.addEventListener('click', openPalette);
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closePalette();
+    });
+
+    input.addEventListener('input', () => renderResults(input.value));
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, visibleItems.length - 1);
+        updateSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, 0);
+        updateSelection();
+      } else if (e.key === 'Enter' && visibleItems[selectedIndex]) {
+        e.preventDefault();
+        closePalette();
+        const href = visibleItems[selectedIndex].getAttribute('href');
+        if (href) window.location.href = href;
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (overlay.classList.contains('open')) {
+          closePalette();
+        } else {
+          openPalette();
+        }
+      }
+      if (e.key === 'Escape' && overlay.classList.contains('open')) {
+        e.preventDefault();
+        closePalette();
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initCommandPalette);
+</script>
+
+<style is:global>
+  .cmd-palette-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: min(20vh, 140px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0s 0.15s;
+  }
+
+  .cmd-palette-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.15s ease, visibility 0s;
+  }
+
+  .cmd-palette {
+    width: min(560px, calc(100vw - 32px));
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transform: scale(0.96) translateY(-8px);
+    transition: transform 0.15s ease;
+  }
+
+  .cmd-palette-overlay.open .cmd-palette {
+    transform: scale(1) translateY(0);
+  }
+
+  .cmd-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-sub);
+  }
+
+  #cmd-input {
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+  }
+
+  #cmd-input::placeholder {
+    color: var(--ink-sub);
+    opacity: 0.5;
+  }
+
+  .cmd-esc {
+    font-size: 11px;
+    padding: 2px 6px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--ink-sub);
+    opacity: 0.6;
+    font-family: inherit;
+    line-height: 1;
+  }
+
+  .cmd-results {
+    max-height: min(400px, 50vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .cmd-empty {
+    display: none;
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--ink-sub);
+    font-size: 14px;
+    opacity: 0.6;
+  }
+</style>

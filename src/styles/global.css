@@ -586,6 +586,20 @@ img {
   color: var(--accent-ink);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.featured-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--border);
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .blog-full-title {
@@ -1821,6 +1835,10 @@ img {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 35%, transparent);
   background: var(--accent-hover);
+}
+
+.prose .cta-button.left {
+  text-align: left;
 }
 
 /* ============================================================
