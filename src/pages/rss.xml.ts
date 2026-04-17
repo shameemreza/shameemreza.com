@@ -18,7 +18,7 @@ export async function GET(context: APIContext) {
       pubDate: post.data.date,
       description: post.data.description,
       link: `/${post.id}/`,
-      categories: [post.data.category, ...post.data.tags],
+      categories: [post.data.category],
     })),
     customData: `<language>${SITE.locale.toLowerCase()}</language>`,
   });
