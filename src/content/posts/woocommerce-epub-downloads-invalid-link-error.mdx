@@ -1,0 +1,173 @@
+---
+title: "Why WooCommerce EPUB Downloads Fail With Invalid Download Link"
+date: 2026-04-17T10:00:00Z
+description: "WooCommerce digital downloads can silently fail for file types like EPUB that aren't in WordPress's default MIME list. Admin can download, customers can't. Here's what actually happens in the code and how to fix it."
+category: "Code Snippets"
+categorySlug: "code-snippets"
+featuredImage: "/uploads/woocommerce-epub-downloads-invalid-link-error.jpg"
+draft: true
+---
+
+I spent a while tracing through the WooCommerce download handler recently. A store was selling EPUB ebooks. The admin could download them fine. Every other user got "Invalid download link" with a 404. Same file. Same product. Same link.
+
+The store owner had already done serious troubleshooting. Disabled all plugins. Tried every download method. Flushed permalinks. Cleared server cache. Enabled HPOS sync. Nothing helped. PDFs worked. EPUBs didn't.
+
+That PDF vs EPUB detail was the clue that eventually cracked it open (after I looked in the wrong place first).
+
+## What the download handler actually checks
+
+When someone clicks a WooCommerce download link, the request hits `WC_Download_Handler::download_product()` in `class-wc-download-handler.php`. Before it even looks at permissions or order status, it loads the product and checks if the downloadable file is valid.
+
+```
+$product_id = absint( $_GET['download_file'] );
+$product    = wc_get_product( $product_id );
+$downloads  = $product ? $product->get_downloads() : array();
+```
+
+That `get_downloads()` call is where things go wrong. It doesn't return the raw data from the database. It returns validated download objects.
+
+During product loading, WooCommerce calls `read_downloads()`, which creates `WC_Product_Download` objects and passes them through `set_downloads()`. Inside `set_downloads()`, every single download goes through `check_is_valid()`:
+
+```
+try {
+    $download->check_is_valid( $this->get_object_read() );
+    $downloads[ $download_id ] = $download;
+} catch ( Exception $e ) {
+    if ( ! $is_new ) {
+        $download->set_enabled( false );
+        $downloads[ $download_id ] = $download;
+    }
+}
+```
+
+If validation throws an exception, the download object stays in the array but gets `enabled` set to `false`. Then the download handler checks this flag:
+
+```
+if (
+    ! $product
+    || empty( $key )
+    || empty( $_GET['order'] )
+    || ! isset( $downloads[ $key ] )
+    || ! $downloads[ $key ]->get_enabled()
+) {
+    self::download_error( __( 'Invalid download link.', 'woocommerce' ) );
+}
+```
+
+That `get_enabled()` returns `false`, and the customer gets a 404. No detailed error message. No clue about what failed inside `check_is_valid()`. The same generic "Invalid download link" for everything.
+
+## Where the EPUB validation fails
+
+Inside `check_is_valid()`, there are three checks that can throw: `is_allowed_filetype()`, `file_exists()`, and `approved_directory_checks()`. For EPUB files, it's the first one.
+
+`is_allowed_filetype()` calls `wp_check_filetype()` and compares the result against WordPress's allowed MIME types:
+
+```
+public function is_allowed_filetype() {
+    // ...
+    return ! $this->get_file_extension()
+        || in_array( $this->get_file_type(), $this->get_allowed_mime_types(), true );
+}
+```
+
+And `get_allowed_mime_types()` wraps the WordPress core function:
+
+```
+public function get_allowed_mime_types() {
+    return apply_filters(
+        'woocommerce_downloadable_file_allowed_mime_types',
+        get_allowed_mime_types()
+    );
+}
+```
+
+WordPress's `get_allowed_mime_types()` starts with `wp_get_mime_types()`, which is a hardcoded array in `wp-includes/functions.php`. I scanned through the full list. It has JPG, PNG, PDF, ZIP, MP3, DOC, ODT, and dozens of other formats.
+
+EPUB is not in it.
+
+Not as `epub`. Not as `application/epub+zip`. It's simply not there. You can check for yourself in [the WordPress source](https://developer.wordpress.org/reference/functions/wp_get_mime_types/).
+
+So when WooCommerce's `wp_check_filetype()` tries to match `.epub` against the allowed types, it gets nothing back. `get_file_type()` returns `false`. The `in_array()` check fails. `is_allowed_filetype()` returns `false`. The exception fires. The download gets disabled.
+
+Every time. For every user. On every page load.
+
+## Then why could the admin download it?
+
+This is the part that had me second-guessing myself. If EPUB isn't in the MIME list for anyone, why would it work for the admin?
+
+The store was using a plugin called [Mime Types Plus](https://wordpress.org/plugins/mime-types-plus/) to add EPUB support. That plugin registers the MIME type somewhere in the WordPress stack. But based on how the fix played out, the plugin wasn't registering it consistently across all request contexts. Most likely it was only active in admin or only during file uploads, not during the frontend download validation pass.
+
+When the admin clicked the download link while logged in and the plugin was loaded in the right context, the MIME type was present. Validation passed. When a customer clicked the same link, the plugin's registration wasn't in effect. Validation failed.
+
+The store owner tried disabling all plugins to isolate the issue. That didn't help because removing the plugin also removed the only source of EPUB support. The download was broken with the plugin (inconsistent registration) and without it (no registration at all). Same result either way. "No difference" was the expected outcome.
+
+## The fix (it's annoyingly simple)
+
+The solution is to register the EPUB MIME type through the standard `upload_mimes` filter in a way that runs unconditionally. In a child theme's `functions.php` or a code snippets plugin:
+
+```
+add_filter( 'upload_mimes', function ( $mimes ) {
+    $mimes['epub'] = 'application/epub+zip';
+    return $mimes;
+} );
+```
+
+If you also sell MOBI files, add that too:
+
+```
+add_filter( 'upload_mimes', function ( $mimes ) {
+    $mimes['mobi'] = 'application/x-mobipocket-ebook';
+    $mimes['epub'] = 'application/epub+zip';
+    return $mimes;
+} );
+```
+
+This filter is what WordPress's `get_allowed_mime_types()` consumes. It runs for every user context, whether admin, customer, or guest. WooCommerce's `is_allowed_filetype()` picks it up through `get_allowed_mime_types()`, and the download passes validation.
+
+After adding the filter, create a fresh downloadable product with the EPUB file. Upload it through the product editor's "Choose file" option so it goes through WooCommerce's normal upload flow. Then place a test order and try the download link in an incognito window.
+
+## Why your MIME type plugin might not save you
+
+The `upload_mimes` filter is the standard hook for adding MIME types in WordPress. But not every MIME type plugin uses it the same way. Some register types through the `mime_types` filter (which affects `wp_get_mime_types()` instead). Some only register in admin contexts. Some have conditional logic tied to user roles.
+
+For WooCommerce downloads, the MIME type needs to be present during frontend page loads. That's when `wc_get_product()` runs `set_downloads()` and validates the file. If the MIME type isn't in the list at that exact moment, the download gets flagged as disabled.
+
+A simple `upload_mimes` filter in `functions.php` avoids all of this. It loads early, runs everywhere, and uses the hook that `get_allowed_mime_types()` directly reads from.
+
+## Other formats that'll bite you the same way
+
+EPUB isn't the only common format missing from WordPress's default MIME list. If you sell downloadable products in any of these formats, you'll hit the same issue:
+
+- `.epub` (application/epub+zip)
+- `.mobi` (application/x-mobipocket-ebook)
+- `.azw` / `.azw3` (application/vnd.amazon.ebook)
+- `.cbz` / `.cbr` (application/x-cbz, application/x-cbr)
+- `.djvu` (image/vnd.djvu)
+
+The fix is the same for all of them. Add the extension and MIME type to the `upload_mimes` filter.
+
+## What I got wrong first
+
+I want to be honest about this. When I first looked at the ticket, I thought the issue was WooCommerce's Approved Download Directories feature. The store had it enabled, and the code path through `approved_directory_checks()` has a similar admin vs non admin behavior. Admins can auto approve directories during product loading. Non admins can't.
+
+That analysis was technically correct about how approved directories work. But the store owner confirmed the directory was already approved, and disabling enforcement didn't change anything. The failure was happening earlier, at the MIME type check, before the code ever reached the directory validation.
+
+Same mechanism (download disabled at runtime through `set_enabled(false)`), wrong trigger. The [forum thread on WordPress.org](https://wordpress.org/support/topic/link-for-download-digital-products-invalid-download-link-error/) has the full back-and-forth if you want to follow the troubleshooting.
+
+## A note on debugging WooCommerce download errors
+
+One thing that made this harder to pin down is how WooCommerce reports download failures. Every check inside `check_is_valid()` (MIME type, file existence, approved directories) throws an exception that gets caught by the same handler in `set_downloads()`. The download gets silently disabled. And the user sees the same generic "Invalid download link" message regardless of what actually failed.
+
+If you're debugging a similar issue, the fastest way to narrow it down is to check the three conditions in order:
+
+1. Is the file extension in `wp_get_mime_types()` or added via the `upload_mimes` filter?
+2. Does the file exist at the path stored in the product's `_downloadable_files` meta?
+3. Is the file's parent directory in the `wp_wc_product_download_directories` table with `enabled = 1`?
+
+If any of these fail, the download gets disabled at runtime even though the permission record is valid. The error message won't tell you which one it was.
+
+## TL;DR: it's a missing MIME type
+
+WordPress doesn't include EPUB in its default MIME types. WooCommerce validates downloadable files against that list every time a product loads. If the file type isn't recognized, the download is silently disabled and customers get a 404. Adding the MIME type through the `upload_mimes` filter in your child theme or a snippets plugin fixes it permanently.
+
+If you're selling digital products in formats outside the WordPress defaults, check your MIME types before you touch anything else. It's a five minute fix that could save you a week of "Invalid download link" tickets.
