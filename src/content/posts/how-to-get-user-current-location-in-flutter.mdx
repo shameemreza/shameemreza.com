@@ -1,7 +1,7 @@
 ---
 title: "How to Get User Current Location in Flutter"
 date: 2020-09-29T08:41:40Z
-description: "How to Get User Current Location in Flutter"
+description: "A guide to implementing geolocation in Flutter using the Geolocator package, including Android and iOS permission setup and fetching latitude/longitude."
 category: "Development"
 categorySlug: "development"
 featuredImage: "/uploads/how-to-get-user-current-location-in-flutter.jpg"
@@ -10,7 +10,7 @@ draft: false
 
 Mobile app market is growing exponentially. [Location based services](https://en.wikipedia.org/wiki/Location-based_service) are everywhere. From delivery apps like [UberEats](https://www.ubereats.com/) to booking platforms like Expedia, Lyft, Facebook, Tinder, Airbnb - all these popular apps are using geolocation features.
 
-According to the [Markets and Markets report](https://www.marketsandmarkets.com/Market-Reports/location-based-service-market-96994431.html), the location-based services market will reach $40 billion by 2025.
+According to the [Markets and Markets report](https://www.marketsandmarkets.com/Market-Reports/location-based-service-market-96994431.html), the location-based services market has grown significantly in recent years.
 
 You might need to know how you can make location-based apps using Flutter. Also, what are the steps to build an awesome geolocation based app in Flutter.
 
@@ -18,16 +18,16 @@ You might need to know how you can make location-based apps using Flutter. Also,
 
 You already know that [Flutter](https://flutter.dev/) is the most popular open source Mobile UI Framework.
 
-Flutter is improving day by day along with its big community. It has bunch of package to make almost anything for [IOS and Android app](https://appbuff.net) using same code base.
+Flutter is improving day by day along with its big community. It has a bunch of packages to make almost anything for iOS and Android using the same code base.
 
-Today, we are going to learn how we can easily implement a location service in our mobile app, which will gives us the user  longitude and latitude using flutter.
+Today, we are going to learn how we can easily implement a location service in our mobile app, which will give us the user  longitude and latitude using flutter.
 
 
 ## Use Geolocation Services in Flutter
 
 
 
-In this guide, we will use the most popular location service Flutter package called [geolocator](https://pub.dev/packages/geolocator). So, after creating a new Flutter project, add Geolocator package in your dependency. Its very easy to do, just open your `pubspec.yaml` and inside dependencies add bellow line:
+In this guide, we will use the most popular location service Flutter package called [geolocator](https://pub.dev/packages/geolocator). So, after creating a new Flutter project, add Geolocator package in your dependency. It's very easy to do, just open your `pubspec.yaml` and inside dependencies add the line below:
 
 
 ```
@@ -40,7 +40,7 @@ After adding the dependency, Run pub get.
 
 Before going into main task, make sure your `compile SDK version` is minimum 28 for android. Also in your `AndroidManifest.xml`, you must add the uses permission to allow the app to access the device location service.
 
-If you dont know how to set permission for Android and IOS, then follow follow bellow steps:
+If you don't know how to set permission for Android and IOS, then follow the steps below:
 
 
 ## Modify AndroidManifest.xml
@@ -145,7 +145,7 @@ class _LocationAppState extends State {
 
 In above code, we imported geolocator package, also we created a variable where we will store our location data and a Void function where we will get the data.
 
-Now let's add the getCurrentLocation function in our project as like as bellow:
+Now let's add the getCurrentLocation function in our project as shown below:
 
 
 ```
@@ -162,12 +162,12 @@ void _getCurrentLocation() async {
 
 
 
-And yes, know what? You successfully implemented geo location in your [flutter project](/how-to-connect-flutter-app-to-websocket-server/).
+And here's the thing: You successfully implemented geo location in your [Flutter project](/how-to-connect-flutter-app-to-websocket-server/).
 
 GeoLocator package is very simple to use. Because it has all the function built-in and we don't need any extra coding.
 
 I hope now you are clear about how to add location service in Flutter using Geolocator. If you want to know more about the geolocator package you may check the official [Documentation](https://pub.dev/packages/geolocator).
 
-If you still find it a bit confusing about Flutter Geolocator, do [reach out to me](/contact) on [Twitter](https://twitter.com/shameemdev) or add your comment in the comment box below.
+If you still find it confusing, reach out to me on [X](https://x.com/shameemdev) or through the [contact page](/contact).
 
-Happy Fluttering. 😎😎
+

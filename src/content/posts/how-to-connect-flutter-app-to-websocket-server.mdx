@@ -1,14 +1,14 @@
 ---
 title: "How to Connect Flutter App to WebSocket Server"
 date: 2020-08-18T07:09:13Z
-description: "How to Connect Flutter App to WebSocket Server"
+description: "WebSockets enable real-time bidirectional communication. Here's how to connect a Flutter app to a WebSocket server using the dart:io library."
 category: "Development"
 categorySlug: "development"
 featuredImage: "/uploads/how-to-connect-flutter-app-to-websocket-server.jpg"
 draft: false
 ---
 
-Do You want to connect to WebSocket servers in [Flutter apps](https://appbuff.net/services/flutter-app-development/)? If your answer is Yes, then today I am going to show you fast and simple way to connect Flutter app to WebSocket Server using WebSocket class in dart:io library.
+Do you want to connect to WebSocket servers in Flutter apps? If your answer is yes, today I am going to show you a fast and simple way to connect a Flutter app to a WebSocket server using the WebSocket class in dart:io library.
 
 
 ## What is WebSocket Server
@@ -17,7 +17,7 @@ Do You want to connect to WebSocket servers in [Flutter apps](https://appbuff.ne
 
 WebSockets are widely used in web apps to provide bidirectional communications between browser and server. They can also provide real-time updates of data in the backend.
 
-We should keep in mind that WebSockets convert their HTTP connection to a WebSocket connection. In simple words, a WebSocket connection uses HTTP only to do the initial handshake (for authorization & authentification), after which the TCP connection is utilized to send data via the its own protocol (hybd).
+We should keep in mind that WebSockets convert their HTTP connection to a WebSocket connection. In simple words, a WebSocket connection uses HTTP only to do the initial handshake (for authorization & authentication), after which the TCP connection is utilized to send data via its own protocol.
 
 
 ## Connect WebSocket server in Flutter App
@@ -32,7 +32,7 @@ The static WebSocket.connect() method connects to a WebSocket server. You need t
 
 The return value of **connect()** method is a Future object. WebSocket class implements Stream class, so you can read data sent from server as streams. To send data to the server, you can use **add()** and **addStream()** methods.
 
-In bellows code example, the WebSocket connects to the demo echo server.
+In the following code example, the WebSocket connects to the demo echo server.
 
 
 ```
@@ -49,8 +49,8 @@ then((WebSocket webSocket) {
 
 By using **listen()** method to subscribe to the WebSocket object, we can process data sent from the server. The two **add()** method calls send two messages to the server.
 
-You can learn more about the WebSocket class and its all avilable proertise on [Dart Doccumentation](https://api.dart.dev/stable/2.9.1/dart-io/WebSocket-class.html). You also can learn more about [WebSocket on Flutter doccumentation](https://flutter.dev/docs/cookbook/networking/web-sockets).
+You can learn more about the WebSocket class and all available properties on [Dart Documentation](https://api.dart.dev/stable/dart-io/WebSocket-class.html). You also can learn more about [WebSocket on Flutter Documentation](https://docs.flutter.dev/cookbook/networking/web-sockets).
 
-If you still find it a bit confusing about WebSocket class, do reach out to me on [Twitter](https://twitter.com/tryshameem) or add your comment in the comment box below.
+If you still find it confusing, reach out to me on [X](https://x.com/shameemdev) or through the [contact page](/contact).
 
-Happy coding. 😎😎
+

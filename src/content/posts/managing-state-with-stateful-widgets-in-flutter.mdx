@@ -1,19 +1,19 @@
 ---
 title: "Managing State with Stateful Widgets in Flutter"
 date: 2020-08-27T19:54:34Z
-description: "Managing State with Stateful Widgets in Flutter"
+description: "StatefulWidget is the simplest way to manage state in Flutter. This post covers how it works with setState, lifecycle methods, and practical examples."
 category: "Development"
 categorySlug: "development"
 featuredImage: "/uploads/managing-state-with-stateful-widgets-in-flutter.jpg"
 draft: false
 ---
 
-You want a simple way to manage state in the UI of your flutter app? You can easily do it by Creating your own subclasses of StatefulWidget.
+You want a simple way to manage state in the UI of your Flutter app? You can easily do it by Creating your own subclasses of StatefulWidget.
 
-If you wan to manage the state of your [flutter application](/how-to-connect-flutter-app-to-websocket-server/), then today's post is for you.
+If you want to manage the state of your [flutter application](/how-to-connect-flutter-app-to-websocket-server/), then today's post is for you.
 
 
-## So, what is Statefull widgets in Flutter?
+## So, what are Stateful widgets in Flutter?
 
 
 
@@ -36,7 +36,7 @@ In the subclass of State, you need to implement build() method to return a Widge
 
 The parameter of setState() method is a VoidCallback function that contains the logic to update the internal state. When rebuilding, the build() method uses the latest state to create widget configurations. Widgets are not updated but replaced when necessary.
 
-SelectColor widget in bellow is a typical example of stateful widget.
+SelectColor widget below is a typical example of stateful widget.
 
 
 ```
@@ -177,12 +177,12 @@ In above example, the onPressed callback of RaisedButton is set by the construct
 
 
 
-- [Interactivity](https://flutter.dev/docs/development/ui/interactive)
+- [Interactivity](https://docs.flutter.dev/ui/interactivity)
 - [StatefulWidget class](https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html)
 - [Stateful Widgets (video)](https://www.youtube.com/watch?v=AqCMFXEmf3w)
 
 
 
-If you still find it a bit confusing about Flutter StatefulWidget, do [reach out to me](/contact) on [Twitter](https://twitter.com/tryshameem) or add your comment in the comment box below.
+If you still find it confusing, reach out to me on [X](https://x.com/shameemdev) or through the [contact page](/contact).
 
-Happy Fluttering. 😎😎
+
