@@ -1,86 +1,169 @@
 ---
-title: "Excluding Files and Folders in All-in-One WP Migration Plugin"
+title: "Excluding files and folders in All-in-One WP Migration plugin"
 date: 2021-08-26T19:05:32Z
-description: "Large backups slow down migration. Here's how to exclude specific folders from All-in-One WP Migration exports using a code snippet or a free plugin."
+updated: 2026-04-21T00:00:00Z
+description: "All-in-One WP Migration has four exclude filter hooks, not one. Here's which hook to use for uploads, themes, plugins, or the wp-content root, and why the common snippet you find online silently does nothing."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/excluding-files-and-folders-in-all-in-one-wp-migration-plugin.jpg"
 draft: false
 ---
 
-All In One WP Migration plugin is one of the best popular plugins for WordPress sites moving from one host to another. Like other WordPress Developers, the All in One WP Migration WordPress Plugin is my go-to solution for moving sites.
+The first time I tried to exclude the `uploads` folder from an All-in-One WP Migration export, the filter I wrote did absolutely nothing. The export came out with every image intact. Nine gigabytes of them.
 
-Everything on the earth has a limitation. The same things are applicable for the All In One WP Migration plugin as well.
+I'd copied the same snippet everyone on the internet copies. `add_filter( 'ai1wm_exclude_content_from_export', ... )` with the path I wanted gone. It didn't work. Not once. Took me longer than I'd like to admit to figure out why.
 
-Such as, If you face Uploading size limit issues using the All In One WP Migration plugin's free version, you can follow my other post on it where I shared how to resolve the [All In One WP Migration plugins uploads limit problem](/increase-upload-limit-for-all-in-one-wp-migration-plugin/).
+Turns out All-in-One WP Migration has four exclude filters, not one. And the one everyone shares online only matches files that sit directly inside `wp-content` and aren't already in a themes, plugins, or uploads subfolder.
 
-Today, I will share another trick for the [All In One WP Migration plugin](https://wordpress.org/plugins/all-in-one-wp-migration/) in this post. We will learn to exclude files and folders while migrating the WordPress website using the All-in-One WP Migration WordPress Plugin.
+## TLDR
 
-There is two way you can exclude folders when backing up with All In One WP Migration.
-
-1. Exclude Files and Folder using Plugin
-2. Exclude Files and Folder using Code
-
-
-
-## How to excluding folders All-in-One WP Migration WordPress Plugin using Code
-
-
-If you are an advanced WordPress user and are familiar with code editing, this method will be easy for you.
-
-First, open your theme's functions.php file from **Appearance => Theme Editor => functions.php**
-
-Now, copy Code from bellow and paste it at the bottom of the fucntions.php files. Don't for to save it.
+All-in-One WP Migration splits `wp-content` into four separate iterators during export, each with its own exclude filter:
 
 ```
-add_filter('ai1wm_exclude_content_from_export', function($exclude_filters) {
-
-  $exclude_filters[] = 'themes/your-theme-name/folder-name';
-
-  return $exclude_filters;
-
-});
+ai1wm_exclude_content_from_export   // everything in wp-content except themes/plugins/uploads
+ai1wm_exclude_themes_from_export    // walked starting at wp-content/themes
+ai1wm_exclude_plugins_from_export   // walked starting at wp-content/plugins
+ai1wm_exclude_media_from_export     // walked starting at wp-content/uploads
 ```
 
+If you want to skip a theme's cache folder, you need the themes hook. The content hook won't touch it, because the themes directory is already excluded from the content walk and iterated on its own.
 
+## Why bother excluding anything
 
-## Plugin to Exclude Folders from All In One WP Migration
+A WooCommerce site I migrated last year was 14 GB. Half of that was variation thumbnails, old Elementor cache, a Duplicator backup folder nobody cleaned up, and the `uploads/2019` folder from before the store relaunched. The free version of All-in-One WP Migration caps imports at 512 MB on the destination. So exporting the whole 14 GB wasn't just slow, it was useless, because the destination would refuse the file.
 
+Exclusions solve two problems at once. The export file shrinks. The migration actually finishes.
 
-When making backups in WordPress with All in One Migration, the Plugin only considers the WordPress folders. So if you have other folders, for example, in the root of your site and they do not correspond to WordPress, it will not consider them part of the backup.
+If you're hitting the upload size limit on the destination rather than the size of the export itself, that's a separate problem. I wrote a tiny plugin to fix it, and a [post on how to lift the upload limit on All-in-One WP Migration](/increase-upload-limit-for-all-in-one-wp-migration-plugin/) that walks through it.
 
-However, if you consider it part of the backup, other folders such as *wp-content* where the most significant number of WordPress files are stored.
+## Why the common snippet fails
 
-Although the *wp-content* folder is a WordPress folder, some subfolders may not be interested in being part of the backup, for example, folders that create other plugins or image folders.
+If you look inside `lib/model/export/class-ai1wm-export-enumerate-content.php`, the first thing the export does is pre-populate the exclude list with three things:
 
-All In One WP Migration has Hooks that could exclude subfolders from the *wp-content* folder, which I showed above. However, there is a more straightforward way to do the exclusion through a plugin.
+```
+$exclude_filters = array_merge(
+    array( ai1wm_get_uploads_dir(), ai1wm_get_plugins_dir() ),
+    ai1wm_get_themes_dirs()
+);
+```
 
-The Plugin that we will use will be [Folder Excluder for AIO WP Migration](https://wordpress.org/plugins/aio-files-excluder/), and it is a free plugin found in the WordPress plugin repository.
+Then it iterates `wp-content`. Anything under `themes/`, `plugins/`, or `uploads/` is skipped at this stage. Those three live branches are walked by their own dedicated enumerators later, each with its own hook.
 
-[![](/uploads/Folder-Excluder-for-AIO-WP-Migration-1024x456.png)](/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/folder-excluder-for-aio-wp-migration/#main)
+So when you write something like this:
 
-After installing and activating this Plugin, we can locate the configuration screen in the WordPress administration menu, in **Settings>****AIO WP Migration Folder Excluder**.
+```
+add_filter( 'ai1wm_exclude_content_from_export', function( $paths ) {
+    $paths[] = 'themes/astra/cache';
+    return $paths;
+} );
+```
 
-[![](/uploads/AIO-WP-Migration-Folder-Excluder-setting-1024x765.png)](/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder-setting/#main)
+The content iterator never even visits the themes folder. Your entry goes into an array that gets compared against paths the iterator will never produce. The filter runs. It just has nothing to filter.
 
-Upon opening AIO WP Migration Folder Excluder options, you will see all the configurations available, which is quite simple. You have to add the [relative path of the folders](/fix-upload-path-error-in-wordpress/) under wp-content that you want to exclude; you** **can separate the paths with a comma.
+## The four hooks, with examples
 
-[![](/uploads/AIO-WP-Migration-Folder-Excluder-1024x472.png)](/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder/#main)
+### Exclude a subfolder inside a theme
 
-When saving, you will see that all the folder paths to exclude will appear in the lower section.
+Use `ai1wm_exclude_themes_from_export`. The themes iterator walks starting at `wp-content/themes`, so paths are relative to that.
 
-[![](/uploads/AIO-WP-Migration-Folder-Excluder-screen-1024x622.png)](/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/aio-wp-migration-folder-excluder-screen/#main)
+```
+add_filter( 'ai1wm_exclude_themes_from_export', function( $paths ) {
+    $paths[] = 'astra/cache';
+    $paths[] = 'hello-elementor/node_modules';
+    return $paths;
+} );
+```
 
-All those folders under wp-content will be excluded when you make a new backup with the All in all WP Migration plugin.
+### Exclude a whole plugin or a plugin subfolder
 
-## Do you want to exclude the uploads folder?
+Use `ai1wm_exclude_plugins_from_export`. The plugins iterator walks `wp-content/plugins`.
 
+```
+add_filter( 'ai1wm_exclude_plugins_from_export', function( $paths ) {
+    $paths[] = 'wordfence';
+    $paths[] = 'elementor/data';
+    $paths[] = 'backup-plugin-i-no-longer-use';
+    return $paths;
+} );
+```
 
-By default, the Plugin does not exclude folders from the WordPress core, so if you want to exclude the uploads folder, a possible alternative is to rename it temporarily and exclude it with the exclusion plugin, make the backup and then rename it to its original name again.
+Note: you almost never want to exclude the entire `plugins` directory with this hook. All-in-One WP Migration relies on some of those plugins existing on the destination. Exclude individual plugins or their cache/log folders, not the whole thing.
 
-## Conclusion
+### Exclude a year or a tool's folder under uploads
 
+Use `ai1wm_exclude_media_from_export`. The media iterator walks `wp-content/uploads`.
 
-As you have seen, the All in One WP Migration plugin by default packages all WordPress folders, including everything found in wp-content, which is the folder that comes with most in a typical WordPress installation.
+```
+add_filter( 'ai1wm_exclude_media_from_export', function( $paths ) {
+    $paths[] = '2019';
+    $paths[] = '2020';
+    $paths[] = 'elementor';
+    $paths[] = 'woocommerce_uploads';
+    return $paths;
+} );
+```
 
-However, you can exclude subfolders from this folder using the Folder Excluder for the AIO WP Migration plugin.
+Common targets here are old year folders, page-builder caches, and the `woocommerce_uploads` folder if it holds unprotected product files you don't want in the backup.
+
+### Exclude something directly in wp-content
+
+Use `ai1wm_exclude_content_from_export` only for paths that aren't inside themes, plugins, or uploads. Things like `cache`, a rogue `backups-dup-pro`, `languages`, or custom folders some host dropped in there.
+
+```
+add_filter( 'ai1wm_exclude_content_from_export', function( $paths ) {
+    $paths[] = 'backups-dup-pro';
+    $paths[] = 'cache';
+    $paths[] = 'upgrade';
+    return $paths;
+} );
+```
+
+Quick heads-up: the All-in-One WP Migration export UI already has a "Do not export cache" checkbox that sets `no_cache`, which adds `cache` to the exclude list automatically. If you check that box, you don't need to repeat it in your filter.
+
+## How the path matching actually works
+
+Reading `lib/vendor/servmask/filter/class-ai1wm-recursive-exclude-filter.php`, the filter compares three things against your exclude array on every file:
+
+```
+$this->getInnerIterator()->getSubPathname()   // path relative to the iterator root
+$this->getInnerIterator()->getPathname()      // full absolute path
+$this->getInnerIterator()->getPath()          // parent absolute path
+```
+
+It's an exact `in_array` match on each. That means:
+
+- Relative paths (like `astra/cache`) work because `getSubPathname` returns paths relative to the iterator's starting directory.
+- Absolute paths work too, for the full path of a file or its parent directory.
+- Wildcards do not work. `uploads/2*` matches nothing.
+- Trailing slashes break the match. `astra/cache/` is not the same entry as `astra/cache`.
+
+Forward slashes get converted to the platform separator automatically, so you don't need to worry about Windows vs Linux path differences.
+
+## Where to add the snippet
+
+Put it in a child theme's `functions.php`, or use a code snippets plugin like [WPCode](https://wordpress.org/plugins/insert-headers-and-footers/) so the exclusion survives theme switches and updates. Don't drop it in the parent theme's `functions.php`. Theme updates will overwrite it.
+
+Another option, and the one I prefer for client sites, is a tiny mu-plugin. Create `wp-content/mu-plugins/ai1wm-exclusions.php`:
+
+```
+<?php
+add_filter( 'ai1wm_exclude_media_from_export', function( $paths ) {
+    $paths[] = 'elementor';
+    $paths[] = '2019';
+    return $paths;
+} );
+```
+
+mu-plugins load automatically, can't be deactivated by accident from the admin, and won't disappear on a theme switch.
+
+## Gotchas I wish I'd known earlier
+
+The filter runs, but nothing gets excluded. Nine times out of ten, you're using the wrong hook. Content hook for a themes path, or themes hook for a media path. Trace it back to which iterator walks the folder you're targeting.
+
+The exclusion works on the first export but not the second. The export process caches a content list in `wp-content/ai1wm-backups`. If you wrote the filter after starting an export, the list was already built. Start a fresh export after the filter is saved.
+
+You tried to exclude the `uploads` folder entirely and the export still contains images. The media iterator walks the uploads folder itself, so you can exclude subfolders of uploads, but excluding uploads at the content level also has no effect because that folder is skipped from the content walk. The cleanest "no media" option is All-in-One WP Migration's built-in "Do not export media" checkbox, which sets the `no_media` flag and skips the whole media iterator.
+
+If you've hit the exclusion wall and need to go further, the official docs list these filters under the Developer section. They're sparse, but the [GitHub repo for ServMask](https://github.com/ServMask) mirrors the plugin's source so you can trace exactly how the iterators work before writing your snippet.
+
+The short version is: find the iterator first, pick the hook that goes with it, then write the path relative to that iterator's root. That's the rule that took me an embarrassing afternoon to learn.

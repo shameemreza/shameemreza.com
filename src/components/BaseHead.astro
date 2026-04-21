@@ -45,6 +45,16 @@ const pageTitle =
   title={SITE.name}
   href="/rss.xml"
 />
+{
+  article && (
+    <link
+      rel="alternate"
+      type="text/markdown"
+      title={`${title} (Markdown)`}
+      href={`${canonicalURL.pathname.replace(/\/$/, '')}.md`}
+    />
+  )
+}
 
 <!-- Open Graph -->
 <meta property="og:type" content={article ? 'article' : 'website'} />

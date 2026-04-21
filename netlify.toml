@@ -5,6 +5,152 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Deleted posts redirected to their category or home
+[[redirects]]
+  from = "/5-photoshop-tricks-for-beginners/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/top-free-alternatives-of-adobe-photoshop/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/free-tools-to-create-color-pallets/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/top-12-free-website-malware-scanner/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/no-code-tools-to-create-website/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/permanently-delete-browsing-history-in-firefox/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/top-10-css-code-generators-for-web-developers/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/top-essential-jquery-plugin/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/best-text-editor-for-programming-in-2019/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/compound-effect-best-success-rules/"
+  to = "/bangla/"
+  status = 301
+
+[[redirects]]
+  from = "/80-20-principle-life-changing-rules/"
+  to = "/bangla/"
+  status = 301
+
+[[redirects]]
+  from = "/13-best-domain-registrars-of-2021/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/top-5-best-wordpress-optimized-hosting-in-2021/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/best-wordpress-cdn-providers/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/best-wordpress-plugins-for-online-store/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/choose-the-right-web-hosting-company/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/7-things-to-prepare-when-designing-a-new-website/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/10-signs-your-website-needs-a-redesign-in-2022/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/ielts-listening-score-7-tips/"
+  to = "/bangla/"
+  status = 301
+
+[[redirects]]
+  from = "/diploma-engineering-success/"
+  to = "/bangla/"
+  status = 301
+
+[[redirects]]
+  from = "/10-keys-to-choose-the-best-wordpress-theme/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/learn-wordpress-development-the-right-way/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/create-a-rank-this-app-button/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/common-ui-ux-design-mistakes-and-how-to-avoid/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/what-does-a-software-developer-do/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/generatepress-best-and-fastest-wordpress-theme/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/top-10-wordpress-speed-optimization-plugins/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/top-plugins-to-migrate-wordpress-site/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/increase-wordpress-site-speed/"
+  to = "/wordpress/"
+  status = 301
+
 # Custom 404
 [[redirects]]
   from = "/*"
@@ -57,6 +203,7 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 # Security headers for all pages
+# Link headers advertise machine-discoverable resources (RFC 8288).
 [[headers]]
   for = "/*"
   [headers.values]
@@ -64,3 +211,11 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Link = '''</sitemap-index.xml>; rel="sitemap", </rss.xml>; rel="alternate"; type="application/rss+xml"; title="RSS Feed"'''
+
+# Markdown endpoints explicit content-type for AI agents
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+    X-Robots-Tag = "noindex"
