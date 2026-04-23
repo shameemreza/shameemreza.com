@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with Next.js: A Beginner's Guide"
+title: "Getting started with Next.js"
 date: 2023-01-25T13:34:50Z
 description: "A beginner's walkthrough of Next.js covering what it is, why server-side rendering matters, and how to create your first app with create-next-app."
 category: "Development"
@@ -8,7 +8,7 @@ featuredImage: "/uploads/getting-started-with-next-js.png"
 draft: false
 ---
 
-Next.js is a popular [JavaScript](/strict-vs-loose-equality-in-javascript/) framework that makes it easy to build server-rendered React applications. In this beginner's guide, we'll take a look at what Next.js is, why you might want to use it, and how to get started building your first Next.js application.
+Next.js is a [JavaScript](/strict-vs-loose-equality-in-javascript/) framework built on top of React. It handles the parts of a React app that React itself leaves to you: routing, server-side rendering, static generation, code splitting, and bundling. If you've ever tried to set those up by hand in a plain React project, you already know why Next.js exists.
 
 ## What is Next.js?
 
@@ -18,12 +18,11 @@ Next.js is a framework that allows you to build server-rendered React applicatio
 ## Why use Next.js?
 
 
-There are several reasons why you might want to use Next.js for your React application. One of the main benefits is that server-rendered pages load faster and are more SEO-friendly. This is because the HTML is already rendered on the server and sent to the browser, so the user doesn't have to wait for the JavaScript to load and run before seeing the content. Additionally, Next.js has built-in support for server-side rendering and code splitting, which can improve the performance of your application.
+The main reason most teams pick Next.js is performance and SEO. Server-rendered pages arrive with HTML already in place, so the browser paints content before the JavaScript finishes loading. Search engines don't have to execute your app to see what's on the page. You also get code splitting, image optimization, and file-based routing out of the box, which saves you from writing a lot of boilerplate config yourself.
 
-## Getting Started with Next.js
+## Creating your first Next.js app
 
-
-To get started with Next.js, you'll need to have Node.js and npm (the package manager for Node.js) installed on your computer. You can download [Node.js](https://nodejs.org/en/) and npm from the official website.
+To get started with Next.js, you'll need Node.js and npm installed on your computer. You can download [Node.js](https://nodejs.org/en/) from the official website, and npm comes bundled with it.
 
 Once you have Node.js and npm installed, you can create a new Next.js application using the `"create-next-app"` command. Open your command line and run the following command:
 
@@ -55,31 +54,24 @@ For example, if you create a file called `"about.js"` in the `"pages"` directory
 
 Next.js is considered beginner-friendly for developers who are familiar with [React.js](https://reactjs.org/) and have a good understanding of JavaScript and web development concepts. [Next.js](https://nextjs.org/) provides a simple and easy-to-use structure for building server-rendered React applications, and its built-in features such as automatic code splitting and server-side rendering can help improve the performance of your application.
 
-Next.js also has a large and active community, which means there are plenty of resources available such as documentation, tutorials, and examples to help you get started and overcome any challenges you may encounter. Additionally, the create-next-app tool makes it easy to set up a new Next.js project and start building your application right away.
+Next.js has a large community, so tutorials, Stack Overflow answers, and examples are easy to find. The `create-next-app` tool gets you to a working project in a single command, which helps when you just want to try something out without wiring up a build.
 
-That being said, if you are new to React and web development, you might find Next.js a bit challenging to start with, as it assumes a certain level of familiarity with React and JavaScript. However, with a little bit of effort and some practice, you can quickly learn the basics of Next.js and start building your own applications.
+If you're brand new to React and web development, Next.js will feel like a lot at once. It assumes you know the basics of React and JavaScript. Learn React first, then come to Next.js. The framework is much easier when you're not fighting React and Next.js at the same time.
 
 ## Can I learn Next.js without knowing React?
 
 
-Technically, you can learn Next.js without knowing React, but it would be much more difficult and time-consuming. Next.js is built on top of React and uses many of the same concepts and patterns, such as components, state, and JSX. Understanding these concepts and patterns is crucial to being able to effectively use Next.js.
+You can technically learn Next.js without knowing React, but you'd be learning both at the same time and blaming Next.js for things that are actually React concepts. Components, state, props, and JSX all come from React. Next.js just adds file-based routing, server rendering, and a build pipeline on top.
 
-Additionally, React is a JavaScript library for building user interfaces, and Next.js is a framework that uses React to build server-rendered applications. So, if you don't know React, you will also not be familiar with how to build and structure a React application, which Next.js is.
-
-It's highly recommended to learn React first before diving into Next.js, as it will make it much easier to understand and use the framework. There are many resources available for learning React, such as the official React documentation, tutorials, and online courses.
-
-In short, while it's possible to learn Next.js without knowing React, it would be much more difficult and time-consuming. It's recommended to have a good understanding of React before learning Next.js.
+Learn React first. Once you're comfortable with components and hooks, Next.js will feel like a natural extension rather than a separate framework to memorize.
 
 ## Is Next.js harder than React?
 
 
-Next.js is not necessarily harder than React, but it does add additional complexity and concepts to learn on top of React. While React is a JavaScript library for building user interfaces, Next.js is a framework that uses React to build server-rendered applications. This means that Next.js adds additional functionality and features such as automatic code splitting, server-side rendering, and dynamic routing that you need to learn and understand.
+Next.js isn't harder than React so much as it's React plus extra things you eventually need anyway: routing, server rendering, code splitting, and a build pipeline. If you already know React, picking up Next.js is mostly about learning the conventions the framework chose for those concerns, not new JavaScript.
 
-However, Next.js also provides a lot of built-in functionality and abstractions that can make building a React application easier and more efficient. For example, Next.js's automatic code splitting and server-side rendering can improve the performance of your application, and its file-based routing system can make it easier to organize your application's routes.
+In practice, most of what makes Next.js feel harder is actually React being harder once it's deployed to real users. File-based routing and server rendering don't introduce new ideas so much as they force you to think about them.
 
-In short, Next.js is not harder than React, but it does add additional complexity and concepts to learn. If you already have a good understanding of React, learning Next.js should not be too challenging. And once you learn Next.js, it will make your development experience more efficient and effective.
+## Where to go next
 
-## Conclusion
-
-
-Next.js is a powerful framework for building server-rendered React applications. With its built-in support for server-side rendering and code splitting, Next.js can help you improve the performance of your application. And with this beginner's guide, you should now have a basic understanding of how to get started with Next.js and start building your own applications.
+If you want more than a hello-world, two things will give you the most value early on: read the [official Next.js docs](https://nextjs.org/docs) end-to-end (they're short), and build one small project with data fetching from a real API. After that, everything else in the framework starts making sense in context.

@@ -1,5 +1,5 @@
 ---
-title: "How to Improve Largest Contentful Paint (LCP)?"
+title: "How to improve Largest Contentful Paint (LCP)"
 date: 2021-11-04T05:09:03Z
 description: "LCP measures how fast the largest visible element loads and counts for 25% of your PageSpeed score. Here are practical ways to speed it up on WordPress."
 category: "WordPress"
@@ -52,9 +52,9 @@ Images, videos, and blocks of text displayed above the waterline also directly a
 
 Large elements, such as the Hero Header (a large, often imposing banner with texts, buttons, etc.), must be optimized to reduce loading times.
 
-4. Client-side rendering
+## 4. Client-side rendering
 
-Client-side rendering is popular with many web developers. Using JavaScript allows web pages to be rendered directly in the browser. However, JavaScript impacts LCP because the browser must first load all critical JavaScript before rendering.
+Client-side rendering is common, but it hurts LCP because the browser has to download and run JavaScript before any of the hero content shows up. If you're using a framework like Next.js or Remix, server-side rendering or static generation usually gives you a better LCP for free.
 
 ## How to improve the "Largest Contentful Paint"?
 
@@ -68,7 +68,7 @@ LCP is a measure of content. So it makes sense that one of the best ways to impr
 
 If your server response time is poor when performing performance scans, switch it up!
 
-If you are using WordPress, pick a managed WordPress host that prioritises performance, like Kinsta, WP Engine, or Pressable. Shared hosting is usually where poor LCP starts.
+If you're on WordPress, pick a managed host that prioritises performance. I work at Automattic, so my go-tos are [WordPress.com](https://wordpress.com) for most sites and [Pressable](https://pressable.com) when you need SFTP, SSH, staging, or you're managing client sites at scale. Both run on WP Cloud with global caching baked in. Shared hosting is almost always where poor LCP starts.
 
 ## 2. Set up a CDN
 
@@ -143,13 +143,8 @@ For text compression, there are compression algorithms that will reduce the weig
 
 Downloading Javascript and CSS stylesheets prevents your site content from being visible or interactive quickly. Even though JavaScript is asynchronous and doesn't block rendering, it will "fight" for bandwidth while downloading, which reduces mobile performance.
 
-## Conclusion
+## A short note on priorities
 
+If you're only going to fix two things, fix your host and your LCP image. Those two changes tend to move the number more than anything else. Everything in this list is useful, but they compound on top of a fast server and an optimized hero image, not in place of them.
 
-Now, as we know that Google rates the experience as visible, stable, and interactive content, it's important to reduce the size of all those assets as much as possible. It is a job of minification that eliminates all unnecessary spaces and line breaks from your files to reduce their weight.
-
-Be careful; this also means that you have to hunt for unused scripts and stylesheets: unnecessary minified content is content that shouldn't have to be loaded at all, optimized or not!
-
-There are many tools to help you compress your JavaScript scripts and stylesheets. If you are using WordPress, here is a list of a few of them.
-
-You can also find a [WordPress freelancer]() who will do this manually to get even better performance.
+Minification, unused-CSS pruning, and service workers are real wins, but they're second-order. A slow host with a 3 MB PNG as the LCP element will still score poorly no matter how aggressively you minify your JavaScript.

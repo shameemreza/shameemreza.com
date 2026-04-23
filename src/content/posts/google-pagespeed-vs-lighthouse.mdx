@@ -1,5 +1,5 @@
 ---
-title: "Google PageSpeed vs Lighthouse: How Are They Different?"
+title: "Google PageSpeed vs Lighthouse: how are they different?"
 date: 2022-09-13T12:21:30Z
 description: "PageSpeed Insights and Lighthouse both use the same engine but differ in scope and test conditions. Here's what each measures and when to use which."
 category: "WordPress"
@@ -8,13 +8,11 @@ featuredImage: "/uploads/google-pagespeed-vs-lighthouse.jpg"
 draft: false
 ---
 
-When optimizing your website for speed, you have two main options: PageSpeed Insights and Lighthouse. Both tools are designed to help you improve your site's performance.
+If you run your site through a performance test, you'll likely reach for one of two tools: PageSpeed Insights or Lighthouse. They're both free, both made by Google, and both produce a number out of 100. People often assume they're the same tool with different names. They're not.
 
-Both Google PageSpeed and Lighthouse are free and easy to use. While they are almost similar, they have some differences.
+PageSpeed Insights is the web-hosted tester at `pagespeed.web.dev`. It combines lab data (from a Lighthouse run) with field data (real Chrome users via CrUX). Lighthouse is the underlying engine you can run in Chrome DevTools, from the command line, or through a CI pipeline. That distinction explains most of the confusion about why the two scores don't always match.
 
-Google PageSpeed is focused on improving the speed of a website, while Lighthouse is focused on improving the performance of a website. Lighthouse is also more comprehensive, offering more features and options than PageSpeed.
-
-## What Is Lighthouse?
+## What is Lighthouse?
 
 
 Lighthouse is a tool that helps developers build and maintain accessibility in their web applications. It is a web extension for Google Chrome and Microsoft Edge and a command-line tool.
@@ -35,7 +33,7 @@ Lighthouse will give you a score of 100 for each category, along with recommenda
 
 [![](/uploads/GoogleLighthouseReports-1024x705.png)](/google-pagespeed-vs-lighthouse/googlelighthousereports/#main)
 
-## What Are PageSpeed Insights?
+## What are PageSpeed Insights?
 
 
 Google's PageSpeed Insights is a tool that analyzes a web page's performance. It provides insights on how to make a web page faster.
@@ -57,13 +55,13 @@ PageSpeed Insights is focused on providing information about website speed and h
 
 Despite these differences, both PageSpeed Insights and Lighthouse are excellent tools for improving the performance of your website.
 
-PageSpeed Insights can help you identify areas where your page could be improved, while Lighthouse can provide a more holistic overview of your website's quality.
+PageSpeed Insights gives you a view that's closer to what real users actually see. Lighthouse gives you a fuller picture of your site's quality across categories.
 
 You will get the same performance reports because the PageSpeed Insights test tool is based on the Lighthouse tool. Whether you test your website using PageSpeed Insights or the Lighthouse tool, you'll see the same performance metrics and suggestions.
 
 There is also a difference in how to run tests. To use PageSpeed Insights, you can run the test from its website only, while Lighthouse can be run from the Chrome Developer tools, web.dev, command line, and more.
 
-## Should You Use PageSpeed Insights or Lighthouse?
+## Should you use PageSpeed Insights or Lighthouse?
 
 
 PageSpeed Insights is the best option if you're interested in analyzing your site's performance/load times.
@@ -72,7 +70,7 @@ PageSpeed Insights will include the Lighthouse performance audit; also, you can 
 
 On the other hand, if you want more detailed data about your site, including accessibility and SEO, you should use Lighthouse.
 
-## Why PageSpeed Insights Score Can be Different Than Lighthouse Score?
+## Why the PageSpeed Insights score differs from the Lighthouse score
 
 
 If you're familiar with Google's PageSpeed Insights tool, You may have also used the Lighthouse tool, which is a similar tool that provides performance metrics for your website.
@@ -91,12 +89,11 @@ However, if you use Lighthouse using Chrome Developer Tools, it will use your ac
 
 **CPU performance** - This is also a little technical, but different tools might use different configurations for CPU performance, affecting the score (especially for JavaScript-heavy sites).
 
-Additionally, it's common to see different numbers between the lab data (Lighthouse) and field data in PageSpeed Insights. PageSpeed Insights simulates a very slow 3G connection for its lab tests, whereas most of your real visitors will have faster connections.
+It's also common to see different numbers between the lab data from Lighthouse and the field data in PageSpeed Insights. PageSpeed Insights simulates a slow 3G connection for its lab tests, while most of your real visitors are on faster connections.
 
-## Best Website Speed Test Tools in 2022
+## Other speed test tools worth trying
 
-
-As we all know, website speed is essential. Visitors expect websites to load quickly and smoothly in today's fast-paced world. If a website is slow, it can negatively impact a business in many ways, including lost sales and customers, lower search engine rankings, and decreased web traffic.
+Site speed matters because it affects rankings, conversions, and how long visitors stick around. A slow site loses users before they ever see your content.
 
 Here are our top picks:
 
@@ -116,10 +113,6 @@ Here are our top picks:
 - [New Relic](https://newrelic.com/)
 
 
-Website speed is important for many reasons. It affects your search engine ranking, conversion, and bounce rate. A slow website can frustrate users and lead them to leave before they've had a chance to engage with your content.
+There are two sides to improving site speed. One is technical: compressing images, serving assets from a CDN, cutting down on JavaScript, and picking a solid host. The other is operational: measuring the right metrics, watching them over time, and not chasing a 100/100 score at the cost of the actual user experience.
 
-There are many ways to improve your website's speed. Some are technical, like optimizing your code and using a content delivery network. Others are more strategic, like reducing the number of files you're loading or compressing your images.
-
-No matter what approach you take, website speed is worth the effort. A faster website will lead to happier users and better business results.
-
-If you are using a good and fast hosting provider to host your website, then no worries about the loading speed and performance. If you are using WordPress to develop your website, I recommend choosing a managed WordPress hosting provider focused on speed and security.
+If you're on WordPress, the single biggest speed lever is usually your host. I work at Automattic, so my recommendation is [WordPress.com](https://wordpress.com) for most sites or [Pressable](https://pressable.com) if you want more developer control. Both include CDN and caching out of the box, which handles most of what a stack of speed plugins tries to patch on top of slower hosts.

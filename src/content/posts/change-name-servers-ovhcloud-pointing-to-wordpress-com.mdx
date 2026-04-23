@@ -1,5 +1,5 @@
 ---
-title: "Change Nameserver at OVHcloud and Point Your Domain to WordPress.com"
+title: "Change nameservers at OVHcloud to point your domain at WordPress.com"
 date: 2023-05-08T07:42:43Z
 description: "A step-by-step guide to updating DNS nameservers at OVHcloud to point your domain to WordPress.com, including domain mapping and verification."
 category: "Resources"
@@ -8,21 +8,19 @@ featuredImage: "/uploads/change-name-servers-ovhcloud-pointing-to-wordpress-com.
 draft: false
 ---
 
-In today's digital age, having a website is a must for any business or individual looking to establish a strong online presence. One of the most popular managed WordPress web hosting platforms is WordPress.com, offering a user-friendly interface and powerful tools to create a customized website.
+If you registered your domain at OVHcloud and now want to host the site on WordPress.com, the piece that connects the two is your nameservers. Until OVHcloud is pointed at WordPress.com's nameservers, your domain still answers from OVH's DNS and your WordPress.com site stays on its default `.wordpress.com` address.
 
-However, if you've already registered your domain with OVHcloud, you'll need to change your nameservers and point your domain to WordPress.com to get started. I'll share a comprehensive, step-by-step guide to help you transition seamlessly in this article. Whether you're new to web hosting or a seasoned professional, I've got you covered. So, let's dive in and get started!
+This is a short walkthrough of what to change, where to change it, and how to confirm the switch actually happened.
 
-## What are Nameservers, and How Do They Work?
+## What nameservers actually do
 
-Before we dive into the process of changing nameservers at OVHcloud, let's first understand what nameservers are and how they work.
+Nameservers are the piece of DNS that tells the rest of the internet where to look for your domain's records. When you type a domain into a browser, the browser asks that domain's nameserver, "where's the website for this?" The nameserver answers with an IP address, and the browser goes there.
 
-Nameservers are like phone books for the internet, translating human-readable domain names into machine-readable IP addresses. Primary and secondary nameservers work together to ensure your website is accessible to your audience.
+When you change nameservers, you're not moving your website. You're changing which DNS provider answers questions about your domain. Until you switch nameservers from OVHcloud to WordPress.com, WordPress.com has no authority over your domain's records.
 
-## Changing Nameservers at OVH
+## Changing nameservers at OVHcloud
 
-Are you looking to enhance your online presence with WordPress.com but don't know where to start? One essential step in the process is connecting your domain and pointing your domain to WordPress.com.
-
-If you've already registered your domain at OVHcloud and want to use it with your WordPress.com site, start by following this simple, step-by-step guide to changing name servers at OVHcloud:
+Here are the steps to update your nameservers at OVHcloud:
 
 **Step 1:** Log in to your OVH Control Panel using this direct link: [https://www.ovh.com/auth/?action=gotomanager](https://www.ovh.com/auth/?action=gotomanager). Once you've logged in successfully, navigate to the 'Domains' menu and select the domain name you'd like to connect to your WordPress.com site.
 
@@ -38,7 +36,7 @@ Once you've entered this information, hit **'Apply configuration.'** You'll noti
 
 **Step 3:** After completing the steps mentioned above, give it some time for the changes to be fully effective. Typically, DNS changes spread across the internet within a few hours. However, it might take up to 48 hours for complete propagation.
 
-## Setting Up Your Domain at WordPress.com
+## Setting up your domain at WordPress.com
 
 After changing your nameservers at OVHcloud, the next step is to link it to your WordPress.com site. You can do this by [mapping your domain to WordPress.com](https://wordpress.com/support/domains/connect-existing-domain/). Follow these steps to complete the process:
 
@@ -49,14 +47,12 @@ After changing your nameservers at OVHcloud, the next step is to link it to your
 
 ## Testing and Verifying Your Setup
 
-After completing the domain mapping setup process, it's time for you to test and verify if everything works correctly. You can use various tools like ping, traceroute, and [DNS lookup](https://www.whatsmydns.net/) to check your domain's status. However, the simplest way to test is by visiting the website using your domain. If it redirects you to your WordPress.com website's free address successfully, then you've completed the domain connection.
+The simplest way to test is to visit your domain in a browser. If it loads your WordPress.com site instead of the OVHcloud parking page, the nameserver change has taken effect. For a more precise check, use [whatsmydns.net](https://www.whatsmydns.net/) to see which nameservers different regions are seeing.
 
-After successfully connecting the domain, feel free to follow the official [WordPress.com guide to set it as your site's primary address](https://wordpress.com/support/domains/set-a-primary-address/).
+Once the domain is connected, you can follow the official [WordPress.com guide to set it as your site's primary address](https://wordpress.com/support/domains/set-a-primary-address/).
 
-If you come across any errors or issues during the process, don't worry! A WordPress.com Happiness Engineer is always available to provide support.
+If something goes wrong, a WordPress.com Happiness Engineer can help you through live chat. They have visibility into both the DNS side and the site side, which saves time when the issue isn't obvious.
 
-## Conclusion
+That's it. Once propagation finishes and WordPress.com marks the domain as connected, everything else (SSL, primary address, email forwarding) is handled inside WordPress.com's domain settings.
 
-Following this step-by-step guide, you can easily change nameservers at OVHcloud and point your domain to WordPress.com. Doing so will enhance your online presence and help you establish a more significant online presence.
-
-Don't hesitate to take action and start your online journey today. If you have any questions or comments, feel free to leave them below!
+If your domain doesn't resolve after 48 hours, double-check two things: the nameservers at OVHcloud are exactly `ns1`, `ns2`, and `ns3.wordpress.com` with no typos, and the domain mapping inside WordPress.com is for the same domain you updated at OVHcloud. Those are the two places this usually goes wrong.

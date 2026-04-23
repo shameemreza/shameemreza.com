@@ -1,5 +1,5 @@
 ---
-title: "How to Render an Array of Objects in React?"
+title: "How to render an array of objects in React"
 date: 2023-03-31T18:04:39Z
 description: "The map() method is the standard way to loop through an array of objects in React. Here's a step-by-step guide with key props, styling, and reusable components."
 category: "Development"
@@ -8,9 +8,9 @@ featuredImage: "/uploads/render-an-array-of-objects-in-react.png"
 draft: false
 ---
 
-React is a popular JavaScript library for building user interfaces. One common task in [React](/understanding-dynamic-routing-in-next-js/) is rendering an array of objects. Rendering data is a crucial aspect of web development, and ReactJs offers various tools to [display data dynamically](/understanding-dynamic-routing-in-next-js/).
+Almost every [React](/understanding-dynamic-routing-in-next-js/) app eventually has to render a list: products, users, posts, messages. The data usually arrives as an array of objects, and React needs you to turn that into a list of elements. The tool for that job is `Array.prototype.map()` plus a stable `key` prop, and once that pattern clicks, it works for 90% of list rendering in React.
 
-Rendering an array of objects is a common task that developers face when working on web applications. Fortunately, ReactJs makes it easy to accomplish this task, and we'll explore the steps involved in this article.
+Here's how to do it cleanly, plus the parts that trip people up the first time.
 
 ## What is an Array of Objects?
 
@@ -119,11 +119,11 @@ export default App;
 ```
 In this example, we imported the EmployeeList component and passed the employees array as a prop to the component.
 
-### Step 4: Key Prop
+### Step 4: the `key` prop
 
 In the example above, we used the `key` prop on the `tr` element to uniquely identify each employee. It is important to use a unique identifier for each item when rendering an array of objects in React. In this case, we used the employee's name as the key, but you can use any unique identifier.
 
-### Step 5: Styling the List
+### Step 5: styling the list
 
 Once we have the list of employees, we can add some styles to make it look better. Here's an example of how we can add some CSS styles to the table to make it more visually appealing.
 
@@ -153,7 +153,7 @@ tbody tr:nth-child(even) {
 ```
 With these styles applied, the table will have a better appearance.
 
-### Step 6: Passing Props
+### Step 6: making it reusable with props
 
 If we want to make the `EmployeeList` component reusable, we can pass the `employees` array as a prop. This way, we can reuse the component with different arrays of employees.
 
@@ -215,7 +215,7 @@ export default App;
 ```
 In this example, we passed the `employees` array as a prop to the `EmployeeList` component.
 
-## Extra Learning: Rendering array of objects using JavaScript map()
+## Rendering an array of objects using `map()` in plain JavaScript
 
 To render an array of objects in JavaScript, you can use the `map()` method to iterate over each object in the array and create a new array of React elements.
 
@@ -246,16 +246,6 @@ In the `map()` method, we create a new `<div>` element for each employee and set
 
 Finally, we return a \<div\> element that contains the array of employee elements.
 
-Note that it's important to set a unique `key` prop for each element when rendering an array in React, as this helps React optimize the rendering process and improves performance.
+One last thing on keys: don't use the array index as the key if the list can be reordered, filtered, or have items added or removed. React uses keys to figure out which items changed between renders, so a shifting index will make React remount the wrong components. Use a stable field like `id` whenever you have one.
 
-Overall, using the `map()` method to render an array of objects in React is a powerful and flexible approach that can be used in a variety of use cases.
-
-## Conclusion
-
-In this article, we learned how to render an array of objects in React. We used the `map()` method to iterate through the array and create a new array of elements. We also used the `key` prop to uniquely identify each item and make the rendering process more efficient. We added some styles to make the list more visually appealing and learned how to pass props to make the component reusable.
-
-Here are some resources to learn more about rendering arrays in React:
-
-- [React documentation on lists and keys](https://reactjs.org/docs/lists-and-keys.htm)
-- [React tutorial on rendering lists](https://reactjs.org/tutorial/tutorial.html#rendering-multiple-components)
-- [FreeCodeCamp article on rendering lists in React](https://www.freecodecamp.org/news/react-list-and-keys-explained/)
+For a deeper reference, the React docs page on [rendering lists](https://react.dev/learn/rendering-lists) covers the edge cases around keys, fragments, and conditional rendering inside `map()` callbacks.

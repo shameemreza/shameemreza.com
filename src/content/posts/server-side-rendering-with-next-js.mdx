@@ -1,5 +1,5 @@
 ---
-title: "Mastering the Art of Server-Side Rendering with Next.js"
+title: "Server-side rendering with Next.js"
 date: 2023-01-27T05:28:25Z
 description: "Server-side rendering sends fully rendered HTML to the browser, improving load speed and SEO. Here's how SSR works in Next.js with getInitialProps and pages."
 category: "Development"
@@ -16,11 +16,11 @@ Another advantage of SSR is better SEO. Search engines have difficulty indexing 
 
 [![](/uploads/server-side-rendering.png)](/server-side-rendering-with-next-js/server-side-rendering/)
 
-Finally, SSR can also lead to a better user experience. With a client-side JavaScript application, the user may see a blank page or a loading spinner while the JavaScript code is being downloaded and executed. With SSR, the user sees the fully rendered page immediately, which can lead to a more seamless experience.
+SSR also smooths out the user experience. With a client-side app, the first visit often starts with a blank page or a loading spinner while the JavaScript downloads and executes. With SSR, the page is visible on first paint because the server already did the rendering work.
 
 Next.js makes it easy to build [SSR](https://nextjs.org/docs/basic-features/pages) applications with [React](/ionic-vs-react-native-whats-best-for-you/). The framework includes built-in support for SSR and offers a simple development experience with a powerful set of features.
 
-## Get Started with Server-side rendering in Next.js
+## Get started with server-side rendering in Next.js
 
 To [get started with Next.js](/getting-started-with-next-js/) SSR, you can use the `create-next-app` command to create a new Next.js project. This command will create a new project with a basic file structure and a few example pages. Once you have your project set up, you can start building your application by creating new pages in the pages directory. Each page is a React component that will be rendered on the server.
 
@@ -85,6 +85,6 @@ In this example, we use the `axios` library to fetch data from an API and pass i
 
 Next.js also offers a built-in development experience with hot module replacement, automatic code splitting, and more. You can start a development server with the `npm run dev` command, which will automatically reload the page whenever you make changes to your code.
 
-In addition to its built-in features, Next.js also has a large and active community. There are many plugins and libraries available that can help you add additional functionality to your application. You can also find many online tutorials, articles, and other learning resources to help you get started with Next.js.
+Next.js has a large community around it, with plenty of plugins, libraries, and tutorials to pull from once you outgrow the basics. The `getInitialProps` example above is the 12.x pattern. If you're on 13 or later, the same idea moves to `getServerSideProps`, or to React Server Components in the App Router.
 
-In conclusion, Server-side rendering has many benefits, including improved performance, better SEO, and a better user experience. Next.js makes it easy to build SSR applications with React and offers a simple development experience with powerful features.
+The core trade-off stays the same across versions: SSR gives you better first-paint and SEO at the cost of more work on the server. For content-heavy pages where that trade-off makes sense, Next.js remains one of the simplest ways to ship SSR in React.

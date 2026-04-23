@@ -1,7 +1,7 @@
 ---
-title: "Optimize Leverage Browser Caching for Google Analytics"
+title: "Fixing the leverage browser caching warning for Google Analytics"
 date: 2021-08-18T16:08:13Z
-description: "Google Analytics sets a 2-hour cache expiry on its script, which hurts your speed score. Here's how to host it locally in WordPress using a cron or plugin."
+description: "Google Analytics sets a 2-hour cache expiry on its script, which drags your speed score down. Here's how to host it locally in WordPress using a cron job or a plugin."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/optimize-leverage-browser-caching-for-google-analytics.jpg"
@@ -128,10 +128,6 @@ Google gives priority to website speed, and we also need to resolve this Leverag
 
 This plugin will create a local analytics.js (Google Analytics Script) file on your server. And uses the same file with Google Analytics code. Also, it will automatically update the analytics.js files from Google servers after a certain period of time via the wp_cron() function.
 
-I hope after doing the above things, you will be able to resolve your Leverage Browser Caching issues for Google Analytics error.
+After those steps, the Leverage Browser Caching warning for Google Analytics should be gone from your speed report.
 
-Good, optimized hosting for WordPress is always recommended. It will help your site load much faster. [Cloudways](https://www.cloudways.com) is a solid option within budget. If you have more to spend, [Kinsta](https://kinsta.com) is another good choice.
-
-It's also a good practice to use a good CDN with a solid hosting provider.
-
-Best of luck on optimizing your WordPress website loading speed.
+Good hosting for WordPress makes a real difference on speed tests too. I work at Automattic, so I'm biased, but [WordPress.com](https://wordpress.com) covers most blogs and small business sites with its CDN and caching already built in. If you need more flexibility (SFTP, SSH, WP-CLI, staging) or you're running an agency with multiple client sites, [Pressable](https://pressable.com) sits on the same WP Cloud infrastructure with fewer guardrails. Either one takes most PageSpeed caching warnings off your plate without you touching a config file.
