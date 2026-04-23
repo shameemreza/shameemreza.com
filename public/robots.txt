@@ -3,6 +3,6 @@ Allow: /
 
 # AI Content Signals (contentsignals.org)
 # Personal blog: allow search indexing and AI answer citations.
-Content-Signal: search=yes, ai-input=yes, ai-train=yes
+# Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 Sitemap: https://shameemreza.com/sitemap-index.xml
