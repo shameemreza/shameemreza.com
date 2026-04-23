@@ -1,0 +1,166 @@
+---
+title: "Why your plugin name isn't accepted on WordPress.org"
+date: 2026-04-23T10:00:00Z
+description: "If WordPress.org asked you to rename your plugin, it almost always comes down to one idea: plugin names need to be distinctive and brandable, not descriptions of what the plugin does. Here's what I picked up from the guidelines and my own submissions, and how to choose a name that clears the naming check on the first try."
+category: "Notes"
+categorySlug: "notes"
+draft: false
+---
+
+Your plugin is ready. The code works, the readme is clean, the zip uploaded fine. A few days later the reply from WordPress.org lands in your inbox: the name can't be used as it is.
+
+No one likes this email. It feels vague, it arrives late, and the reasons can read as a wall of bullet points pointing in a few different directions at once. I've been on the submitting side of it more than once, and after reading the plugin guidelines enough times and watching a few friends go through the same loop, the reasons stop looking random. They fall into a handful of buckets, and the same rule sits under all of them: your plugin name has to be distinctive and brandable, not a description of what the plugin does.
+
+Here's how that plays out, in the order the reasons usually come up.
+
+## TLDR
+
+> Plugin names on WordPress.org need to be distinctive and brandable, not descriptions of what the plugin does. Most names that get held up fail on that idea, plus one of a few specific patterns: a borrowed trademark, a trademark placed at the wrong end of the name, or an account that doesn't clearly match the plugin's branding. Lead with your brand or a distinctive word, put any third-party trademark at the end after "for", and submit from an email that matches your plugin's domain. That covers most of what the naming rules check.
+
+## What WordPress.org looks at before the code
+
+Before anyone opens a PHP file, the naming check compares three things against each other:
+
+1. The display name of your plugin as it appears in the readme and main plugin file.
+2. The slug, taken from the name of the zip's folder or the main file.
+3. The Author, Author URI, Plugin URI, and the email on your WordPress.org account.
+
+If those three tell a consistent story about what your plugin does and who owns it, everything else moves on to the code. When they don't line up, you'll get an email asking you to change something before the rest of the review continues.
+
+The [plugin guidelines](https://developer.wordpress.org/plugins/wordpress-org/detailed-plugin-guidelines/) cover this in full, but the email you get usually points at one of a handful of specific things. Here they are.
+
+## Reason 1: your name uses "WP" or "Woo" as shorthand
+
+This is one of the most common reasons a name isn't accepted.
+
+"WP" as a standalone abbreviation for WordPress isn't allowed in plugin names or slugs. The same rule covers "Woo" as shorthand for WooCommerce. Both are reserved, and they show up constantly because they feel like shorter, catchier versions of the real words.
+
+The pattern that triggers this rule is "WP" or "Woo" used inside a plugin name to signal "this plugin is for WordPress / WooCommerce". A few shapes that fall under it:
+
+- A plugin name where "WP" is clearly standing in for WordPress, like `YourThingWP` or `WPYourThing`.
+- A plugin name where "Woo" is clearly standing in for WooCommerce, like `WooYourThing` or `YourThingWoo`.
+- A plugin name with extra letters tacked on around the abbreviation, like `WPAllYourThings`. Adding letters doesn't turn the abbreviation into a new word.
+
+The fix is small. Drop the abbreviation from the name and lead with the distinctive word you actually own. If you need to mention WordPress or WooCommerce at all, put it at the end after "for" or "with". That's the pattern the next section covers.
+
+There's one narrow case where "WP" inside a name is tolerated: when it's genuinely part of a real company or brand that exists outside the plugin directory. If your company is legitimately named with "WP" in it, the business exists under that name publicly, and the letters aren't standing in for WordPress, it's handled on its own merits. That's a judgment call about a real brand, not a workaround. Tacking "WP" onto an ordinary word to make a new plugin name catchier is a different thing, and that shape is still held to the main rule.
+
+One thing worth knowing: if your plugin integrates with a third-party product that happens to contain the letters WP, like WPBakery or BuddyPress, the trademark at stake is the full product name, not the two letters "WP". Using the full third-party name correctly is fine.
+
+## Reason 2: the trademark sits at the wrong end of the name
+
+Where a trademark appears in a name matters more than whether you use it at all.
+
+A trademark at the beginning of the name implies that the plugin is made by, or officially connected to, that brand. Put it at the end, after "for" or "with", and you're using the permitted pattern for plugins that integrate with a product you don't own.
+
+Here's a table I put together walking through common name shapes for a plugin that integrates with someone else's brand. I'll use WooCommerce as the example, but the same shape applies to any trademark you don't own, including WordPress, Google, Instagram, Stripe, PayPal, and so on.
+
+| Name pattern | Result |
+|---|---|
+| `WooCommerce Prices Updater` | Not accepted. Implies the plugin is by WooCommerce. |
+| `Prices Updater WooCommerce` | Not accepted. No clear "not affiliated" structure. |
+| `Prices for WooCommerce` | Not accepted. Too generic, no distinctive term. |
+| `Prices for WooCommerce by YourBrand` | Not accepted. The distinctive term shouldn't sit at the end. |
+| `AB Prices for WooCommerce` | Not accepted. Two letters isn't distinctive enough. |
+| `PricesPress for WooCommerce` | Not accepted. Portmanteau using the WordPress trademark. |
+| `Priconix Sync for WooCommerce` | Accepted. Original, distinctive, clearly unaffiliated. |
+| `YourBrand Prices Updater for WooCommerce` | Accepted. Unique prefix plus a clear "for [brand]" suffix. |
+
+The shape is: distinctive brand word first, what it does second, `for [trademark]` last.
+
+### Two questions this always raises
+
+"But my plugin is an integration, so I have to mention the brand in the name".
+
+You can mention it. You just need to place it after "for" or "with". Every plugin in the directory is some kind of integration, so "it integrates with X" on its own doesn't grant permission to lead with the brand. If that were the rule, every third-party name would be usable as a prefix, and the trademark rule would collapse on day one.
+
+"But some plugin in the directory uses the exact pattern I'm being asked to change".
+
+Some names were approved years ago under older versions of the guidelines. Others belong to real companies whose brand happens to contain the pattern you're being asked to change. Older approvals and legitimate established brands are judgment calls that happen case by case. They don't become general rules for new submissions, and new names are checked against what the current guidelines say today.
+
+## What doesn't actually fail the naming check
+
+Not every trademark in a name is a problem. These cases come up often, and they're fine:
+
+- A third-party brand used descriptively at the end. `YourBrand Indexer for Google Search Console` is fine. "Google" describes what the plugin connects to, "YourBrand" is the distinctive term.
+- `WP` or `Woo` sitting inside another product's trademark. WPBakery is a full brand. WooThemes is a full brand. A plugin that integrates with either can keep the full name intact.
+- Common English words that also appear in a trademark database for an unrelated industry. Names sometimes match trademarks registered for motorcycle parts, coffee shops, or lawn equipment. The naming rules care about confusion within the WordPress and software space, not generic matches across unrelated classes.
+- A new plugin from an account that already has approved plugins under the same brand. If the account has a history, the ownership question is already answered, and an existing brand shape carries over.
+
+If your own trademark search turns up matches from industries that have nothing to do with software, you don't have to pretend they're a blocker. One clear line of context explaining the match in your reply is usually enough to move past it.
+
+## Reason 3: the name describes what the plugin does, but it isn't actually a name
+
+This one catches people who felt like they'd done everything else "right". The slug was available. No trademark was involved. Every word read cleanly in English. The name still wasn't accepted.
+
+The issue is subtle. A name like `Schedule Planner` or `Event Calendar` reads well, but it's only a description of what the plugin does. It isn't a name that identifies your specific plugin. The moment another plugin shows up doing the same thing, users can't tell them apart, and the one they actually wanted becomes hard to find in search results.
+
+The fix is to add a distinctive word at the start. Your brand, a short made-up word, a handle that isn't a generic noun. `YourBrand Schedule Planner` is a name. `Schedule Planner` on its own is closer to a shelf label.
+
+The clearest public example of this playing out is Yoast SEO. It originally launched as `WordPress SEO`, which was a description of what the plugin did, not a handle anyone could use to refer to it specifically. Leading with a distinctive brand word is a big part of what turned it from a generic phrase into the plugin people search for by name today.
+
+One detail worth knowing: most locale teams don't translate plugin names. Whatever name you ship in English is the name non-English users will see too. A keyword-stuffed description wedged into the title field ends up awkward on search result pages, sometimes breaking across two or three lines. Keep the name short and distinctive. The short description field in your readme is where the keywords belong.
+
+## Reason 4: ownership can't be verified from the submission
+
+Ownership catches more authors off guard than almost anything else on this list.
+
+If you submit a plugin called `YourBrand Analytics` and the WordPress.org account is registered with a generic address like `you@gmail.com`, the submission raises a question that has to be answered before anything moves forward. Are you actually YourBrand, or just someone who picked the name?
+
+Anyone can create a free email address with any word inside it. That alone doesn't prove ownership. Neither does a matching string in the Author field. What proves ownership is something someone else couldn't fake:
+
+1. A WordPress.org account registered to an email on the plugin's own domain, like `you@yourbrand.com`.
+2. An existing set of plugins on the same account, already approved under the same brand.
+3. A DNS TXT record at the brand's domain with a verification value WordPress.org provides during the review.
+4. A transfer of the submission to the WordPress.org account that already represents the brand, if one exists.
+5. A name change that makes it clear the plugin isn't officially affiliated with any existing entity.
+
+Pick whichever is least painful. If you're a solo developer submitting under your own brand, option one is the easiest: update the email on your WordPress.org account before you submit, and the ownership check never triggers.
+
+### If you were hired to build this plugin
+
+Read this part twice.
+
+If you were hired as a freelancer or consultant to build a plugin for a client, the WordPress.org account that submits the plugin has to belong to the client, not to you. Being given permission to submit isn't the same as owning the plugin. The ownership rule protects the client's business and your own relationship with them.
+
+The right way to handle it: the client creates or uses their existing WordPress.org account, submits the plugin from there, and adds you as a committer. You can push updates without owning the plugin's legal identity, and the client keeps control of the directory listing they're paying you to build.
+
+When the account that submits doesn't match the brand on the plugin, the ownership question has to be answered one way or another before the review can continue. Sorting that out up front is a lot quieter than untangling it later.
+
+## The small things that still hold up a name
+
+A handful of smaller patterns show up in the naming guidance. Each one is worth a paragraph, not a full section.
+
+**Superlatives.** Words like "Best", "#1", "Ultimate", "The Most", "First", and "Perfect" aren't allowed in plugin names or short descriptions. They make a claim the directory can't verify, and most users scroll past them anyway.
+
+**Redundant words.** "Free" shouldn't appear in a plugin name. Every plugin on WordPress.org is free. "Plugin" as the first word is also out. `Plugin Analytics Pro` isn't a plugin name, it's a category with a suffix. Drop the category word and lead with the brand.
+
+**Contributors that don't include you.** If the Contributors line in your readme lists WordPress.org usernames that aren't yours, you'll get an email asking who those accounts are and why they're listed. Put your own username first, and only list others with their permission.
+
+## Your slug is permanent
+
+One last thing that isn't obvious until it's too late.
+
+The display name of your plugin can change later. You can't change the slug.
+
+If your zip's folder is named `my-plugin-free-v1` when you upload, and you don't explicitly ask for a different slug in your reply, `my-plugin-free-v1` is the permalink you're stuck with forever. You can rename the plugin to `MyPlugin` in the readme, but the install path and the WordPress.org URL stay as the original slug.
+
+Two small habits make this painless:
+
+1. Rename your zip's folder to the exact slug you want before you submit. No version numbers, no "free", no "-final-v2".
+2. If you're asked to change the display name, use that same reply to state the slug you want as well. Don't leave it to be guessed from the new name.
+
+## A short check before you submit
+
+Four questions that cost ten minutes and save a round of emails:
+
+1. Does your plugin's name start with a distinctive word you actually own, rather than a trademark?
+2. Does the slug, pulled from the zip's folder, match the name you want to keep long-term?
+3. Is the email on your WordPress.org account on the same domain as your Author URI and Plugin URI?
+4. If anyone else is listed in the readme's Contributors line, can you say why?
+
+If those four are clean, the naming and ownership checks shouldn't slow you down, and the review moves on to the parts you actually built the plugin to be judged on.
+
+A plugin name is a small detail, but it's the first thing a reviewer and a future user see, and the slug sticks with your plugin for as long as it lives in the directory. Settling it carefully once is much cheaper than reworking it twice.
+
+If you're curious about what tends to come up once the review moves past naming and into the plugin itself, I wrote a companion piece on [what makes a WooCommerce plugin actually good](/what-makes-a-woocommerce-plugin-actually-good/). Different context, same idea: small decisions, made early, save a lot of time later.
