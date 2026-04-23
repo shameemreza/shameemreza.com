@@ -1247,6 +1247,102 @@ img {
   overflow-wrap: anywhere;
 }
 
+.tldr {
+  position: relative;
+  margin: 32px 0;
+  padding: 22px 24px 22px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 6%, var(--bg-elevated)) 0%,
+    var(--bg-elevated) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 12px;
+  color: var(--ink-sub);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.tldr::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    transparent 55%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+.tldr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 8px;
+  margin: 0 0 12px;
+  background: var(--accent);
+  color: var(--accent-on);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--accent) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.tldr-chip-icon {
+  flex-shrink: 0;
+  margin-top: -1px;
+}
+
+.tldr-body {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-sub);
+}
+
+.tldr-body > :first-child {
+  margin-top: 0;
+}
+
+.tldr-body > :last-child {
+  margin-bottom: 0;
+}
+
+.tldr-body p {
+  margin: 0 0 10px;
+}
+
+.tldr-body p:last-child {
+  margin-bottom: 0;
+}
+
+.tldr-body pre {
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.tldr-body code {
+  font-size: 0.86em;
+}
+
+.tldr-body a {
+  color: var(--accent-ink);
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
 /* ============================================================
    POST TAGS, SHARE, NAVIGATION
    ============================================================ */
@@ -2228,6 +2324,15 @@ pre:hover .code-copy-btn {
   .prose td code,
   .prose th code {
     font-size: 0.9em;
+  }
+
+  .tldr {
+    padding: 18px 18px 18px;
+    margin: 24px 0;
+  }
+
+  .tldr-body {
+    font-size: 15px;
   }
 
   .nl-form {
