@@ -9,17 +9,19 @@ featuredImage: "/uploads/increase-upload-limit-for-all-in-one-wp-migration-plugi
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 For years I migrated sites by hacking the same file. Open `all-in-one-wp-migration/constants.php`, find `AI1WM_MAX_FILE_SIZE`, change it to whatever I wanted, save. The 512 MB ceiling would vanish and a 3 GB backup would import without a fuss.
 
 Then version 7.71 landed and the constant was gone. My clients started hitting the limit again. The old blog posts saying "just edit constants.php" stopped working overnight, and the workaround I'd been using for years was dead.
 
 So I went looking for what actually controls the limit now. What I found surprised me a little. The real bottleneck isn't on the server. It's a JavaScript check in the browser, and the import itself has been chunked since forever.
 
-## TLDR
+<Tldr>
+  All-in-One WP Migration free version doesn't care about your server's real upload limit. It uploads in 5 MB chunks regardless of file size. The only thing actually stopping large imports is a client-side JS variable named `ai1wm_uploader.max_file_size` that compares your selected file against `wp_max_upload_size()` before any upload starts.
 
-All-in-One WP Migration free version doesn't care about your server's real upload limit. It uploads in 5 MB chunks regardless of file size. The only thing actually stopping large imports is a client-side JS variable named `ai1wm_uploader.max_file_size` that compares your selected file against `wp_max_upload_size()` before any upload starts.
-
-Remove that gate (and give PHP a bit more memory for the import pass), and the 512 MB message disappears. You don't need to raise `upload_max_filesize` or edit `constants.php`. I built a tiny plugin that does exactly this, and the code snippet version is below if you prefer not to install another plugin.
+  Remove that gate (and give PHP a bit more memory for the import pass), and the 512 MB message disappears. You don't need to raise `upload_max_filesize` or edit `constants.php`. I built a tiny plugin that does exactly this, and the code snippet version is below if you prefer not to install another plugin.
+</Tldr>
 
 ## What actually blocks large imports
 

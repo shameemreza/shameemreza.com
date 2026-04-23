@@ -8,6 +8,8 @@ featuredImage: "/uploads/woocommerce-epub-downloads-invalid-link-error.jpg"
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 I spent a while tracing through the WooCommerce download handler recently. A store was selling EPUB ebooks. The admin could download them fine. Every other user got "Invalid download link" with a 404. Same file. Same product. Same link.
 
 The store owner had already done serious troubleshooting. Disabled all plugins. Tried every download method. Flushed permalinks. Cleared server cache. Enabled HPOS sync. Nothing helped. PDFs worked. EPUBs didn't.
@@ -166,8 +168,8 @@ If you're debugging a similar issue, the fastest way to narrow it down is to che
 
 If any of these fail, the download gets disabled at runtime even though the permission record is valid. The error message won't tell you which one it was.
 
-## TL;DR: it's a missing MIME type
+<Tldr>
+  **It's a missing MIME type.** WordPress doesn't include EPUB in its default MIME types. WooCommerce validates downloadable files against that list every time a product loads. If the file type isn't recognized, the download is silently disabled and customers get a 404. Adding the MIME type through the `upload_mimes` filter in your child theme or a snippets plugin fixes it permanently.
 
-WordPress doesn't include EPUB in its default MIME types. WooCommerce validates downloadable files against that list every time a product loads. If the file type isn't recognized, the download is silently disabled and customers get a 404. Adding the MIME type through the `upload_mimes` filter in your child theme or a snippets plugin fixes it permanently.
-
-If you're selling digital products in formats outside the WordPress defaults, check your MIME types before you touch anything else. It's a five minute fix that could save you a week of "Invalid download link" tickets.
+  If you're selling digital products in formats outside the WordPress defaults, check your MIME types before you touch anything else. It's a five minute fix that could save you a week of "Invalid download link" tickets.
+</Tldr>

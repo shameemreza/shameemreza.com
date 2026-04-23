@@ -9,24 +9,26 @@ featuredImage: "/uploads/excluding-files-and-folders-in-all-in-one-wp-migration-
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 The first time I tried to exclude the `uploads` folder from an All-in-One WP Migration export, the filter I wrote did absolutely nothing. The export came out with every image intact. Nine gigabytes of them.
 
 I'd copied the same snippet everyone on the internet copies. `add_filter( 'ai1wm_exclude_content_from_export', ... )` with the path I wanted gone. It didn't work. Not once. Took me longer than I'd like to admit to figure out why.
 
 Turns out All-in-One WP Migration has four exclude filters, not one. And the one everyone shares online only matches files that sit directly inside `wp-content` and aren't already in a themes, plugins, or uploads subfolder.
 
-## TLDR
+<Tldr>
+  All-in-One WP Migration splits `wp-content` into four separate iterators during export, each with its own exclude filter:
 
-All-in-One WP Migration splits `wp-content` into four separate iterators during export, each with its own exclude filter:
+  ```
+  ai1wm_exclude_content_from_export   // everything in wp-content except themes/plugins/uploads
+  ai1wm_exclude_themes_from_export    // walked starting at wp-content/themes
+  ai1wm_exclude_plugins_from_export   // walked starting at wp-content/plugins
+  ai1wm_exclude_media_from_export     // walked starting at wp-content/uploads
+  ```
 
-```
-ai1wm_exclude_content_from_export   // everything in wp-content except themes/plugins/uploads
-ai1wm_exclude_themes_from_export    // walked starting at wp-content/themes
-ai1wm_exclude_plugins_from_export   // walked starting at wp-content/plugins
-ai1wm_exclude_media_from_export     // walked starting at wp-content/uploads
-```
-
-If you want to skip a theme's cache folder, you need the themes hook. The content hook won't touch it, because the themes directory is already excluded from the content walk and iterated on its own.
+  If you want to skip a theme's cache folder, you need the themes hook. The content hook won't touch it, because the themes directory is already excluded from the content walk and iterated on its own.
+</Tldr>
 
 ## Why bother excluding anything
 
