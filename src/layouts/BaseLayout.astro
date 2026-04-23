@@ -23,8 +23,20 @@ const { title, description, image, article, publishDate, modifiedDate, category,
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
   <head>
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <link rel="preload" href="/fonts/geist-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
     <style is:inline>
@@ -81,14 +93,14 @@ const { title, description, image, article, publishDate, modifiedDate, category,
     <CommandPalette />
 
     <script is:inline>
-      (function () {
-        var saved = localStorage.getItem('theme');
-        var prefersDark = window.matchMedia(
-          '(prefers-color-scheme: dark)'
-        ).matches;
-        var theme = saved || (prefersDark ? 'dark' : 'light');
-        document.documentElement.dataset.theme = theme;
-      })();
+      document.addEventListener('astro:after-swap', function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {}
+      });
     </script>
 
     <script>
