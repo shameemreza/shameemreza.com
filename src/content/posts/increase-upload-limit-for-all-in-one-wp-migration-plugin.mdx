@@ -1,8 +1,8 @@
 ---
 title: "Solving the All-in-One WP Migration plugin upload size limit problem"
 date: 2019-09-18T10:04:49Z
-updated: 2026-04-21T00:00:00Z
-description: "The 512 MB upload size limit on All-in-One WP Migration isn't a server limit. It's a JavaScript check in the browser. Here's what actually blocks large imports, and a free plugin I built to remove it without touching any plugin files."
+updated: 2026-04-23T00:00:00Z
+description: "The 512 MB upload limit in All-in-One WP Migration isn't a server setting. It's a JavaScript check. Here's what actually stops large imports and how to raise the limit for free, without editing constants.php."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/increase-upload-limit-for-all-in-one-wp-migration-plugin.jpg"
@@ -27,13 +27,19 @@ All-in-One WP Migration has three top-level options in the admin: Export, Import
 
 ![All-in-One WP Migration export options](/uploads/export-options.png)
 
-If you dig into the free plugin's import page, the upload UI binds itself to `wp_max_upload_size()`, which WordPress computes from your PHP `upload_max_filesize` and `post_max_size`. That number gets written into a JS variable at page render time, and the frontend refuses to start an upload if the selected file exceeds it. That's the message everyone sees:
+Look at the free plugin's import page and the upload UI binds itself to `wp_max_upload_size()`, which WordPress computes from your PHP `upload_max_filesize` and `post_max_size`. That number gets written into a JS variable at page render time, and the frontend refuses to start an upload if the selected file exceeds it. That's the label everyone sees above the drop zone:
 
 ```
 Maximum upload file size: 512 MB.
 ```
 
-But here's the thing. That message is about the WordPress-reported limit, not about what the import can actually handle. Once an upload starts, All-in-One WP Migration splits the file into chunks, typically 5 MB, and sends each one as a small, bounded request. Your PHP `upload_max_filesize` never sees a 3 GB payload. It sees a stream of 5 MB ones.
+If you pick a larger file and try to upload, the dialog that pops up says:
+
+```
+The file that you are trying to import is over the maximum upload file size limit of 512 MB.
+```
+
+Both come from the same JS gate. The message is about the WordPress-reported limit, not about what the import can actually handle. Once an upload starts, All-in-One WP Migration splits the file into chunks, typically 5 MB, and sends each one as a small, bounded request. Your PHP `upload_max_filesize` never sees a 3 GB payload. It sees a stream of 5 MB ones.
 
 That means the entire concept of "raising the upload size limit" is the wrong frame. There's nothing to raise on the server, because the server never gets asked for it. You need to convince the browser-side check that the file is fine to upload. Then the existing chunked uploader handles everything.
 
@@ -41,7 +47,13 @@ That means the entire concept of "raising the upload size limit" is the wrong fr
 
 The old fix edited a constant called `AI1WM_MAX_FILE_SIZE` in the plugin's `constants.php`. Before version 7.71, that constant fed directly into the displayed limit and the JS gate. Bump the constant, both went up.
 
-Somewhere around 7.71, ServMask removed the constant and moved the check to `wp_max_upload_size()` filtered through an `ai1wm_pro` message block that doubles as an upsell for their paid extension. If you're reading an old tutorial that tells you to edit `constants.php`, you'll open the file, find nothing to edit, and wonder if the plugin was updated under you. It was. The whole approach is gone.
+Somewhere around 7.71, ServMask removed the constant and moved the check to `wp_max_upload_size()` filtered through an `ai1wm_pro` message block that doubles as an upsell for their paid extension. That filter prints this line on the import page:
+
+```
+Import failed. Your file exceeds the upload limit set by your host web server. Our Unlimited Extension bypasses this! If you prefer a manual fix, follow our step-by-step guide on raising your upload limit.
+```
+
+If you're reading an old tutorial that tells you to edit `constants.php`, you'll open the file, find nothing to edit, and wonder if the plugin was updated under you. It was. The whole approach is gone.
 
 ## The fix I use now
 
@@ -163,6 +175,32 @@ The two things I still see occasionally:
 - The JS patch didn't take effect, and the limit message still shows the old value. Usually this is browser caching. Hard-refresh the import page, or open it in a private window. The inline script runs on every page load, so a fresh fetch is enough.
 
 - The upload starts but fails midway. That's not a size problem, that's a timeout or memory problem on the destination server. Check the PHP error log, because the plugin logs detailed errors. The common culprits are exhausted memory from an unusually large `wp_options` dump and a reverse proxy (Cloudflare, Nginx) that kills long-running requests before the import finishes. Raising `max_execution_time` doesn't help, but bumping memory does.
+
+## Questions I get about this
+
+### Is there a maximum upload file size for the All-in-One WP Migration free version?
+
+The import page shows 512 MB, but that's the label from the JS gate. The uploader sends the archive in 5 MB chunks regardless of size. Once the gate is out of the way, what actually limits you is disk space and how long your PHP or reverse proxy will hold a request open.
+
+### Can I raise the limit without the Unlimited Extension?
+
+Yes. The paid Unlimited Extension toggles the same flag this plugin (and the snippet above) does. If you don't need their hosted backup and restore service, there's nothing the extension does for the upload limit that a short filter can't.
+
+### Why doesn't raising `upload_max_filesize` in php.ini or `.htaccess` fix it?
+
+Because All-in-One WP Migration never uploads the full file in one request. It chunks the archive before it hits PHP, so your server's `upload_max_filesize` is already irrelevant for this plugin. Raising it only moves the JS gate up by the same amount. That's useful for Media Library or WooCommerce product imports, where the real PHP limit matters, but it isn't the right fix here.
+
+### Where did `AI1WM_MAX_FILE_SIZE` in `constants.php` go?
+
+It was removed in version 7.71. The constant used to feed the displayed limit and the JS gate at the same time. After 7.71, the check reads from `wp_max_upload_size()` and an `ai1wm_pro` filter, which is what the plugin and snippet above target.
+
+### Does this also fix the Backups page Restore button?
+
+Yes. The Restore button on the Backups page is gated behind the paid extension by default. The plugin and snippet above define `Ai1wm.FreeExtensionRestore` so a one-click restore from an existing backup archive works without buying the extension.
+
+### Will a plugin or core update break this fix?
+
+It shouldn't. Everything goes through public hooks and no plugin files are modified. If ServMask renames a hook in a future release, the filter would silently do nothing until I update the snippet, but nothing about the underlying import would break.
 
 If you need to also exclude folders from your export to shrink the file before importing (which is often the simplest win), I wrote a [companion post on excluding files and folders from All-in-One WP Migration exports](/excluding-files-and-folders-in-all-in-one-wp-migration-plugin/) that walks through the four exclude hooks the plugin exposes.
 

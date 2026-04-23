@@ -1,7 +1,7 @@
 ---
 title: "Excluding files and folders in All-in-One WP Migration plugin"
 date: 2021-08-26T19:05:32Z
-updated: 2026-04-21T00:00:00Z
+updated: 2026-04-23T00:00:00Z
 description: "All-in-One WP Migration has four exclude filter hooks, not one. Here's which hook to use for uploads, themes, plugins, or the wp-content root, and why the common snippet you find online silently does nothing."
 category: "WordPress"
 categorySlug: "wordpress"
@@ -34,7 +34,7 @@ A WooCommerce site I migrated last year was 14 GB. Half of that was variation th
 
 Exclusions solve two problems at once. The export file shrinks. The migration actually finishes.
 
-If you're hitting the upload size limit on the destination rather than the size of the export itself, that's a separate problem. I wrote a tiny plugin to fix it, and a [post on how to lift the upload limit on All-in-One WP Migration](/increase-upload-limit-for-all-in-one-wp-migration-plugin/) that walks through it.
+If you're hitting the upload size limit on the destination rather than the size of the export itself, that's a separate problem. I wrote a tiny plugin to fix it, and a [post on how to increase the All-in-One WP Migration upload limit](/increase-upload-limit-for-all-in-one-wp-migration-plugin/) that walks through the 512 MB error, the removed `constants.php` constant, and the snippet.
 
 ## Why the common snippet fails
 
