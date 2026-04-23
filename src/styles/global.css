@@ -1176,6 +1176,77 @@ img {
   margin: 24px 0;
 }
 
+.prose .table-wrap {
+  --table-border: var(--border);
+  margin: 28px 0;
+  overflow-x: auto;
+  border: 1px solid var(--table-border);
+  border-radius: var(--r);
+  background: var(--bg-elevated);
+  box-shadow: var(--btn-shadow);
+}
+
+[data-theme='dark'] .prose .table-wrap {
+  --table-border: #334155;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.prose .table-wrap > table {
+  margin: 0;
+}
+
+.prose thead {
+  background: var(--bg-alt);
+}
+
+[data-theme='dark'] .prose thead {
+  background: #0f172a;
+}
+
+.prose th,
+.prose td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--table-border);
+  border-right: 1px solid var(--table-border);
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  border-right: none;
+}
+
+.prose th {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--table-border);
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.prose tbody tr:hover {
+  background: var(--card-hover-bg);
+}
+
+.prose td code,
+.prose th code {
+  font-size: 0.85em;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 /* ============================================================
    POST TAGS, SHARE, NAVIGATION
    ============================================================ */
@@ -2143,6 +2214,20 @@ pre:hover .code-copy-btn {
 
   .prose pre {
     margin: 20px 0;
+  }
+
+  .prose table {
+    font-size: 13.5px;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 8px 10px;
+  }
+
+  .prose td code,
+  .prose th code {
+    font-size: 0.9em;
   }
 
   .nl-form {
