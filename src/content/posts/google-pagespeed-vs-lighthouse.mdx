@@ -1,119 +1,86 @@
 ---
 title: "Google PageSpeed vs Lighthouse: how are they different?"
 date: 2022-09-13T12:21:30Z
-updated: 2026-04-22T12:37:55Z
-description: "PageSpeed Insights and Lighthouse both use the same engine but differ in scope and test conditions. Here's what each measures and when to use which."
+updated: 2026-04-24T10:00:00Z
+description: "PageSpeed Insights and Lighthouse both use the same engine but differ in scope and test conditions. Here's what each measures, why the scores don't match, and when to use which."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/google-pagespeed-vs-lighthouse.jpg"
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 If you run your site through a performance test, you'll likely reach for one of two tools: PageSpeed Insights or Lighthouse. They're both free, both made by Google, and both produce a number out of 100. People often assume they're the same tool with different names. They're not.
 
 PageSpeed Insights is the web-hosted tester at `pagespeed.web.dev`. It combines lab data (from a Lighthouse run) with field data (real Chrome users via CrUX). Lighthouse is the underlying engine you can run in Chrome DevTools, from the command line, or through a CI pipeline. That distinction explains most of the confusion about why the two scores don't always match.
 
+<Tldr>
+  Same engine, different context. Lighthouse is the audit engine. It runs in your browser or locally and gives you lab data only. PageSpeed Insights runs Lighthouse on Google's servers and stitches the result together with field data from real Chrome users (CrUX). Use PageSpeed Insights to check what real users are experiencing. Use Lighthouse in DevTools or CI to debug a specific page under a controlled test. The scores will often disagree, because one measures the page you just shipped and the other measures the last 28 days of real traffic.
+</Tldr>
+
 ## What is Lighthouse?
 
+Lighthouse is an open-source audit tool from Google. It's built into Chrome DevTools, available as a command-line tool, and runs on [web.dev/measure](https://web.dev/measure/). It gives you a score out of 100 for each of four categories:
 
-Lighthouse is a tool that helps developers build and maintain accessibility in their web applications. It is a web extension for Google Chrome and Microsoft Edge and a command-line tool.
+- Performance.
+- Accessibility.
+- Best practices.
+- SEO.
 
-[![](/uploads/GoogleLighthouse-1024x705.png)](/google-pagespeed-vs-lighthouse/googlelighthouse/#main)
+![Lighthouse audit running in Chrome DevTools](/uploads/GoogleLighthouse-1024x705.png)
 
-Lighthouse audits different things, such as:
+Each category comes with specific, actionable audits. The performance category breaks down the Core Web Vitals (LCP, CLS, INP), gives you a list of what's slowing the page down, and estimates how much you'd save by fixing each item.
 
-- Performance
-- Accessibility
-- SEO
-- Best practices include various issues such as HTTPS usage and correct image aspect ratios.
+![Lighthouse report showing scores and audit recommendations](/uploads/GoogleLighthouseReports-1024x705.png)
 
+## What is PageSpeed Insights?
 
-In short, Lighthouse is not just a tool for performance testing, though it includes performance testing as one of its audits.
+PageSpeed Insights is the web-hosted version at [pagespeed.web.dev](https://pagespeed.web.dev/). You paste in a URL, it runs Lighthouse for you in the background, and then layers in field data from the [Chrome User Experience Report (CrUX)](https://developer.chrome.com/docs/crux) when it's available.
 
-Lighthouse will give you a score of 100 for each category, along with recommendations (called "audits") for improving the score for each category. Here is an example test report:
+![PageSpeed Insights report for a URL](/uploads/GooglePageSpeedInsights-1024x596.png)
 
-[![](/uploads/GoogleLighthouseReports-1024x705.png)](/google-pagespeed-vs-lighthouse/googlelighthousereports/#main)
+The "field data" section is the important part. That's real-world performance for your site, based on actual Chrome users over the last 28 days. If your site doesn't have enough traffic for CrUX data, that section will be empty and you'll only see lab data from the Lighthouse run, which is the same thing you'd get from Lighthouse directly.
 
-## What are PageSpeed Insights?
+## Why the scores disagree
 
+You can run Lighthouse locally, get an 85, then hit PageSpeed Insights and see a 62 for the same URL. That's normal. Four things drive the gap.
 
-Google's PageSpeed Insights is a tool that analyzes a web page's performance. It provides insights on how to make a web page faster.
+### Lab vs field data
 
-[![](/uploads/GooglePageSpeedInsights-1024x596.png)](/google-pagespeed-vs-lighthouse/googlepagespeedinsights/#main)
+Lighthouse gives you lab data: one run, one test environment, one snapshot. PageSpeed Insights blends that same lab data with field data from CrUX, which is a rolling 28-day average across real visitors on real devices and networks. If your P75 mobile user is on a cheap Android over 4G, that's the experience CrUX captures, and it will almost always be slower than a controlled lab test.
 
- 
+### Test location and CPU
 
-Like Lighthouse, using Page Speed, you'll also get an overall performance score (out of 100), along with suggestions on optimizing your website for better performance.
+Lighthouse in your DevTools uses your actual machine and your actual network. PageSpeed Insights runs from one of a handful of Google data-center regions on a simulated slow 4G connection and a throttled CPU. The simulated device is roughly a mid-tier Android, not the MacBook you're running Chrome on.
 
-## Similarities and Differences Between PageSpeed Insights and Lighthouse
+### Network throttling
 
+PageSpeed Insights throttles to a simulated slow 4G. Lighthouse in DevTools uses whatever throttling profile you select (by default, also slow 4G on mobile). If your DevTools preset is "No throttling" while comparing to PageSpeed Insights, you're not comparing the same thing.
 
-Google's PageSpeed Insights and Lighthouse tools are both designed to help improve website performance. Both tools provide information on improving website speed and suggest fixing issues.
+### Page variability
 
-However, there is a crucial difference between PageSpeed Insights and Lighthouse tools:
+A single Lighthouse run can move 5 to 10 points just from variability, third-party ads, A/B tests firing, CDN warm vs cold. Comparing one local run to one hosted run is not a reliable signal. If you want a real number, run Lighthouse three or five times, take the median, and compare to the PageSpeed Insights score for the same URL on the same day.
 
-PageSpeed Insights is focused on providing information about website speed and how to improve it. In contrast, Lighthouse provides information about all aspects of website performance, including speed, accessibility, and SEO.
+## When to use which
 
-Despite these differences, both PageSpeed Insights and Lighthouse are excellent tools for improving the performance of your website.
+Use PageSpeed Insights when you want to know how real users are experiencing your site. It's the number you should track over time and the one Google uses for the Core Web Vitals signal in Search.
 
-PageSpeed Insights gives you a view that's closer to what real users actually see. Lighthouse gives you a fuller picture of your site's quality across categories.
+Use Lighthouse in DevTools or via `npx lighthouse` when you're debugging a specific page. You can re-run it as often as you want, test different device profiles, and see the detailed audit list without waiting for a hosted run. It's also the right tool for CI, so you can fail a deploy if performance regresses past a threshold.
 
-You will get the same performance reports because the PageSpeed Insights test tool is based on the Lighthouse tool. Whether you test your website using PageSpeed Insights or the Lighthouse tool, you'll see the same performance metrics and suggestions.
+## A shorter list of other speed tools
 
-There is also a difference in how to run tests. To use PageSpeed Insights, you can run the test from its website only, while Lighthouse can be run from the Chrome Developer tools, web.dev, command line, and more.
+If you want a second opinion:
 
-## Should you use PageSpeed Insights or Lighthouse?
+- [WebPageTest](https://www.webpagetest.org/): the best free tool for detailed waterfall analysis and filmstrips.
+- [GTmetrix](https://gtmetrix.com/): uses Lighthouse under the hood with a simpler report UI.
+- [Pingdom Tools](https://tools.pingdom.com/): simpler score but useful for quick checks from specific regions.
+- [Chrome DevTools Performance tab](https://developer.chrome.com/docs/devtools/performance/): for deeper profiling than Lighthouse alone.
 
+For most WordPress sites, PageSpeed Insights plus occasional runs of WebPageTest is enough to tell you whether the site is fast enough and, if not, exactly where to look.
 
-PageSpeed Insights is the best option if you're interested in analyzing your site's performance/load times.
+## Two sides of improving site speed
 
-PageSpeed Insights will include the Lighthouse performance audit; also, you can test both mobile and desktop at once, view real-world data from Google, and see more diagnostic tips to improve the per.
+There's a technical side: compressing images, serving from a CDN, cutting down on JavaScript, picking a solid host. And there's an operational side: measuring the right metrics, watching them over time, and not chasing a 100/100 score at the cost of what real users actually see.
 
-On the other hand, if you want more detailed data about your site, including accessibility and SEO, you should use Lighthouse.
-
-## Why the PageSpeed Insights score differs from the Lighthouse score
-
-
-If you're familiar with Google's PageSpeed Insights tool, You may have also used the Lighthouse tool, which is a similar tool that provides performance metrics for your website.
-
-You may have noticed that your PageSpeed Insights score differs from your Lighthouse score. There are many reasons for this, and it is normal. So don't worry that you're doing wrong.
-
-PageSpeed Insights uses a different algorithm than Lighthouse.
-
-PageSpeed Insights is focused on a page's loading time, while Lighthouse is focused on the overall performance of a page.
-
-**Test location** - Google PageSpeed Insights uses four locations based on your current location: Northwestern USA, Southeastern USA, Northeastern Europe, and Asia.
-
-However, if you use Lighthouse using Chrome Developer Tools, it will use your actual physical location for the testing, which will impact the results.
-
-**Network throttling** is a bit technical, but different Lighthouse tests/tools might use different configurations and methods for connection speed throttling, which will lead to other scores (AKA how fast the internet speeds are - like 3G vs. 4G).
-
-**CPU performance** - This is also a little technical, but different tools might use different configurations for CPU performance, affecting the score (especially for JavaScript-heavy sites).
-
-It's also common to see different numbers between the lab data from Lighthouse and the field data in PageSpeed Insights. PageSpeed Insights simulates a slow 3G connection for its lab tests, while most of your real visitors are on faster connections.
-
-## Other speed test tools worth trying
-
-Site speed matters because it affects rankings, conversions, and how long visitors stick around. A slow site loses users before they ever see your content.
-
-Here are our top picks:
-
-- [Pingdom](https://tools.pingdom.com/)
-- [Google PageSpeed Insights](https://pagespeed.web.dev/)
-- [Google Mobile Website Speed Testing Tool](https://testmysite.thinkwithgoogle.com/)
-- Google Analytics Site Speed
-- [WebPageTest](https://www.webpagetest.org/)
-- [GTMetrix](https://gtmetrix.com/)
-- [KeyCDN Website Speed Test](https://tools.keycdn.com/speed)
-- [DareBoost](https://www.dareboost.com/en)
-- [Web Page Analyzer](http://www.websiteoptimization.com/services/analyze/)
-- [YSlow](http://yslow.org/)
-- [Chrome DevTools](https://developer.chrome.com/docs/devtools/)
-- [Site Relic](https://geekflare.com/tools)
-- [dotcom-monitor](https://www.dotcom-tools.com/website-speed-test)
-- [New Relic](https://newrelic.com/)
-
-
-There are two sides to improving site speed. One is technical: compressing images, serving assets from a CDN, cutting down on JavaScript, and picking a solid host. The other is operational: measuring the right metrics, watching them over time, and not chasing a 100/100 score at the cost of the actual user experience.
-
-If you're on WordPress, the single biggest speed lever is usually your host. I work at Automattic, so my recommendation is [WordPress.com](https://wordpress.com) for most sites or [Pressable](https://pressable.com) if you want more developer control. Both include CDN and caching out of the box, which handles most of what a stack of speed plugins tries to patch on top of slower hosts.
+If you're on WordPress, the biggest speed lever is usually your host. I work at Automattic, so my recommendation is [WordPress.com](https://wordpress.com) for most sites or [Pressable](https://pressable.com) if you want more developer control. Both include CDN and caching out of the box, which handles most of what a stack of speed plugins tries to patch on top of slower hosts.

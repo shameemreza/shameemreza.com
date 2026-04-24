@@ -1,7 +1,7 @@
 ---
 title: "Strict vs loose equality in JavaScript"
 date: 2023-01-20T12:39:30Z
-updated: 2026-04-19T16:42:03Z
+updated: 2026-04-24T10:00:00Z
 description: "JavaScript has two equality operators: === checks both value and type, while == only checks value with type coercion. Here's when to use each one."
 category: "Development"
 categorySlug: "development"
@@ -9,18 +9,25 @@ featuredImage: "/uploads/strict-vs-loose-equality-in-javascript.jpg"
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 JavaScript has two equality operators that look almost identical but behave very differently: `===` (strict) and `==` (loose). Strict compares value and type. Loose compares value after coercing the types to match. The result is that `1 === "1"` is `false` and `1 == "1"` is `true`. That one-character difference can change how your code behaves, so it's worth knowing exactly when to use each.
 
+<Tldr>
+  Use `===` by default. It compares both value and type, so `1 === "1"` is `false` and there are no coercion surprises. Reach for `==` only when you want a string and a number version of the same value to match, or when you want `null` and `undefined` to match in a single check. If your project has ESLint, turn on the `eqeqeq` rule and stop thinking about it.
+</Tldr>
 
 ## Strict equality (===)
 
 
 
-Strict equality, also known as **"triple equals"**, compares both the value and the type of two operands. It returns true if the operands are equal and of the same type.
+Strict equality, also known as "triple equals", compares both the value and the type of two operands. It returns true if the operands are equal and of the same type.
 
-[caption id="attachment_6681" align="aligncenter" width="754"][![](/uploads/strict-equality.png)](/strict-vs-loose-equality-in-javascript/strict-equality/#main) [JS Equality Comparison Table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/)[/caption]
+![JavaScript strict equality comparison table](/uploads/strict-equality.png)
 
-**Strict equality example:**
+Source: [JavaScript equality table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/).
+
+Strict equality example:
 
 
 ```
@@ -37,11 +44,13 @@ In the first example, both operands are of the same type (number) and have the s
 
 
 
-Loose equality, also known as **"double equals"**, compares the values of two operands without considering their types. It returns true if the operands are equal, regardless of their type.
+Loose equality, also known as "double equals", compares the values of two operands without considering their types. It returns true if the operands are equal, regardless of their type.
 
-[caption id="attachment_6682" align="aligncenter" width="806"][![](/uploads/loose-equality.png)](/strict-vs-loose-equality-in-javascript/loose-equality/#main) [JS Equality Comparison Table by dorey](https://dorey.github.io/JavaScript-Equality-Table/)[/caption]
+![JavaScript loose equality comparison table](/uploads/loose-equality.png)
 
-**Loose equality example:**
+Source: [JavaScript equality table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/).
+
+Loose equality example:
 
 
 ```
@@ -58,12 +67,11 @@ In the first example, both operands are of the same type (number) and have the s
 
 
 
-In general, it is best to use strict equality whenever possible because it avoids the confusion that type coercion can cause. However, there are some cases where loose equality is useful:
+In general, it's best to use strict equality whenever possible because it avoids the confusion that type coercion can cause. There are a few cases where loose equality is useful:
 
-
-- When comparing a variable to null or undefined
-- When comparing a variable to a boolean
-- When comparing a variable that may be a string or a number
+- When comparing a variable to `null` or `undefined`.
+- When comparing a variable to a boolean.
+- When comparing a variable that may be a string or a number.
 
 
 

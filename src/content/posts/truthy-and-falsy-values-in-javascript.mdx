@@ -1,7 +1,7 @@
 ---
 title: "Truthy and falsy values in JavaScript"
 date: 2023-01-23T09:44:16Z
-updated: 2026-04-17T14:55:21Z
+updated: 2026-04-24T10:00:00Z
 description: "In JavaScript, values like 0, empty strings, null, and undefined are falsy, while almost everything else is truthy. Here's how this affects your conditionals."
 category: "Development"
 categorySlug: "development"
@@ -9,9 +9,15 @@ featuredImage: "/uploads/truthy-and-falsy-values-in-javascript.jpg"
 draft: false
 ---
 
+import Tldr from '../../components/Tldr.astro';
+
 Every JavaScript conditional asks the same question: is this value truthy or falsy? The answer isn't always obvious. An empty array is truthy. The string `"0"` is truthy. The number `-1` is truthy. But the number `0`, the empty string, and `null` are all falsy. Once you know the exact list, the rest of the language stops surprising you.
 
-## What are Truthy and Falsy Values in JavaScript?
+<Tldr>
+  There are exactly six falsy values in JavaScript: `false`, `0` (including `-0` and `0n`), `""`, `null`, `undefined`, and `NaN`. Everything else is truthy, including empty arrays, empty objects, and the string `"0"`. In any boolean context (`if`, `&&`, `||`, `!`, ternary), JavaScript coerces to one of those two sides. To check a specific value, use `Boolean(value)` or a plain `if (value)`.
+</Tldr>
+
+## What are truthy and falsy values in JavaScript?
 
 
 In [JavaScript](/strict-vs-loose-equality-in-javascript/), a truthy value is any value that evaluates to true when used in a boolean context. For example, the number 1, the string `"hello"`, and `the array [1, 2, 3]` are all truthy values.
@@ -20,7 +26,7 @@ On the other hand, a falsy value is any value that evaluates to false when used 
 
 Not every value behaves the way you'd expect. The number `-1` is truthy, even though it's not positive. The keyword `undefined` is falsy, even though it isn't `0` or an empty string. The list of falsy values is short and worth memorizing, because everything outside that list is truthy.
 
-## How to Use Truthy and Falsy Values in JavaScript?
+## How to use truthy and falsy values in JavaScript
 
 
 One of the most common ways to use truthy and falsy values in JavaScript is in conditional statements. For example, consider the following if-else statement:
@@ -37,22 +43,21 @@ if (x) {
 
 In this example, the variable `x` is assigned the value 0, which is a falsy value. Therefore, the code inside the else block will be executed, and the string `"x is falsy"` will be logged to the console.
 
-Another way to use truthy and falsy values is with the logical operators `&&` and `||`. For example, the following code will return `"hello"` if the variable name is truthy, and `"world"` if it's falsy:
+Another common use is with the logical operators `&&` and `||`. The code below logs `"hello"` when `name` is truthy and `"world"` when it's falsy:
 
 ```
 let name = "John";
 console.log(name && "hello" || "world");
 ```
 
+Since `name` is truthy, `name && "hello"` resolves to `"hello"`. Then `"hello" || "world"` short-circuits on the first truthy value and returns `"hello"`. If you set `name = ""`, the same expression returns `"world"` instead.
 
-In this example, the expression name `"hello"` will evaluate to `"hello"` because the variable name is truthy. Therefore, the entire expression will be evaluated to `"hello"` and returned.
-
-## How to check if a value is truthy or falsy JavaScript?
+## How to check if a value is truthy or falsy in JavaScript
 
 
 In JavaScript, you can check if a value is truthy or falsy by using the if statement or the Boolean() function.
 
-### Using the if statement:
+### Using the if statement
 
 
 
@@ -68,7 +73,7 @@ if (x) {
 
 In this example, the variable `x` is assigned the value `0`, which is a falsy value. Therefore, the code inside the else block will be executed, and the string `"x is falsy"` will be logged to the console.
 
-### Using the Boolean() function:
+### Using the Boolean() function
 
 
 
@@ -83,19 +88,19 @@ The `Boolean()` function is a built-in JavaScript function that returns the bool
 ## What are the falsy values in JavaScript?
 
 
-In JavaScript, several values are considered `"falsy"` which evaluates to false when used in a boolean context. These are:
+In JavaScript, the list of falsy values is short. These are the values that evaluate to `false` in a boolean context:
 
-- **false:** the keyword false is a boolean value that is considered falsy.
-- **0:** the number 0 is falsy in JavaScript.
-- **"" (empty string):** an empty string is considered falsy.
-- **null:** the keyword null is considered falsy.
-- **undefined:** the keyword undefined is considered falsy.
-- **NaN (Not a Number):** the special value NaN is considered falsy.
+- `false`, the boolean literal.
+- `0`, the number zero, including `-0` and `0n` (BigInt zero).
+- `""`, an empty string (also `''` and the empty template literal).
+- `null`.
+- `undefined`.
+- `NaN`, the special "Not a Number" value.
 
 
 Anything not in that list is truthy. That includes things people often trip over, like an empty object `\{\}` or an empty array `[]`. Both are truthy, even though they hold nothing. So is the string `"0"`, because it's a non-empty string, not the number zero.
 
-## Is \{\} truthy or Falsy JS?
+## Is an empty object truthy or falsy in JavaScript?
 
 
 In JavaScript, an empty object `\{\}` is considered a truthy value. This is because, in JavaScript, all objects are considered truthy values and will evaluate to true when used in a boolean context.

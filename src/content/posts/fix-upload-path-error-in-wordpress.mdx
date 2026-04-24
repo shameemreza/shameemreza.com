@@ -1,88 +1,56 @@
 ---
-title: "Fix Upload Path Error in WordPress"
+title: "How to fix the upload path error in WordPress"
 date: 2021-06-03T18:32:02Z
-description: "Learn how to fix the upload path error in WordPress to prevent your images from returning errors when uploading or after migration of the site."
+updated: 2026-04-24T10:00:00Z
+description: "If images stop loading after a WordPress migration, the upload path is almost always the cause. Here's how to set it explicitly in wp-config.php, or fix it with a plugin."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/fix-upload-path-error-in-wordpress.jpg"
 draft: false
 ---
 
-Has it ever happened to you that after a migration or after [migrating the site](/increase-upload-limit-for-all-in-one-wp-migration-plugin/) the [WordPress](/wordpress/) media images no longer work correctly?
+import Tldr from '../../components/Tldr.astro';
 
-Usually this is happen, because the media path has changed. And most of us we face it after doing [WordPress website migration](/increase-upload-limit-for-all-in-one-wp-migration-plugin/), either Manual WordPress website migration or Migration using any WordPress Plugin.
+After migrating a WordPress site, the single most common post-launch bug is the one where all the images are broken. The posts are there, the thumbnails are generated, but nothing loads. Nine times out of ten, the cause is the same: WordPress is looking for media at a path that no longer matches where the files live.
 
-In this article we will see how to correct this problem by correcting the media path by a correct path, we will do it by code and also using a plugin.
+<Tldr>
+  WordPress stores its upload path in the `upload_path` option. When you migrate between hosts, the old absolute path sometimes carries over and breaks every image on the site. Fix it by adding `define( 'UPLOADS', 'wp-content/uploads' );` to `wp-config.php`, or install [WP Original Media Path](https://wordpress.org/plugins/wp-original-media-path/) and set the path there. Do this on a fresh migration, not on a live site with existing images in the old location.
+</Tldr>
 
-## What problems does having the wrong media path generate?
+## What a bad upload path actually breaks
 
+When the path is wrong, uploads still succeed but WordPress writes them to the wrong directory, so the admin preview and the frontend both point at a URL that 404s. Existing images can break at the same time if the old install used an absolute path that doesn't exist on the new server.
 
-The main problem is that you will not be able to upload the images correctly and the thumbnails are not generated correctly.
+You can confirm it's a path issue by checking `Settings → Media → Store uploads in this folder` in the database (the `upload_path` option in `wp_options`). If it's empty, WordPress uses the default. If it's set to something like `/home/oldhost/public_html/wp-content/uploads`, that's your problem.
 
-You may not see the thumbnail images since the referenced path is not correct or you do not have the correct permissions.
+## Option 1: set it in wp-config.php
 
+Open `wp-config.php` at the root of your WordPress install and add this above the `/* That's all, stop editing! Happy publishing. */` line:
 
-## Correct media path by code
-
-
-
-The default path that WordPress uses to save the media is: `/wp-content/uploads`
-
-Make sure first if this folder exists and has subfolders with the images of your site.
-
-Then locate the **wp-config.php** file that is in the root of your WordPress installation and add the following line of code:
-
-
-```
-define( 'UPLOADS', '/wp-content/uploads' );
+```php
+define( 'UPLOADS', 'wp-content/uploads' );
 ```
 
+The path is relative to your WordPress root, without a leading slash. This overrides whatever is stored in the database and gives you a consistent path that travels with your site.
 
+If your uploads directory is somewhere custom, swap in the right relative path. Just make sure the folder actually exists on the server and has the usual year/month subfolders inside it.
 
-Obviously the path that you have by default can be changed, just make sure that the path is a path based on the root where your website is.
+## Option 2: use the WP Original Media Path plugin
 
-You can put that code before the final comment line:
+If editing `wp-config.php` isn't an option (restricted hosting, managed WordPress, etc.), [WP Original Media Path](https://wordpress.org/plugins/wp-original-media-path/) does the same job through the UI.
 
+![WP Original Media Path plugin in the repository](/uploads/wp-original-media-path-1024x463.png)
 
-```
-/* That's all, stop editing! Happy publishing. */
-```
+After installing, you'll see a new entry under **Settings**.
 
+![WP Original Media Path settings screen](/uploads/wp-original-media-path-setting-1024x468.png)
 
+You don't need expert mode for the common case. Just enter the path from your domain root (usually `/wp-content/uploads`) and save. The plugin writes the value into the database and WordPress picks it up on the next request.
 
+## A warning about live sites
 
-## Fix the WordPress Media path Error through a plugin
+This fix is for fresh migrations or sites with the wrong default path set. Don't change the upload path on a working site that already has images uploaded.
 
+If you do, WordPress writes new uploads to the new path while every existing image stays at the old one. You end up with two upload directories and a broken media library. If you really need to move an existing uploads folder, move the files first, then update the path, then run a search-and-replace on the database for the old URLs.
 
-
-Unfortunately in current versions of WordPress it is not included to change the media path through the configuration screen, so if you get complicated with the code you can evaluate using a plugin.
-
-The plugin that we will use will be [WP Original Media Path](https://wordpress.org/plugins/wp-original-media-path/).
-
-[![](/uploads/wp-original-media-path-1024x463.png)](/fix-upload-path-error-in-wordpress/wp-original-media-path/)
-
-After downloading and installing the plugin we will see a new option in the Settings menu:
-
-[![](/uploads/wp-original-media-path-setting-1024x468.png)](/fix-upload-path-error-in-wordpress/wp-original-media-path-setting/)
-
-It will not be necessary to activate the expert mode, simply define the path from your domain and the plugin will establish the path for the images.
-
-In the previous image the path is the default path of WordPress `/wp-content/uploads`
-
-
-## Changing the path on an existing site
-
-
-
-Keep in mind that this process is only recommended for new sites or sites that have the default path set incorrectly, for which you must explicitly specify the default path where the images are.
-
-If you make changes to the media path on an existing website that has images assigned to it, then you will have two locations for the images, since the previous images will continue in the old path, and the path change you make will only be for the new images.
-
-
-## Conclusion
-
-
-
-Note that if you don't see images from a site that has been migrated from the server or imported from another site, you may have to specify the WordPress media path explicitly.
-
-As we have seen, changing the WordPress media path is a simple process, especially if you do it through a plugin.
+For the standard post-migration case, setting the path once gets every image loading again.

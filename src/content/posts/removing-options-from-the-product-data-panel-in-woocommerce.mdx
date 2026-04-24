@@ -1,70 +1,59 @@
 ---
-title: "Removing Options from the Product Data Panel in WooCommerce"
+title: "Removing options from the product data panel in WooCommerce"
 date: 2023-04-05T07:35:43Z
-description: "The WooCommerce product editor can feel cluttered. Here's a simple code snippet to remove tabs like Inventory, Shipping, and Linked Products from the panel."
+updated: 2026-04-24T10:00:00Z
+description: "The WooCommerce product editor can feel cluttered when you only sell simple products. Here's the filter that hides tabs like Inventory, Shipping, and Linked Products from the Product data box."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/removing-options-from-the-product-data-panel-in-woocommerce.png"
 draft: false
 ---
 
-WooCommerce is one of the most popular eCommerce solutions for WordPress websites. Its flexibility, and wide range of customization options make it an ideal choice for online stores.
+import Tldr from '../../components/Tldr.astro';
 
-However, you may find the Product Data Panel in WooCommerce to be a bit overwhelming sometimes, with too many options that you don't need or use. Fortunately, removing these options is simple and can help simplify managing products on your website.
+The Product data box in the WooCommerce product editor ships with seven tabs by default. If you're selling digital products, one-off services, or a small catalog where nothing ever ships and nothing ever links to anything else, most of those tabs are just visual noise. The `woocommerce_product_data_tabs` filter lets you remove the ones you don't use.
 
-In this post, I will walk you through the steps to remove options from the Product Data Panel in WooCommerce.
+<Tldr>
+  Hook the `woocommerce_product_data_tabs` filter and `unset()` the tabs you don't need by key. The keys are `general`, `inventory`, `shipping`, `linked_product`, `attribute`, `variations`, and `advanced`. Drop the snippet into a child theme's `functions.php` or a code snippets plugin. To hide marketplace suggestions from the product screen, either uncheck "Display suggestions within WooCommerce" under **WooCommerce → Settings → Advanced → WooCommerce.com**, or filter `woocommerce_allow_marketplace_suggestions` to `__return_false`.
+</Tldr>
 
-### Step 1: Install and activate the Code Snippets plugin
+## Remove tabs with a filter
 
-Before you can remove options from the Product Data Panel in WooCommerce, you need to install and activate the Code Snippets plugin. This plugin allows you to add custom code snippets to your website without editing any files. It's a safe and easy way to change your website's functionality.
-
-If you don't want to install the Code Snippets plugin, you can also paste the code to your theme's functions.php file.
-
-### Step 2: Create a new snippet
-
-Once you have installed and activated the Code Snippets plugin, navigate to Snippets > Add New. Give your snippet a name and paste the following code in the code box:
+The `woocommerce_product_data_tabs` filter receives the full array of tab definitions. Unsetting a key removes that tab from the UI entirely.
 
 ```php
-// Remove options from the Product Data Panel in WooCommerce
-function remove_product_data_tabs( $tabs ) {
-    //unset( $tabs['general'] );
+add_filter( 'woocommerce_product_data_tabs', 'shameem_remove_product_data_tabs' );
+function shameem_remove_product_data_tabs( $tabs ) {
+    // Uncomment the lines for any tabs you want to hide.
+    // unset( $tabs['general'] );
     unset( $tabs['inventory'] );
     unset( $tabs['shipping'] );
     unset( $tabs['linked_product'] );
-    //unset( $tabs['attribute'] );
-    //unset( $tabs['variations'] );
-    //unset( $tabs['advanced'] );
+    // unset( $tabs['attribute'] );
+    // unset( $tabs['variations'] );
+    // unset( $tabs['advanced'] );
     return $tabs;
 }
-add_filter( 'woocommerce_product_data_tabs', 'remove_product_data_tabs', 10, 1 );
 ```
-This code removes the Inventory, Shipping, and Linked Products tabs from the Product Data Panel in WooCommerce. Add or remove the PHP comment (//) before a tab that you need to remove or show.
 
-### Step 3: Save and activate the snippet
+Save it as a new snippet in the [Code Snippets](https://wordpress.org/plugins/code-snippets/) plugin, or paste it into your child theme's `functions.php`. Don't edit the parent theme, the change will disappear the next time the theme updates.
 
-After pasting the code in the code box, click on the "Save Changes and Activate" button. This will save the code as a new snippet and activate it on your website.
+Open any product and the tabs you unset are gone:
 
-### Step 4: Check the Product Data Panel
+![WooCommerce product data panel with tabs removed](/uploads/woocommerce-product-panel-option-1024x289.png)
 
-Now go to any product on your website and check the Product Data Panel. You should see that the Inventory, Shipping, and Linked Products tabs are no longer there.
+## Hide marketplace suggestions on the product screen
 
-[![](/uploads/woocommerce-product-panel-option-1024x289.png)](/removing-options-from-the-product-data-panel-in-woocommerce/woocommerce-product-panel-option/)
+The "Get more options" block that appears on the product screen is a marketplace upsell. You can turn it off in settings without touching code. Go to **WooCommerce → Settings → Advanced → WooCommerce.com** and uncheck **Display suggestions within WooCommerce**.
 
-## Hide Marketplace Suggestions from Product Panel in WooCommerce
+![Toggle to disable WooCommerce marketplace suggestions in settings](/uploads/disable-woocomemrce-suggestion-1024x600.png)
 
-To remove the "Get more options" or marketplace suggestions from the product panel in WooCommerce, follow these simple steps:
-
-- Head over to **WooCommerce > Settings > Advanced > WooCommerce.com**.
-- Uncheck the box before "Display suggestions within WooCommerce."
-- Click on save, and voila! You're all set
-
-[![](/uploads/disable-woocomemrce-suggestion-1024x600.png)](/removing-options-from-the-product-data-panel-in-woocommerce/disable-woocomemrce-suggestion/)
-
-If you want to use a code snippet to remove WooCommerce marketplace suggestions, simply add it to the code snippet plugin or your theme's functions.php file.
+If you'd rather enforce it in code so it stays off across deploys, add this one-liner to the same snippet file:
 
 ```php
 add_filter( 'woocommerce_allow_marketplace_suggestions', '__return_false' );
 ```
-## Conclusion
 
-Removing options from the Product Data Panel in WooCommerce can help simplify managing products on your website. With the help of the Code Snippets plugin and a simple code snippet, you can easily remove options that you don't need or use. If you have any questions or need further assistance, feel free to leave a comment below.
+Both approaches do the same thing. The setting is easier for a single site. The filter is safer for a multi-site or client workflow where you don't want someone re-enabling it by accident.
+
+Each of these snippets is safe to drop into a child theme or the Code Snippets plugin. Remove them the same way if you change your mind later.

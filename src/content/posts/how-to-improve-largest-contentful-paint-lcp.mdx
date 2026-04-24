@@ -1,151 +1,93 @@
 ---
 title: "How to improve Largest Contentful Paint (LCP)"
 date: 2021-11-04T05:09:03Z
-updated: 2026-04-22T17:19:08Z
-description: "LCP measures how fast the largest visible element loads and counts for 25% of your PageSpeed score. Here are practical ways to speed it up on WordPress."
+updated: 2026-04-24T10:00:00Z
+description: "LCP measures how fast the largest visible element loads, and it counts for 25% of your PageSpeed score. Here's what actually moves the number on WordPress, with a list of second-order fixes at the end."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/how-to-improve-largest-contentful-paint-lcp.jpg"
 draft: false
 ---
 
-Largest Contentful Paint (LCP) is a Core Web Vitals metric: it measures the time it takes for the largest item to become visible in the viewport. Until the LCP is loaded, you will hardly see anything on the page. The LCP element is always located above the waterline, that is to say, at the top of the page being loaded.
+import Tldr from '../../components/Tldr.astro';
 
-While the LCP is typically an image or a block of text, it can also be a video or animation. The LCP element can also differ depending on whether the same page is requested on a smartphone or desktop.
+Largest Contentful Paint is the Core Web Vitals metric that measures how long it takes for the largest visible element in the viewport to render. Until the LCP element paints, the page looks half-broken. In practice, it's usually the hero image, a large heading, or a video poster frame.
 
-![](/uploads/shameem-website-speed-1024x451.png)
+Google wants the LCP under 2.5 seconds for a "good" rating. LCP is weighted at 25% of the PageSpeed performance score, and it feeds directly into the Core Web Vitals signal for Search. If one number moves your speed score and your SEO at the same time, it's this one.
 
-As you might expect, "the largest element" is the most important in the user experience and actual or perceived loading speed. If the largest element on the page is not loading quickly, the user experience will not be good.
+![Shameem website speed report](/uploads/shameem-website-speed-1024x451.png)
 
-Often you will even leave the site! Because, how long do you stare at a nearly blank page, waiting for the page to load?
+<Tldr>
+  Fix the host, fix the LCP image. Those two changes move the number more than anything else. On WordPress, the host decides your server response time, which is the floor for every Core Web Vital. The LCP image decides your ceiling, because it's usually the largest file that has to download before the page feels ready. Everything else (minification, unused CSS, service workers, code-splitting) is second-order. It compounds on top of a fast host and an optimized hero image, not in place of them.
+</Tldr>
 
-When browsing a site, a few seconds of waiting for less can make a huge difference, which is why Google has included LCP in one of its "Core Web Vitals" metrics, which measure the quality of your performance and User experience.
+## What causes a slow LCP
 
-LCP represents 25% of the overall PageSpeed ​​Insights score: by improving its performance, you will probably improve your rating, and with it, your user experience and your SEO score.
+Before you fix anything, run the page through PageSpeed Insights or the Core Web Vitals report in Search Console to see what your actual LCP is. From there, the usual suspects are:
 
-In short, LCP is one of the most important performance metrics today.
+- **Slow server response time.** The browser can't render anything until the HTML arrives. If TTFB is bad, LCP can't be good.
+- **Render-blocking JavaScript and CSS.** Every synchronous script or external stylesheet in the `<head>` delays first paint. The more plugins and the heavier the theme, the worse this gets.
+- **Large hero assets.** A 3 MB PNG as the LCP element is the most common cause I see on WordPress sites. Resize, compress, and serve it at the dimensions you're actually using.
+- **Client-side rendering.** If your hero is rendered by JavaScript after hydration, the browser has to download and parse JS before anything paints. Server-rendered HTML almost always gives you a better LCP.
 
-## What are the causes of slow "Largest Contentful Paint"?
+## The two fixes that actually move the number
 
+### Move to a host that prioritises performance
 
-Measurement tools like PageSpeed ​​Insights or Search Console (in the Core Web Vitals report) will tell you how long it takes for the LCP to load.
+LCP is a measure of how fast content arrives. Everything after TTFB compounds on top of TTFB. If your host is slow, you can optimise the page for a week and barely move the number.
 
-The most common causes of a bad LCP are:
+If you're on WordPress, I work at Automattic, so my go-tos are [WordPress.com](https://wordpress.com) for most sites and [Pressable](https://pressable.com) when you need SFTP, SSH, staging, or you're managing client sites at scale. Both run on WP Cloud with global caching baked in. Shared hosting is almost always where poor LCP starts.
 
-## 1. Slow server response times
+### Optimize the LCP image
 
+Open the PageSpeed Insights report and look at the "Largest Contentful Paint element" line. That's the one file you need to fix first.
 
-A slow server will negatively affect all of your website load speed metrics, not just the LCP.
+- Serve it in WebP or AVIF if you can. Both cut file size by 30 to 60% compared to PNG at the same quality.
+- Resize it to the dimensions actually displayed. A hero image rendered at 1200 pixels wide doesn't need a 4000-pixel-wide source.
+- Add `fetchpriority="high"` on the `<img>` tag so the browser prioritises it over other resources.
+- If it's a custom field image in a theme template, preload it with `<link rel="preload" as="image" href="...">` in the `<head>`.
 
-Even if all your resources are optimized, it will be useless if you have a poorly performing server.
+The combination of a correctly-sized WebP plus `fetchpriority="high"` is usually the single biggest LCP improvement on a content-heavy WordPress site.
 
-## 2. JavaScript and CSS block rendering
+## Second-order fixes
 
+These matter, but they move the number less than the two above. Do them after the host and the hero image are sorted.
 
-Suppose you are adding a lot of plugins to your website or have chosen a very elaborate theme. In that case, you may need to reconsider some choices: adding JavaScript and CSS (especially above the waterline) strongly affects loading times.
+### Use a CDN
 
-Whenever a browser encounters a synchronous script or an external stylesheet, it delays the final rendering of a web page.
+A [CDN](https://en.wikipedia.org/wiki/Content_delivery_network) caches your static assets at edge locations close to your visitors. For a visitor in Madrid, a file served from Frankfurt is dramatically faster than the same file served from your origin in Virginia.
 
-## 3. Resource loading time
+I use [BunnyCDN](https://bunny.net) for most projects. It's cheap and fast. Cloudflare's free tier works too if you want a zero-cost option. Both WordPress.com and Pressable include a CDN by default, so you usually don't need to configure one separately if you're on WP Cloud.
 
+### Cache aggressively
 
-Images, videos, and blocks of text displayed above the waterline also directly affect load time.
+If your host doesn't already cache HTML at the edge, use a caching plugin like WP Rocket. If it does (WP Cloud, Kinsta, Cloudways), don't add a caching plugin on top, you'll fight with the host's cache and create weird invalidation bugs.
 
-Large elements, such as the Hero Header (a large, often imposing banner with texts, buttons, etc.), must be optimized to reduce loading times.
+### Service workers for returning visitors
 
-## 4. Client-side rendering
+A service worker can serve the cached HTML instantly on a repeat visit while it revalidates in the background. LCP drops to near-zero on second page views. This is a real win for content sites, but it's complex to set up correctly, and it's only worth the effort after the host and hero image are fixed.
 
-Client-side rendering is common, but it hurts LCP because the browser has to download and run JavaScript before any of the hero content shows up. If you're using a framework like Next.js or Remix, server-side rendering or static generation usually gives you a better LCP for free.
+### Reduce render-blocking JS and CSS
 
-## How to improve the "Largest Contentful Paint"?
+Open DevTools, go to the Coverage tab, and look at how much of your CSS and JS is unused on the first page view. For most WordPress themes, it's 60 to 80%. You don't need to get to zero, you just need the critical path to be fast.
 
+The two biggest wins here are:
 
-Here are some ways to improve the loading time of your LCP.
+- `defer` or `async` every script that isn't needed before first paint.
+- Inline the critical CSS for the above-the-fold content and load the rest asynchronously.
 
-## 1. Migrate to a better server
+Plugins like WP Rocket, FlyingPress, and Perfmatters automate both of these. Do them after you've squeezed the image wins, not before.
 
+### Compress everything else
 
-LCP is a measure of content. So it makes sense that one of the best ways to improve it is to start with how long it takes to fetch the content on your server.
+Enable Brotli or gzip on the server for HTML, CSS, and JS. Minify JS and CSS at build time. These are one-time changes that compound over every request but don't solve anything on their own.
 
-If your server response time is poor when performing performance scans, switch it up!
+## The priority order, one more time
 
-If you're on WordPress, pick a managed host that prioritises performance. I work at Automattic, so my go-tos are [WordPress.com](https://wordpress.com) for most sites and [Pressable](https://pressable.com) when you need SFTP, SSH, staging, or you're managing client sites at scale. Both run on WP Cloud with global caching baked in. Shared hosting is almost always where poor LCP starts.
+If you remember one thing from this post:
 
-## 2. Set up a CDN
+1. Fast host.
+2. Optimized LCP image with `fetchpriority="high"` and preload.
+3. Everything else.
 
-
-A [CDN](https://en.wikipedia.org/wiki/Content_delivery_network) is a content delivery network that stores your content on servers spread across the globe: rather than having your content stored in one place, when a user requests a page, the content is served from the closest server to him.
-
-So if your LCP element is a large image file, your visitor from Madrid will not have to wait for the file to be routed by cable from your server in Strasbourg.
-
-Less distance to travel = less time to deliver content.
-
-I am using [BunnyCDN](https://bunny.net) for my website, which is very cheap with good performance. If you don't want to spend money, you can also use the Cloudflare free package.
-
-[![](/uploads/bunnycdn-home-1024x489.png)](https://bunny.net)
-
-## 3. Set up a cache system
-
-
-If your CDN uses edge servers, you can cache your content, so it doesn't have to be reloaded every time.
-
-If your CDN does not have such servers, you can still cache your content, managing it directly with your host.
-
-You can use WPRocket or any cache plugin on your WordPress website. But if you chose Rocket Hosting, then you don't need to worry about optimization.
-
-## 4. Serve cached HTML content through a service worker
-
-
-You can use a "service-worker" to serve the cached content first to make this even faster. So if your LCP is a cached image, the service worker will run in the browser's background and intercept requests from the server.
-
-It is thus possible to cache the HTML page's content and update the cache only when the content has changed, which makes it possible to deliver the Largest Contentful Paint even faster than with a simple CDN.
-
-## 5. Make content faster
-
-
-When a browser renders your content, it must first parse the HTML markup to transform it. However, if the latter encounters external style sheets or synchronous JavaScript tags in its path, it will interrupt this task to process these external resources.
-
-Scripts and stylesheets are resources that block rendering and therefore delay LCP. To prevent these resources from blocking your LCP from loading, report all non-critical JavaScript and CSS.
-
-You could also delete any unused CSS on that page or move it to another stylesheet.
-
-## 6. Optimize, compress and shrink all the content you can
-
-
-The goal of LCP is to make useful content appear on screen as quickly as possible. The loading time of the page elements has a direct effect on the LCP.
-
-Smaller files allow faster loading. Each byte gained improves LCP, so you have to hunt down too heavy content and lighten your entire site as much as possible.
-
-## Optimize and compress images
-
-
-Improved image loading and rendering times directly speed up LCP. To do this, convert the images to lighter formats such as JPEG or WebP, or compress them.
-
-Try to serve them at the exact dimensions provided in your code, such as the srcset attributes. Do not use images that are not useful.
-
-For automatic compression and WebP conversion on upload, ShortPixel and the core WordPress lazy loading (enabled by default since 5.5) cover most of what you need.
-
-## Preload important resources
-
-
-Even if you load optimized and compressed content, some elements of these resources may be embedded in a file that takes a long time for the browser to load.
-
-A text file can take extra seconds to load because the required font is in an external style sheet.
-
-If you have resources that need to be prioritized, such as the items that make up your LCP, try to get them back as soon as possible. Preload the critical assets that make up the first viewport, such as fonts, images above the waterline, and critical CSS or JavaScript paths.
-
-## Compress text files
-
-
-For text compression, there are compression algorithms that will reduce the weight of HTML, CSS, JavaScript, and text files as they are sent between the server and the browser.
-
-## Reduce the weight of your JS and CSS
-
-
-Downloading Javascript and CSS stylesheets prevents your site content from being visible or interactive quickly. Even though JavaScript is asynchronous and doesn't block rendering, it will "fight" for bandwidth while downloading, which reduces mobile performance.
-
-## A short note on priorities
-
-If you're only going to fix two things, fix your host and your LCP image. Those two changes tend to move the number more than anything else. Everything in this list is useful, but they compound on top of a fast server and an optimized hero image, not in place of them.
-
-Minification, unused-CSS pruning, and service workers are real wins, but they're second-order. A slow host with a 3 MB PNG as the LCP element will still score poorly no matter how aggressively you minify your JavaScript.
+A slow host with a 3 MB PNG as the LCP element will still score poorly no matter how aggressively you minify your JavaScript. Get the first two right before you spend an afternoon on the third.

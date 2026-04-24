@@ -1,427 +1,137 @@
 ---
-title: "Stop WordPress Spam Comment in Ninja Style"
+title: "How to stop WordPress spam comments without a pile of plugins"
 date: 2018-10-11T04:20:41Z
-description: "Spam comments are an ongoing problem in WordPress. Here are several methods to fight them, from Akismet and blacklist words to disabling HTML and blocking IPs."
+updated: 2026-04-24T10:00:00Z
+description: "You don't need six anti-spam plugins to keep spam comments under control. Akismet, a few Discussion setting tweaks, and stripping HTML from the comment form does most of the work."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/stop-wordpress-spam-comment-ninja-style.jpg"
 draft: false
 ---
 
-WordPress spam, Comment spam, Registration spam - These are the most common questions. I even saw people to use a lot of plugins or premium services to fight with WordPress Spam Comment.
+import Tldr from '../../components/Tldr.astro';
 
-As like others WordPress users, I also facing this spam comment and its bothering me a lot. Few years ago I developed and released a WordPress Spam block plugin. But latter I removed that as this could be done by WordPress default setting and some others tweaking.
+Spam comments were the first thing I fought on my first WordPress blog, and the pattern hasn't really changed. Bots crawl the web looking for open `wp-comments-post.php` endpoints, paste in a link-stuffed comment, and move on to the next site. Your job is to make it expensive enough that they skip yours.
 
+You don't need a stack of plugins for this. Most WordPress spam is handled by three things: Akismet, a few Discussion settings, and stripping HTML from the comment form. The rest is diminishing returns.
 
+<Tldr>
+  Turn on Akismet with an API key and enable "silently discard the worst and most pervasive spam." Tighten **Settings → Discussion** to hold comments with two or more links, disable trackbacks and pingbacks, and require approval for first-time commenters. Strip HTML from comments with a short filter in `functions.php`, and remove the URL field from the comment form. If that still isn't enough, block specific IPs in `.htaccess` or add an `.htaccess` rule that drops comment requests without a referrer from your own domain.
+</Tldr>
 
-I was happy with my One year without WordPress Spam protection plugin, but last few months again war has began with WordPress spam comment.
+## Akismet, with discard enabled
 
-So, I did bunch of research, applied some custom settings and code to see what actually works. And Probably I got the success to protect spam.
+[Akismet](https://akismet.com/) ships with every WordPress install. It's made by Automattic (where I work) and it catches most comment spam at the API level before the comment ever hits your database.
 
-Most popular WordPress related blog like [WP Tavern](https://wptavern.com), [Smashing Magazine](https://www.smashingmagazine.com/), [Torque](https://torquemag.io/) etc also suffer spam comment problem.
+![Akismet plugin page inside the WordPress admin](/uploads/Akismet-plugin-info-shameem.png)
 
-Okay enough Talking, now lets move on to stop spam comment. And yap, as I said in Ninja Style.
+Setup is short:
 
-## Stop WordPress Spam Comment in Ninja Style
+1. Sign up at [akismet.com](https://akismet.com/) and grab an API key. The personal plan is free.
+2. Go to **Plugins → Akismet** in WordPress, paste the key, and save.
+3. Open Akismet's settings and enable **Silently discard the worst and most pervasive spam**.
 
+![Akismet settings panel](/uploads/akismet-setting-shameem.png)
 
-There are a lot of WordPress Free and Premium plugin available to fight against Spam comment. I am not going to suggest you to install each and every plugin to increase your WordPress website loading time.
+That last option matters. Without it, Akismet still catches the obvious spam, but it dumps it into the Spam queue for you to eyeball. "Silently discard" throws away the worst of it automatically, so your queue only contains edge cases. On a busy blog, it's the difference between scanning 50 spam comments a week and scanning 500.
 
-## Akismet
+## Tune the Discussion settings
 
+**Settings → Discussion** already has enough levers to handle a lot of spam without any code. The combination I use on every site I run:
 
-[Akisme](https://akismet.com/)t is a most strange and popular advanced anti-spam services available from company name Automattic. This plugin is using by millions of user, even you may say it has been installed with every installation of WordPress.
+![WordPress Discussion settings screen](/uploads/wordpress-comment-setting-shameem.png)
 
-[![](/uploads/Akismet-plugin-info-shameem.png)](/stop-wordpress-spam-comment-ninja-style/akismet-plugin-info-shameem/)
+- **Comment must be manually approved.** On low-traffic sites, I just approve everything myself. On busier sites, I drop this and rely on the next two settings.
+- **Comment author must have a previously approved comment.** After someone's first approved comment, they can post freely. First-time commenters wait for review.
+- **Hold a comment in the queue if it contains N or more links.** Set `N` to 2. Spammers almost always include at least one link in the comment body plus the URL field, so 2 catches most of them without false-flagging real commenters.
+- **Disable trackbacks and pingbacks.** Both are abused constantly and rarely used for anything legitimate anymore. Uncheck "Allow link notifications from other blogs."
 
-Its not so hard to install and activate Akismet plugin. But to use it full features, you will need an [Akismet.com API](https://akismet.com/get/) key. Dont worry, they had Free personal use package with others premium package. Here is the awesome easy step to enable Akismet:
+## Block common spam keywords
 
-- Sign up for Akismet account or log in to an existing one
-- Get your API key
-- Navigate to *Settings -> Akismet*
-- Paste the API key
-- Ah, be cool and let the plugin fight spam for you
+The **Comment Moderation** and **Disallowed Comment Keys** boxes at the bottom of the Discussion screen let you list words or phrases that should trigger moderation or auto-rejection.
 
+![Disallowed keys configuration in Discussion settings](/uploads/wordpress-comment-black-list-shameem.png)
 
-Note that, Akismet has an option to silently discard the worst and most pervasive spam. I turn it one and save lot of times. You also may try it.
+Instead of building a block list from scratch, look at whatever ends up in your own Spam queue for a week and pick out the recurring patterns, product names, pharmacy terms, gambling keywords, casino URLs, and so on. A short, actual list from your own site is better than a generic list you copied off someone else's blog.
 
-[![](/uploads/akismet-setting-shameem.png)](/stop-wordpress-spam-comment-ninja-style/akismet-setting-shameem/)
+If you want a starting point, the WordPress community maintains a decent [comment blacklist on GitHub](https://github.com/splorp/wordpress-comment-blacklist) that you can paste into Disallowed Comment Keys and then prune over time.
 
-## Tweaks in Discussion Settings
+## Strip HTML from comments
 
+The main reason spammers bother posting comments is the anchor tag. Take HTML out of the comment body entirely and you remove most of the incentive:
 
-Now its time to check WordPress default Comment settings. Depending on your site you can escape few settings as I used for mine.
+```php
+add_filter( 'preprocess_comment', 'shameem_comment_post', 1 );
+add_filter( 'comment_text', 'shameem_comment_display', 1 );
+add_filter( 'comment_text_rss', 'shameem_comment_display', 1 );
+add_filter( 'comment_excerpt', 'shameem_comment_display', 1 );
 
-[![](/uploads/wordpress-comment-setting-shameem.png)](/stop-wordpress-spam-comment-ninja-style/wordpress-comment-setting-shameem/)
-
-You also can disable comment by unchecking the allow people to comment on new article terms. Also you can control how you are going to treat your site comment which has too many links. I used 0 to check each comment which has links inside.
-
-Also if your site don’t get a lot of comments, it probably a good practice to schedule all the comments for manual approval. Because if Akismet cant detect the spam comment, manually you may check and marked as spam.
-
-## Stop comments with Black List Words
-
-
-If you search on Google to find out spam words for email, comments then you will get thousands of results. But Its a good practice to check each spam comment you got to get those words list. Because as much your blog will be popular, your site spam comment will be increased.
-
-[![](/uploads/wordpress-comment-black-list-shameem.png)](/stop-wordpress-spam-comment-ninja-style/wordpress-comment-black-list-shameem/)
-
-After researching on my site spam comment and some other site, I made a list of some Black list words which used to do spamming. Here is the list:
-
-```wordpress-spam-comment-black-list
-4U
-Claims you are a winner
-For instant access
-Accept credit cards
-Claims you registered with Some Kind of Partner
-For just $ (some amt)
-Act now! Don’t hesitate!
-Click below
-Free access
-Additional income
-Click here link
-Free cell phone
-Addresses on CD
-Click to remove
-Free consultation
-All natural
-Click to remove mailto
-Free DVD
-Amazing
-Compare rates
-Free grant money
-Apply Online
-Compete for your business
-Free hosting
-As seen on
-Confidentially on all orders
-Free installation
-Auto email removal
-Congratulations
-Free investment
-Avoid bankruptcy
-Consolidate debt and credit
-Free leads
-Be amazed
-Copy accurately
-Free membership
-Be your own boss
-Copy DVDs
-Free money
-Being a member
-Credit bureaus
-Free offer
-Big bucks
-Credit card offers
-Free preview
-Bill 1618
-Cures baldness
-Free priority mail
-Billing address
-Dear email
-Free quote
-Billion dollars
-Dear friend
-Free sample
-Brand new pager
-Dear somebody
-Free trial
-Bulk email
-Different reply to
-Free website
-Buy direct
-Dig up dirt on friends
-Full refund
-Buying judgments
-Direct email
-Get It Now
-Cable converter
-Direct marketing
-Get paid
-Call free
-Discusses search engine listings
-Get started now
-Call now
-Do it today
-Gift certificate
-Calling creditors
-Don’t delete
-Great offer
-Can’t live without
-Drastically reduced
-Guarantee
-Cancel at any time
-Earn per week
-Have you been turned down?
-Cannot be combined with any other offer
-Easy terms
-Hidden assets
-Cash bonus
-Eliminate bad credit
-Home employment
-Cashcashcash
-Email harvest
-Human growth hormone
-Casino
-Email marketing
-If only it were that easy
-Cell phone cancer scam
-Expect to earn
-In accordance with laws
-Cents on the dollar
-Fantastic deal
-Increase sales
-Check or money order
-Fast Viagra delivery
-Increase traffic
-Claims not to be selling anything
-Financial freedom
-Insurance
-Claims to be in accordance with some spam law
-Find out anything
-Investment decision
-Claims to be legal
-For free
-It's effective
-Join millions of Americans
-No questions asked
-Reverses aging
-Laser printer
-No selling
-Risk free
-Limited time only
-No strings attached
-Round the world
-Long distance phone offer
-Not intended
-S 1618
-Lose weight spam
-Off shore
-Safeguard notice
-Lower interest rates
-Offer expires
-Satisfaction guaranteed
-Lower monthly payment
-Offers coupon
-Save $
-Lowest price
-Offers extra cash
-Save big money
-Luxury car
-Offers free (often stolen) passwords
-Save up to
-Mail in order form
-Once in lifetime
-Score with babes
-Marketing solutions
-One hundred percent free
-Section 301
-Mass email
-One hundred percent guaranteed
-See for yourself
-Meet singles
-One time mailing
-Sent in compliance
-Member stuff
-Online biz opportunity
-Serious cash
-Message contains disclaimer
-Online pharmacy
-Serious only
-MLM
-Only $
-Shopping spree
-Money back
-Opportunity
-Sign up free today
-Money making
-Opt in
-Social security number
-Month trial offer
-Order now
-Special promotion
-More Internet traffic
-Order status
-Stainless steel
-Mortgage rates
-Orders shipped by priority mail
-Stock alert
-Multi level marketing
-Outstanding values
-Stock disclaimer statement
-Name brand
-Pennies a day
-Stock pick
-New customers only
-People just leave money laying around
-Stop snoring
-New domain extensions
-Please read
-Strong buy
-Nigerian
-Potential earnings
-Stuff on sale
-No age restrictions
-Print form signature
-Subject to credit
-No catch
-Print out and fax
-Supplies are limited
-No claim forms
-Produced and sent out
-Take action now
-No cost
-Profits
-Talks about hidden charges
-No credit check
-Promise you …!
-Talks about prizes
-No disappointment
-Pure profit
-Tells you it’s an ad
-No experience
-Real thing
-Terms and conditions
-No fees
-Refinance home
-The best rates
-No gimmick
-Removal instructions
-The following form
-No inventory
-Remove in quotes
-They keep your money — no refund!
-No investment
-Remove subject
-They’re just giving it away
-No medical exams
-Removes wrinkles
-This isn’t junk
-No middleman
-Reply remove subject
-This isn’t spam
-No obligation
-Requires initial investment
-University diplomas
-No purchase necessary
-Reserves the right
-Unlimited
-Unsecured credit/debt
-We honor all
-Will not believe your eyes
-Urgent
-Weekend getaway
-Winner
-US dollars
-What are you waiting for?
-Winning
-Vacation offers
-While supplies last
-Work at home
-Viagra and other drugs
-While you sleep
-You have been selected
-Wants credit card
-Who really wins?
-Your income
-We hate spam
-Why pay more?
-```
-## Disable HTML in WordPress Comment
-
-
-As you know that we can use HTML tags inside WordPress comment. Spammer use this facility to add spam comment. They use HTML link tag to link their site or content. You can turn it off using a few lines of code. Copy code from below and paste into your site functions.php file and save it:
-
-```disable-html-in-wordpress-comments
 function shameem_comment_post( $incoming_comment ) {
-$incoming_comment['comment_content'] = htmlspecialchars($incoming_comment['comment_content']);
-$incoming_comment['comment_content'] = str_replace( "'", '&apos;', $incoming_comment['comment_content'] );
-return( $incoming_comment );
+    $incoming_comment['comment_content'] = htmlspecialchars( $incoming_comment['comment_content'] );
+    $incoming_comment['comment_content'] = str_replace( "'", '&apos;', $incoming_comment['comment_content'] );
+    return $incoming_comment;
 }
+
 function shameem_comment_display( $comment_to_display ) {
-$comment_to_display = str_replace( '&apos;', "'", $comment_to_display );
-return $comment_to_display;
+    return str_replace( '&apos;', "'", $comment_to_display );
 }
-add_filter( 'preprocess_comment', 'shameem_comment_post', '', 1);
-add_filter( 'comment_text', 'shameem_comment_display', '', 1);
-add_filter( 'comment_text_rss', 'shameem_comment_display', '', 1);
-add_filter( 'comment_excerpt', 'shameem_comment_display', '', 1);
 ```
-Remember, you must need to disable ping backs and trackbacks from WordPress default comment setting options as shown earlier.
 
-## Remove URL field from WordPress Comment form
+The incoming filter escapes every comment as it's saved. The display filter converts the single-quote placeholder back on output. Inline links stop working, which is the point.
 
+## Remove the URL field from the comment form
 
-A great and main reason a spammer post spamming comment is to get link back from your site. To me best and right way to stop WordPress Spam comment is to remove URL field from comment form. You can do it very easily using some lines of code. Copy code from bellow and paste in your functions.php to remove URL field from WordPress comment form:
+The URL field in the default comment form is the main thing bots are after, it gives them a clickable link back to their site. Remove it and most of the automated spam stops bothering:
 
-```removing-website-url-field
-add_filter('comment_form_default_fields', 'remove_url');
- function remove_url($fields)
- {
- if(isset($fields['url']))
- unset($fields['url']);
- return $fields;
- }
+```php
+add_filter( 'comment_form_default_fields', 'shameem_remove_url_field' );
+function shameem_remove_url_field( $fields ) {
+    if ( isset( $fields['url'] ) ) {
+        unset( $fields['url'] );
+    }
+    return $fields;
+}
 ```
-## Disallow comments which coming from other sources
 
+Real commenters almost never miss this field. You can't imagine how often they would've left a URL if the box had been there, because they almost never notice it's gone.
 
-Trust me, Spammers are really smart. They will use different kind of tactics and techniques to get what they want. They can send comment from others sources like using software, apps etc.
+## Block off-site comment requests
 
-To stop spam comment in WordPress which don’t come from your site, you will need to update your .htaccess file with some customization:
+A lot of comment spam doesn't come through your actual comment form. Bots `POST` directly to `wp-comments-post.php` from their own scripts. You can block that at the `.htaccess` level by requiring the request to come from your own domain:
 
-```wordpress-spam-comment-htaccess
+```
 RewriteEngine On
 RewriteCond %{REQUEST_METHOD} POST
 RewriteCond %{REQUEST_URI} .wp-comments-post\.php*
-RewriteCond %{HTTP_REFERER} !.*yourblog.com.* [OR]
+RewriteCond %{HTTP_REFERER} !.*yourblog\.com.* [OR]
 RewriteCond %{HTTP_USER_AGENT} ^$
 RewriteRule (.*) ^http://%{REMOTE_ADDR}/$ [R=301,L]
 ```
-Dont forget to replace yourblog.com with your site URL.
 
-> Before changing any files, make sure you kept backup. Because anything may happen because of a small mistakes.
+Replace `yourblog.com` with your own domain. This bounces any `POST` to the comment endpoint that either doesn't have a referrer header or has one from somewhere other than your site. It won't catch a bot that forges headers correctly, but it catches the cheap ones, and the cheap ones are most of them.
 
+Always take a backup before editing `.htaccess`. A typo in this file will break the whole site.
 
+## Block specific IPs when one bot gets aggressive
 
-## Block spam by restricting IP address
+Every so often a single IP or small range will hammer you repeatedly. You can block specific IPs straight from **Settings → Discussion → Disallowed Comment Keys** (just paste the IP), or from `.htaccess` if you want to block all traffic, not just comments:
 
-
-Though you can do it using some plugins, but why not to try without plugin? You can track and list some spammer's IP and block in two way without plugin:
-
-- Block IP using WordPress default Discussion setting
-- Block IP using .htaccess file
-
-
-You can block IP from WordPress default setting as it is pretty easy, just copy, paste and save. But using .htaccess file is bit complex. Actually not complex but world may be fallen down on your head if you do any mistakes.
-
-- Navigate to .htaccess file and open it
-- Copy and paste the code:
-
-
-```block-spammers-ip-address
+```
 Order allow,deny
 Deny from 88.136.129.110
 Allow from all
 ```
-- Change the IP address you wish to block
-- Save changes
 
+Don't over-invest in this. IPs rotate, ranges change, and if you're getting enough traffic from a single IP that you need to block it at the server level, a WAF (Cloudflare, Sucuri) is a better tool than `.htaccess`.
 
+## Plugins, only if you need more
 
-## Stop Spam Comment using Plugin
+If Akismet plus the settings above plus the filters still leaves you with too much spam, the anti-spam plugins I've actually seen hold up over time are:
 
+- [Antispam Bee](https://wordpress.org/plugins/antispam-bee/): free, no external API, light footprint.
+- [Anti-Spam by CleanTalk](https://wordpress.org/plugins/cleantalk-spam-protect/): paid API, very low false-positive rate.
+- [WPBruiser](https://wordpress.org/plugins/goodbye-captcha/): invisible, no CAPTCHA shown to users.
 
-As I mentioned at the beaning, I don't like to use plugin for each and everything. But if you don't want to do a lot of things to fight with spam, then you may try any plugin from bellow list:
+Stack one of these on top of Akismet only if you actually need it. Most blogs won't.
 
-- [WPBruiser](http://wordpress.org/plugins/goodbye-captcha/) (formerly Goodbye Captcha)
-- [Anti-spam](https://wordpress.org/plugins/anti-spam/)
-- [Anti-Spam by CleanTalk](https://wordpress.org/plugins/cleantalk-spam-protect/)
-- [WangGuard](https://wordpress.org/plugins/wangguard/)
-- [Anti-Spam Bee](https://wordpress.org/plugins/antispam-bee/)
-- [WordPress Zero Spam](https://wordpress.org/plugins/zero-spam/)
-- [Growmap Anti Spambot (GASP)](https://wordpress.org/plugins/growmap-anti-spambot-plugin/)
-
-
-Fight against WordPress spam comment is an ongoing battle. You always have to keep eye on the spam comments, always have to update the method you are using to fight with spam comment.
-
-Using my suggested method you can reduce the spam comment but not completely can remove it. Wishing you best of luck on WordPress spam comment battle.
+Spam comments are an arms race. You won't hit zero, but you can get it down to where you're checking the Spam queue once a week out of habit and not because you have to.

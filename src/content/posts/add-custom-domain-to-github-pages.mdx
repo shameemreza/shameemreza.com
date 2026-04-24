@@ -1,6 +1,7 @@
 ---
-title: "How to Add Custom Domain to GitHub Pages?"
+title: "How to add a custom domain to GitHub Pages"
 date: 2023-02-02T09:24:08Z
+updated: 2026-04-24T10:00:00Z
 description: "Step-by-step guide to pointing your custom domain to GitHub Pages, including DNS setup with A records and CNAME for GoDaddy, Namecheap, and HostGator."
 category: "Development"
 categorySlug: "development"
@@ -8,97 +9,73 @@ featuredImage: "/uploads/custom-domain-github-pages.png"
 draft: false
 ---
 
-GitHub Pages is a fantastic platform to host a static website, and it's even better when you can add your custom domain to it. Adding a custom domain gives your website a professional look and makes it easier for users to find. In this guide, we will cover how to add a custom domain to your GitHub Pages website step by step.
+import Tldr from '../../components/Tldr.astro';
+
+GitHub Pages ships with a `github.io` subdomain out of the box, which is fine for a personal project but reads as a draft the moment someone else sees it. Pointing a real domain at it takes about ten minutes of DNS work and a single field in the repo settings.
+
+<Tldr>
+  Add your domain under repo Settings → Pages, then at your DNS provider add four `A` records pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and `185.199.111.153`, plus a `CNAME` for `www` pointing to `<username>.github.io`. Wait for DNS to propagate (up to a few hours) and enable HTTPS in the GitHub UI once the check passes.
+</Tldr>
 
 ## Prerequisites
 
-Before you start, you need to have the following:
+Before you start, you'll need:
 
 - A GitHub account.
-- A repository for your GitHub Pages website.
-- A custom domain purchased from a domain provider.
+- A repository that already has GitHub Pages enabled.
+- A custom domain you've purchased from a registrar.
 
-## Step 1: Verify Ownership of Your Domain
+## Add your custom domain in GitHub
 
-You must verify that you own the domain to add a custom domain to your GitHub Pages website. You can add a specific file, called a DNS record, to your domain's DNS configuration. The process is different for different domain providers, so we'll include detailed guides for some of the most popular providers.
-
-## Step 2: Add Your Custom Domain in GitHub
-
-Once you've verified ownership of your domain, you can add your custom domain to your GitHub Pages website. To do this, you need to go to the repository settings of your GitHub Pages website and add your custom domain under the "GitHub Pages" section.
+In your repository, go to **Settings → Pages** and add your domain under the custom domain field. GitHub will start a DNS check in the background. It'll fail at first, which is expected, because the DNS records don't exist yet.
 
 [![](/uploads/custom-domain-github-1024x613.png)](/add-custom-domain-to-github-pages/custom-domain-github/)
 
-## Step 3: Add a CNAME and A Record
+## Add A records and a CNAME at your DNS provider
 
-A `CNAME` and `A` record is a DNS record that tells visitors to your website where to find your content. To add a `CNAME` and `A` record, you need to access your domain's DNS configuration and add a record that points to your GitHub Pages website. The exact process for adding a `CNAME` and `A` record is different for different domain providers, so be sure to follow the instructions specific to your provider.
+GitHub Pages uses four static IPs for apex domains. Add an `A` record for each one on your root domain (`@`):
 
-Also, it is recommended to check [GitHub's official guide](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) for the updated IPs for the A record.
+```
+185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+```
 
-## Specific Guides for Different Domain Providers
+Then add a `CNAME` record for `www` that points to `<username>.github.io` (replacing `<username>` with your GitHub username, or the org name if the repo is owned by an org).
 
-Here are specific guides for adding a custom domain to your GitHub Pages website for some popular domain providers:
+Always cross-check the [GitHub Pages custom domain docs](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) for the current IPs. GitHub has rotated them in the past.
+
+## Registrar-specific steps
+
+The DNS records above are the same everywhere. Only the UI changes between registrars. Here's where to find DNS settings at a few common ones.
 
 ### GoDaddy
 
-- Log in to your GoDaddy account.
-- Select your domain from the list of domains.
-- Go to the "**DNS Management**" page.
-- Add `A` records:
-
-```
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
-```
-
-- Add a CNAME record with the following information:
-  - **Host:** www
-  - **Points to:** \{username\}.github.io
-- Save the changes.
+- Log in and open your domain.
+- Go to **DNS Management**.
+- Add the four `A` records listed above.
+- Add a `CNAME` with **Host:** `www` and **Points to:** `<username>.github.io`.
+- Save.
 
 ### Namecheap
 
-- Log in to your Namecheap account.
-- Select the domain you want to use with GitHub Pages.
-- Go to the "**Advanced DNS**" section.
-- Add `A` records:
-
-```
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
-```
-
-- Add a CNAME record with the following information:
-  - **Host:** www
-  - **Points to:** \{username\}.github.io
-- Save the changes.
+- Log in and open the domain.
+- Go to **Advanced DNS**.
+- Add the four `A` records listed above.
+- Add a `CNAME` with **Host:** `www` and **Points to:** `<username>.github.io`.
+- Save.
 
 ### HostGator
 
-- Log in to your HostGator account.
-- Select the domain you want to use with GitHub Pages.
-- Go to the "**Advanced DNS**" section.
-- Add `A` records:
+- Log in and open the domain.
+- Go to **Advanced DNS**.
+- Add the four `A` records listed above.
+- Add a `CNAME` with **Host:** `www` and **Points to:** `<username>.github.io`.
+- Save.
 
-```
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
-```
+## Wait for DNS to propagate
 
-- Add a CNAME record with the following information:
-  - **Host:** www
-  - **Points to:** \{username\}.github.io
-- Save the changes.
+DNS changes take anywhere from a few minutes to 24 hours to propagate. You can track it with [DNSChecker](https://dnschecker.org/), which shows how the records resolve from different locations around the world.
 
-## Step 4: Wait for DNS Propagation
-
-Once you've added your custom domain and CNAME record, you need to wait for the changes to propagate. This can take anywhere from a few minutes to 24 hours. You can check if the changes have been propagated by using a tool like [DNSChecker](https://dnschecker.org/).
-
-## Conclusion
-
-Adding a custom domain to your GitHub Pages website is a straightforward process that can take your website to the next level. Following the step-by-step guide in this article, you can add a custom domain to your GitHub Pages website and give your users a professional and easy-to-remember address to access your website. Don't forget to follow the specific instructions for your domain provider to ensure a smooth process. Good luck!
+Once it's propagated, GitHub's DNS check will turn green and the **Enforce HTTPS** checkbox will become available. Turn it on. Your domain is live.

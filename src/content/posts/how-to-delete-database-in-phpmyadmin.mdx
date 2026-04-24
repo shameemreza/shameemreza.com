@@ -1,86 +1,71 @@
 ---
-title: "How to Delete Database in phpMyAdmin"
+title: "How to delete a database in phpMyAdmin"
 date: 2019-08-03T11:57:51Z
-description: "Its not too hard to delete database in phpMyadmin or in localhost. Here is a easy to follow step by step guide to delete database with simple steps."
+updated: 2026-04-24T10:00:00Z
+description: "Step-by-step guide to dropping a database or a single table in phpMyAdmin, whether you're on XAMPP, WAMP, or a remote host."
 category: "Development"
 categorySlug: "development"
 featuredImage: "/uploads/how-to-delete-database-in-phpmyadmin.jpg"
 draft: false
 ---
 
-Deleting Database in phpMyAdmin is a very easy task but most of us face difficulty to delete database, specially while we are using XAMPP as local server. In this post, I will share how you may easily delete any database from your phpMyAdmin, doesn't matter you are using [WAMP](http://www.wampserver.com/en/) or [XAMMP](https://www.apachefriends.org/index.html).
+import Tldr from '../../components/Tldr.astro';
 
-If you are a new [web developer]() or you have many project database exists, then I will suggest you to take full backup first.
+Dropping a database in phpMyAdmin is straightforward once you know where the option lives. The button isn't exactly hidden, but it's in two different places depending on which screen you start from, which is why people usually think the feature is missing on their first try.
 
+<Tldr>
+  To delete a database, open phpMyAdmin, click **Databases** in the top menu, tick the database you want to drop, and click **Drop** at the bottom. Or, open the database from the left sidebar, go to the **Operations** tab, and click **Drop the database (DROP)**. To delete a single table instead, open the database and click the red **Drop** button next to the table name. Always take a backup first. The action is permanent.
 
+</Tldr>
 
-As you are trying to learn how to delete database, I assuming that you know [what is Database](https://en.wikipedia.org/wiki/Database). This is why i am not going to increase the length of my post.
+## Before you delete anything
 
-## Things you must check before deleting your database:
+Dropping a database is permanent. There's no "undo" and no recycle bin. Before you click the button:
 
+- Take a full backup. In phpMyAdmin, select the database, go to the **Export** tab, and save the `.sql` file somewhere safe.
+- Make sure you've picked the right database. Names can be similar, and production and local copies sometimes share a naming pattern.
+- If this is a live site, make sure nothing is still pointing at it.
 
-If you are a beginner, then you should aware of these point before going to delete your database:
+## Delete a database from phpMyAdmin (XAMPP or WAMP)
 
-- Once you will delete the database or any field from database, there is no way to get it back. So make sure you know what you are going to do.
-- You already selected which Database you want to delete
-- Make sure you have taken your full database backup.
+If you're running XAMPP or WAMP, start Apache and MySQL from the control panel, then open `http://localhost/phpmyadmin` in your browser. The dashboard looks like this:
 
+![phpMyAdmin dashboard on localhost](/uploads/phpmyadmin-1-1024x447.png)
 
+Click **Databases** in the top menu to see the list of every database on the server.
 
-## How to delete database from phpMyAdmin in XAMPP/WAMPP
+![List of databases in phpMyAdmin](/uploads/phpmyadmin-db-list-1-1024x789.png)
 
+From here, there are two ways to drop one.
 
-As I told earlier, its not so hard to delete database from [phpmyadmin](https://en.wikipedia.org/wiki/PhpMyAdmin). You can delete any database, or database field by following these easy to follow step guide:
+### Option 1: from the Databases list
 
-**STEP 1:** First of all, open XAMPP or WAMP control panel and start Apache and MySQL. Once both run (it will be mark as green) open your browser and go to **localhost/phpmyadmin**. Your PHP my admin dashboard should look like the bellow image:
+Tick the checkbox next to the database (or databases, you can select more than one), then scroll down and click **Drop**. Confirm the prompt and it's gone.
 
-[![](/uploads/phpmyadmin-1-1024x447.png)](/how-to-delete-a-database-in-phpmyadmin/phpmyadmin/#main)
+![Dropping a database from the Databases list](/uploads/phpmyadmin-delete-db-1024x680.png)
 
-**STEP 2:** Now click on the "Database" menu from the top and you will get your database list overview as like as the bellow image.
+### Option 2: from the Operations tab
 
-[![](/uploads/phpmyadmin-db-list-1-1024x789.png)](/how-to-delete-a-database-in-phpmyadmin/phpmyadmin-db-list/#main)
+Click the database name in the left sidebar to open it. A new row of tabs appears at the top. Click **Operations**, scroll down, and you'll see **Drop the database (DROP)** in red. Click it, confirm, and the database is removed.
 
-**STEP 3:** Now chose which database you want to delete from your phpMyAdmin. Actually there are two ways to delete. First lets see the easiest way to delete database using phpMyAdmin in XAMMP/WAMPP.
+![Dropping a database from the Operations tab](/uploads/different-way-to-delete-1-1024x511.png)
 
-[![](/uploads/phpmyadmin-delete-db-1024x680.png)](/how-to-delete-a-database-in-phpmyadmin/phpmyadmin-delete-db/#main)
+![Confirmation prompt before dropping the database](/uploads/final-db-delete.png)
 
-As shown in above screenshot, first select your desired database which you want to delete. You may chose multiple database at once. Now at the bottom, you will see a button called "Drop", click on it to delete all your selected database at once. This is the most easiest way to delete database in phpMyAdmin.
+Both routes do exactly the same thing. Use whichever one matches where you already are in the UI.
 
-**Now lets see another way to delete your database in phpMyAdmin:**
+## Delete a single table from a database
 
-[![](/uploads/different-way-to-delete-1-1024x511.png)](/how-to-delete-a-database-in-phpmyadmin/different-way-to-delete/#main)
+Sometimes you don't want to drop the whole database, just one table. Open the database from the left sidebar and you'll see every table listed on the right.
 
-First click on the database you want to delete from the left panel, where all of your created database has been listed. Once you click on the database name, it will be open and a new menu item will be loaded at the top. From the Top menu, click on **"Operations"** link as shown above. Once operations tab has been open, scroll down and you will see "Drop the database" in red letter. Click on it to delete entire database.
+![Database with tables listed](/uploads/database-list-1.png)
 
-[![](/uploads/final-db-delete.png)](/how-to-delete-a-database-in-phpmyadmin/final-db-delete/#main)
+To drop one table, click the red **Drop** button next to it.
 
-Its damn easy to delete database in phpMyAdmin, am right or wrong? Even I know that you are laughing after knowing the way to delete, because database deleting option was infront of your eyes. You just didn't notice it.
+![Drop button next to a single table](/uploads/delete-table-in-database-1024x571.png)
 
-## How to delete Table from Database in phpMyAdmin?
+To drop several at once, tick the checkbox next to each table you want to remove, then use the **With selected** dropdown at the bottom of the list. Pick **Drop** to delete the tables entirely, or **Empty** to keep the table structure and clear the rows.
 
+![Bulk drop from the With selected dropdown](/uploads/database-drop-1-1024x414.png)
 
-I don't wanted to write it but some of my reader requested me to add this guide too. Those who dont have prior knowledge on web programming but need to delete some table from your database may read this sections:
-
-**FIRST STEP:** First open your database by clicking on it from the left side database list menu.
-
-[![](/uploads/database-list-1.png)](/how-to-delete-a-database-in-phpmyadmin/database-list/#main)
-
-**SECOND STEP:** Once you will click on the database, all the table will open at the right side. You may delete any database table in two ways.
-
-1. Delete one by one
-2. Delete multiple table at once.
-
-
-**Delete Table one by one:** To delete one database table as your requirement, is very easy. You will see a red "DROP" button at the right side of each table. Just click on it to delete any table from the database.
-
-[![](/uploads/delete-table-in-database-1024x571.png)](/how-to-delete-a-database-in-phpmyadmin/delete-table-in-database/#main)
-
-Delete Multiple table at a time: Sometimes we need to delete many table at a time. If you need to delete many table at time, then first chose which table you want to delete from the database. To select table, you may click on the check box which from the table left.
-
-[![](/uploads/database-drop-1-1024x414.png)](/how-to-delete-a-database-in-phpmyadmin/database-drop/#main)
-
-Now scroll down and you will see a selection option. Click on it and many option will be visible to you. Now you may click on "Drop" to delete and "Empty" to clear the table value as shown above.
-
- 
-
-I hope now you know how to delete any database from your localhost phpmyadmin. If you are still facing problem to delete database, please let me know using comment box, I will try to guide you as soon as possible.
+That's the whole thing. The only part that ever catches people out is remembering the backup before you hit **Drop**.

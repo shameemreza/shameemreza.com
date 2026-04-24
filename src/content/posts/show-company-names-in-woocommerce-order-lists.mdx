@@ -1,64 +1,58 @@
 ---
-title: "How to show Company Names in WooCommerce Order Lists?"
+title: "How to show company names in the WooCommerce orders list"
 date: 2024-07-08T01:38:24Z
-description: "WooCommerce shows customer names in the order list by default. For B2B stores, this snippet replaces it with the billing company name using a simple filter."
+updated: 2026-04-24T10:00:00Z
+description: "WooCommerce shows the customer's name in the orders list by default. For B2B stores, that isn't what you want to see. Here's the filter that swaps it for the billing company name, with a fallback to the customer name when the field is empty."
 category: "WordPress"
 categorySlug: "wordpress"
 featuredImage: "/uploads/show-company-names-in-woocommerce-order-lists.webp"
 draft: false
 ---
 
-In my role as a WooCommerce Technical Support Engineer, I frequently address a variety of unique requests from different users.
+import Tldr from '../../components/Tldr.astro';
 
-Recently, a user sought assistance showing the company name in the order list, where WooCommerce typically shows the customer name. After giving some trials, I shared a solution using a custom code snippet.
+A support request came in from a store owner who kept missing orders from repeat B2B customers because the orders list showed the buyer's personal name, not the company they were ordering for. "Alex Martin" told them nothing. "Contoso Engineering" told them exactly who the order belonged to.
 
-In this post, I'll share how you can achieve this.
+WooCommerce exposes a filter for this, so it's a one-snippet fix. No custom columns, no plugin, and the billing company field is already on every order, you just have to tell WooCommerce to surface it.
 
-## Problem
+<Tldr>
+  Hook the `woocommerce_admin_order_buyer_name` filter and return `$order->get_billing_company()`. If the company field is empty (for a B2C order mixed in among B2B ones), fall back to the original `$buyer` value so the row still shows a name. Drop the snippet into a child theme's `functions.php` or the [Code Snippets](https://wordpress.org/plugins/code-snippets/) plugin.
+</Tldr>
 
-By default, WooCommerce shows the customer's name in the order list. However, some businesses prefer to see the company name, especially when dealing with B2B transactions. This can improve order management and make it easier to identify orders.
+## The default behavior
 
-[![](/uploads/show-company-names-in-woocommerce-order-1024x555.webp)](/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce-order/)
+Out of the box, the orders list shows the billing first and last name in the buyer column. That's fine for most stores, but if most of your orders come from businesses, it buries the information you actually care about.
 
-## Solution
+![WooCommerce orders list showing customer names by default](/uploads/show-company-names-in-woocommerce-order-1024x555.webp)
 
-We can use the `woocommerce_admin_order_buyer_name` filter to show the company name instead of the customer name in the order list. If the company name is provided, using this filter we will modify the order list to show it. If not, it will default back to the customer's name.
+## The filter
 
-## Code Snippet
+`woocommerce_admin_order_buyer_name` was added specifically so you can customise what appears in that column. The snippet below returns the billing company name:
 
-Here is the code snippet to show the customer's company name in the order list:
-
-```
-// Show company instead of name in the orders list
-add_filter( 'woocommerce_admin_order_buyer_name', function( string $buyer, WC_Order $order ): string {
-return trim( $order->get_billing_company() );
+```php
+add_filter( 'woocommerce_admin_order_buyer_name', function ( string $buyer, WC_Order $order ): string {
+    return trim( $order->get_billing_company() );
 }, 10, 2 );
 ```
 
-This snippet uses the `woocommerce_admin_order_buyer_name` filter to replace the default name with the company name from the billing details.
+That works for a pure B2B store. Every order has a company name, so every row is correct.
 
-However, if you want to ensure that the order list still shows the customer's name when the company name isn't provided, you can use this version with a fallback function:
+## Add a fallback for mixed B2B and B2C orders
 
-```
-// Show company instead of name in the orders list
-add_filter( 'woocommerce_admin_order_buyer_name', function( string $buyer, WC_Order $order ): string {
-$company = trim( $order->get_billing_company() );
-if ( empty( $company ) ) {
-return $buyer;
-} else {
-return $company;
-}
+If you sell to businesses and individuals from the same store, the snippet above will leave rows for B2C customers blank, because those orders don't have a billing company. Add a fallback to the original buyer name:
+
+```php
+add_filter( 'woocommerce_admin_order_buyer_name', function ( string $buyer, WC_Order $order ): string {
+    $company = trim( $order->get_billing_company() );
+
+    return $company !== '' ? $company : $buyer;
 }, 10, 2 );
 ```
 
-[![](/uploads/show-company-names-in-woocommerce.gif)](/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce/)
+Now the column shows the company name when it's filled in and the customer name otherwise.
 
-## Implementation
+![Orders list showing company names after the filter is applied](/uploads/show-company-names-in-woocommerce.gif)
 
-You can add this code snippet to your child theme's functions.php or use a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/).
+## Where to put the snippet
 
-## Conclusion
-
-Showing the company name in the WooCommerce order list can greatly enhance order management for B2B transactions. Using this simple code snippet, you can customize your WooCommerce store to suit your business needs better.
-
-Happy customizing!
+Drop it into your child theme's `functions.php` or the [Code Snippets](https://wordpress.org/plugins/code-snippets/) plugin. The column pulls straight from the billing address, so you get company names on the orders screen without any extra meta, a custom column, or a separate plugin.

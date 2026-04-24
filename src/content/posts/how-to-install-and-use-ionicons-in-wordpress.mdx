@@ -1,6 +1,7 @@
 ---
 title: "How to install and use Ionicons in WordPress"
 date: 2019-10-20T06:16:26Z
+updated: 2026-04-24T10:00:00Z
 description: "Ionicons is a lightweight icon library from the Ionic team. Here's how to enqueue it in WordPress and use the icons in your theme without any plugin."
 category: "WordPress"
 categorySlug: "wordpress"
@@ -8,64 +9,54 @@ featuredImage: "/uploads/how-to-install-and-use-ionicons-in-wordpress.jpg"
 draft: false
 ---
 
-Ionicons is a beautifully crafted icon library created by the awesome people of [Ionic Framework](https://ionicframework.com/). Ionicons can be used on web, iOS, Android, and desktop apps, it also supports for SVG and web font.
+import Tldr from '../../components/Tldr.astro';
 
-In this post I will show you how to install and use [Ionicons icons](https://ionicons.com/) in WordPress without using any plugin, just code.
+[Ionicons](https://ionicons.com/) is a free icon library from the Ionic team that ships both SVG and web font versions. It's lighter than Font Awesome and has a crisper look out of the box. If you're using it on a WordPress site, you don't need a plugin, you just need to enqueue the stylesheet properly.
 
+<Tldr>
+  Hook `wp_enqueue_scripts` in your child theme's `functions.php` and load the Ionicons stylesheet from the CDN. Once it's registered, you can drop any icon into a post or template with `<ion-icon name="flashlight-outline"></ion-icon>` (v5+) or `<i class="icon ion-md-flashlight"></i>` (v4 and older). Before you install it, check whether your theme already ships Dashicons or Font Awesome, so you're not loading two icon libraries at once.
+</Tldr>
 
+## Check what your theme already loads
 
-Nowadays it is very common to use an icon library to use them on our website. There are currently many options to choose from. Normally we are very familiar with [Font Awesome 5](https://fontawesome.com/) icons, but today i will show you how to use Ionicons in WordPress.
+Before you add anything new, search your theme for `dashicons`, `font-awesome`, or `ionicons` in `functions.php` and the enqueue calls. Running two icon libraries on the same page is a performance hit for no reason. Pick one and stick with it.
 
-This icon library is very common to see in the themes of [StudioPress](https://www.studiopress.com/), as it is very light and has very useful icons to use.
+Dashicons is the one WordPress ships with by default, and it's the lightest option if you only need a handful of generic icons. If Dashicons doesn't have what you need, that's when a library like Ionicons starts to pay for itself.
 
-## Install and use Ionicons in WordPress
+## Enqueue Ionicons in your theme
 
+Add this to your child theme's `functions.php` or to a custom plugin:
 
-First of all, I recommend you take a look at whether your theme already uses an icon library, as if yes, you could already use the existing one or get rid of it to stay with Ionicons only. Using icon libraries impacts negatively (even slightly) the performance of our website, so you should always be careful to use only one of them.
-
-For this reason, you could search the "functions.php" words like "font-awesome", "dashicons "or even check if" ionicons " already appears.
-
-However, I will always recommend you to use only the dashicons library, which is the one that comes by default in any WordPress installation. Even if it is a very limited library, it is the lightest and will not negatively impact your website.
-
-But if you really like Ionicons icons and see them indispensable for your website, adding them is very easy.
-
-Let's get to it!
-
-
-## Use Ionicons icons in WordPress
-
-
-
-As I always recommend, add this code to your custom plugin or functions.php from your theme.
-
-
-```
-// Use Ionicons in WordPress
+```php
 add_action( 'wp_enqueue_scripts', 'shameem_enqueue_ionicons' );
 function shameem_enqueue_ionicons() {
-	wp_enqueue_style( 'ionicons', '//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css', array(), CHILD_THEME_VERSION );
+    wp_enqueue_style(
+        'ionicons',
+        'https://unpkg.com/ionicons@7.1.0/dist/collection/components/icon/icon.min.css',
+        array(),
+        '7.1.0'
+    );
 }
 ```
 
+Pin the version number explicitly. If you let it track `latest`, a breaking change in the library will silently break your icons on every page that uses them.
 
+## Use the icons in posts and templates
 
-Next, if you want to use any of your icons, you need to enter the [Ionicons library](https://ionicons.com/) and select one.
+On [ionicons.com](https://ionicons.com/), pick an icon and copy the usage snippet. For v5 and newer, that's the `<ion-icon>` web component:
 
-[![](/uploads/ionicons-1024x412.png)](/how-to-install-and-use-ionicons-in-wordpress/ionicons/)
+```html
+<ion-icon name="flashlight-outline"></ion-icon>
+```
 
-Then a bar will appear at the bottom and we will give you Usage. Inside this page, we will go to the bottom of the page and select the code that appears in the section of " Basic usage»
+For older v4 code, it's a plain `<i>` tag with a class name:
 
-*\<i class="icon ion-md-flashlight"\>*
+```html
+<i class="icon ion-md-flashlight"></i>
+```
 
-And bingo! This icon will appear within the content you are implementing. This icon list will help you with a quick look to select the icon you like best and use the name of the relevant class.
+Drop either form directly into a post, a block, or a template file, and the icon renders in place.
 
+## Other options in the same category
 
-## Conclusion
-
-
-
-I am sure that you have learned how to install the library in our WordPress and above all how to use them in our content.
-
-Remember that it is not the only icon library available, there are others like the [Font Awesome](https://fontawesome.com/), [IcoFon](https://icofont.com/), [Fontello](http://fontello.com/), [IcoMoon](https://icomoon.io/) etc.
-
-Would you like to get more tutorials like this? Subscribe to my newsletter or leave your comment below.
+Ionicons isn't the only option. [Font Awesome](https://fontawesome.com/), [IcoFont](https://icofont.com/), [Fontello](http://fontello.com/), and [IcoMoon](https://icomoon.io/) all work the same way. Enqueue the stylesheet, then use the class name or element in your content. Pick the one whose icon set actually matches what you're building, not the one with the biggest library.
