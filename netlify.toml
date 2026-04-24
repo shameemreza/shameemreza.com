@@ -151,6 +151,153 @@
   to = "/wordpress/"
   status = 301
 
+[[redirects]]
+  from = "/ionic-vs-react-native-whats-best-for-you/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/top-6-helpful-helpers-in-laravel-7/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/what-is-laravel-collective-and-how-to-use-it/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/learn-php-for-wordpress-development-full-guide/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/optimize-leverage-browser-caching-for-google-analytics/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/remove-query-strings-from-static-resources/"
+  to = "/wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/how-to-get-user-current-location-in-flutter/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/how-to-connect-flutter-app-to-websocket-server/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/how-to-use-hot-reload-and-hot-restart-in-flutter/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/managing-state-with-stateful-widgets-in-flutter/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/understanding-functions-in-dart-with-example/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/render-an-array-of-objects-in-react/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/exposing-react-component-functions-with-fowardref-and-useref/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/getting-started-with-next-js/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/understanding-dynamic-routing-in-next-js/"
+  to = "/development/"
+  status = 301
+
+[[redirects]]
+  from = "/server-side-rendering-with-next-js/"
+  to = "/development/"
+  status = 301
+
+# Old WordPress attachment pages (image URLs Google still remembers)
+[[redirects]]
+  from = "/strict-vs-loose-equality-in-javascript/strict-equality/"
+  to = "/strict-vs-loose-equality-in-javascript/"
+  status = 301
+
+[[redirects]]
+  from = "/strict-vs-loose-equality-in-javascript/loose-equality/"
+  to = "/strict-vs-loose-equality-in-javascript/"
+  status = 301
+
+[[redirects]]
+  from = "/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce-order/"
+  to = "/show-company-names-in-woocommerce-order-lists/"
+  status = 301
+
+[[redirects]]
+  from = "/show-company-names-in-woocommerce-order-lists/show-company-names-in-woocommerce/"
+  to = "/show-company-names-in-woocommerce-order-lists/"
+  status = 301
+
+[[redirects]]
+  from = "/how-to-install-and-use-ionicons-in-wordpress/ionicons/"
+  to = "/how-to-install-and-use-ionicons-in-wordpress/"
+  status = 301
+
+[[redirects]]
+  from = "/13-best-domain-registrars-of-2021/buydomain/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/10-signs-your-website-needs-a-redesign-in-2022/yahoo-old-design/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/5-photoshop-tricks-for-beginners/photoshop-rule-leveller/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/best-wordpress-plugins-for-online-store/woocommerce-google-analytics-integration/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/best-wordpress-plugins-for-online-store/woocommerce-login-and-registration/"
+  to = "/resources/"
+  status = 301
+
+[[redirects]]
+  from = "/permanently-delete-browsing-history-in-firefox/firefox-browsing-history-delete-2/"
+  to = "/development/"
+  status = 301
+
+# Old WordPress URL had an extra "-a-" that the Astro slug dropped
+[[redirects]]
+  from = "/how-to-delete-a-database-in-phpmyadmin/"
+  to = "/how-to-delete-database-in-phpmyadmin/"
+  status = 301
+
+[[redirects]]
+  from = "/how-to-delete-a-database-in-phpmyadmin/database-list/"
+  to = "/how-to-delete-database-in-phpmyadmin/"
+  status = 301
+
 # Custom 404
 [[redirects]]
   from = "/*"
