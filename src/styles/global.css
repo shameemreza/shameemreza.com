@@ -2347,9 +2347,10 @@ pre:hover .code-copy-btn {
 }
 
 /* ============================================================
-   KAIRO PAGE
+   THEME PAGES (Kairo, Larder, etc.)
    ============================================================ */
-.kairo-actions {
+.kairo-actions,
+.theme-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -2385,6 +2386,57 @@ pre:hover .code-copy-btn {
 .btn-primary:hover {
   opacity: 0.9;
   color: #fff;
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--ink);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Screenshot gallery */
+.theme-screenshots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 24px 0;
+}
+
+.theme-screenshot {
+  margin: 0;
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.theme-screenshot img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.theme-screenshot figcaption {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  text-align: center;
+  background: var(--surface);
+}
+
+.theme-screenshot--wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+  .theme-screenshots {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ============================================================
