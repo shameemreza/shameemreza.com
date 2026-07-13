@@ -72,20 +72,23 @@ export const EXPERIENCE = [
 
 export const PROJECTS = [
   {
-    title: 'HappyAccess',
-    url: 'https://github.com/shameemreza/happyaccess',
+    period: '2026',
+    title: 'Larder',
+    url: '/larder/',
     description:
-      'Secure temporary admin access for WordPress. OTP-based, magic links, reCAPTCHA, audit logs, GDPR compliance.',
-    tech: ['WordPress', 'PHP', 'Security'],
+      'Warm WordPress block theme for food shops, farm stores, and organic markets. WooCommerce ready, Full Site Editing.',
+    tech: ['WordPress', 'WooCommerce', 'CSS'],
   },
   {
-    title: 'SnipDrop',
-    url: 'https://github.com/shameemreza/snipdrop',
+    period: '2026',
+    title: 'Kairo Theme',
+    url: '/kairo/',
     description:
-      'One-click tested code snippets for WordPress and WooCommerce. Curated library with automatic error protection.',
-    tech: ['WordPress', 'WooCommerce', 'PHP'],
+      'Clean WordPress theme for personal blogs and portfolios. Accessibility and performance focused.',
+    tech: ['WordPress', 'PHP', 'CSS'],
   },
   {
+    period: '2025',
     title: 'Assistify for WooCommerce',
     url: 'https://github.com/shameemreza/assistify-for-woocommerce',
     description:
@@ -93,11 +96,12 @@ export const PROJECTS = [
     tech: ['WooCommerce', 'PHP'],
   },
   {
-    title: 'Kairo Theme',
-    url: 'https://wordpress.org/themes/kairo/',
+    period: '2025',
+    title: 'HappyAccess',
+    url: 'https://github.com/shameemreza/happyaccess',
     description:
-      'Clean WordPress theme for personal blogs and portfolios. Accessibility and performance focused.',
-    tech: ['WordPress', 'PHP', 'CSS'],
+      'Secure temporary admin access for WordPress. OTP-based, magic links, reCAPTCHA, audit logs, GDPR compliance.',
+    tech: ['WordPress', 'PHP', 'Security'],
   },
 ] as const;
 

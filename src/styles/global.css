@@ -464,6 +464,9 @@ img {
    PROJECT CARDS
    ============================================================ */
 .project-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 16px;
   padding: 14px 0;
   cursor: pointer;
 }
@@ -2278,7 +2281,8 @@ pre:hover .code-copy-btn {
   .cube-top    { transform: translateY(-60px) rotateX(90deg); }
   .cube-bottom { transform: translateY(60px) rotateX(-90deg); }
 
-  .exp-item {
+  .exp-item,
+  .project-item {
     grid-template-columns: 1fr;
     gap: 2px;
   }

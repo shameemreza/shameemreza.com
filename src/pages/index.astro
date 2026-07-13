@@ -165,19 +165,22 @@ const jsonLd = {
         PROJECTS.map((project) => (
           <a
             href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={project.url.startsWith('/') ? undefined : '_blank'}
+            rel={project.url.startsWith('/') ? undefined : 'noopener noreferrer'}
             class="hover-card project-item"
           >
             <div class="card-bg" />
-            <h3 class="project-title">
-              {project.title} <span class="arrow">↗</span>
-            </h3>
-            <p class="project-desc">{project.description}</p>
-            <div class="tech-tags">
-              {project.tech.map((t) => (
-                <span class="tech-tag">{t}</span>
-              ))}
+            <div class="exp-period">{project.period}</div>
+            <div>
+              <h3 class="project-title">
+                {project.title} <span class="arrow">↗</span>
+              </h3>
+              <p class="project-desc">{project.description}</p>
+              <div class="tech-tags">
+                {project.tech.map((t) => (
+                  <span class="tech-tag">{t}</span>
+                ))}
+              </div>
             </div>
           </a>
         ))
