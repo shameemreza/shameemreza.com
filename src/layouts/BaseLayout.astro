@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -57,7 +57,7 @@ const { title, description, image, article, publishDate, modifiedDate, category,
       category={category}
     />
     {jsonLd && <JsonLd data={jsonLd} />}
-    <ViewTransitions />
+    <ClientRouter />
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
