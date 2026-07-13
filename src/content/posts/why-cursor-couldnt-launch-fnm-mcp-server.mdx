@@ -1,0 +1,181 @@
+---
+title: "Why Cursor couldn't launch my fnm-managed MCP server"
+date: 2026-06-10T10:00:00Z
+description: "An MCP server kept dying on launch in Cursor with an ENOENT error pointing inside the app bundle. The real cause was fnm, a missing PATH, and a Node shebang. Here's the full trace and every fix."
+category: "Development"
+categorySlug: "development"
+featuredImage: "/uploads/why-cursor-couldnt-launch-fnm-mcp-server.jpg"
+draft: false
+---
+
+import Tldr from '../../components/Tldr.astro';
+
+An [MCP server](https://cursor.com/docs/mcp) I'd wired into Cursor kept dying the moment it started, and the error blamed a folder buried inside the Cursor app bundle that has nothing to do with my code, my project, or that server.
+
+<Tldr>
+  Cursor spawns MCP servers without your shell environment. If your `node` and `npx` come from [fnm](https://github.com/Schniz/fnm), Cursor can't find them, the command runs under Cursor's own bundled Node helper instead, and npm computes a broken global prefix inside the app bundle. The fix is to point the server at fnm's version-independent `default` alias path and add that same `bin` directory to the server's `PATH`, so the `node` shebang inside `npx` resolves. Keep `/usr/sbin` on that `PATH` too, since replacing the `PATH` can hide system tools the server shells out to. No hardcoded version numbers, nothing to remember after a Node upgrade.
+</Tldr>
+
+## The setup, and why fnm is in the picture
+
+At Automattic, different projects use different Node versions. That sounds minor, but it bites in a specific way. When I set up a project I run `npm ci`, not `npm install`. `npm install` can rewrite `package-lock.json`, and then my next `git pull` drags in lockfile conflicts I never asked for. So `npm ci` it is. The catch: `npm ci` honors the Node version the project pins. Run it on the wrong Node and it fails before installing a single package.
+
+fnm takes that off my plate. It reads the project's `.nvmrc` or `.node-version` file and switches my machine to the right Node automatically, so `npm ci` just works. I picked fnm over nvm on purpose: the switch happens the moment I `cd` into a project, and it doesn't drag on shell startup the way nvm's shell function does. That part has been great.
+
+The cost shows up somewhere I didn't expect: tools that launch processes for me, without going through my shell. Cursor's MCP integration is exactly that kind of tool.
+
+## The first error
+
+I run a few MCP servers in Cursor. Some pull docs, some drive the browser and poke at the system. One of them refused to connect, and the log looped the same failure every few seconds:
+
+```
+npm error code ENOENT
+npm error syscall lstat
+npm error path /Applications/Cursor.app/Contents/Resources/app/resources/lib
+npm error errno -2
+npm error enoent ENOENT: no such file or directory, lstat '/Applications/Cursor.app/Contents/Resources/app/resources/lib'
+npm error enoent This is related to npm not being able to find a file.
+Connection failed: MCP error -32000: Connection closed
+```
+
+That path stopped me for a second. `/Applications/Cursor.app/Contents/Resources/app/resources/lib`. Why is npm looking for a `lib` folder inside the Cursor application itself?
+
+My config looked ordinary:
+
+```
+"chrome-devtools": {
+  "command": "npx",
+  "args": ["-y", "chrome-devtools-mcp@latest"],
+  "env": {}
+}
+```
+
+First instinct: maybe the package is broken or doesn't exist. Quick check from my terminal:
+
+```
+npm view chrome-devtools-mcp version
+1.5.0
+```
+
+It exists. It installs. So the server wasn't the problem. The problem was the `npx` Cursor was running, and the environment it ran in.
+
+## Tracing where npx actually came from
+
+In my terminal, everything resolves to fnm:
+
+```
+which node npm npx
+/Users/you/.local/state/fnm_multishells/31226_.../bin/node
+/Users/you/.local/state/fnm_multishells/31226_.../bin/npm
+/Users/you/.local/state/fnm_multishells/31226_.../bin/npx
+```
+
+That `fnm_multishells` path is the key detail. fnm sets it up when my shell starts, as part of its shell hook. Cursor doesn't start a shell to launch an MCP server. It spawns the process directly, with a minimal `PATH` that never ran my fnm init. So `npx` isn't on the path it sees.
+
+Cursor ships its own Node helper inside the app bundle, at `/Applications/Cursor.app/Contents/Resources/app/resources/helpers/node`, and puts that directory on the `PATH` it hands to MCP servers. With my fnm paths out of the picture, that's the Node the command ends up running under. npm computes its global prefix one level up from the `node` binary that's running it, so the prefix becomes `.../app/resources`, and global packages are expected under `{prefix}/lib`. That's the exact path in the error: `.../app/resources/lib`. No such directory exists inside the app bundle, and you get the ENOENT `lstat` failure above. How npm derives that prefix is documented in [npm's folders reference](https://docs.npmjs.com/cli/v10/configuring-npm/folders). The error was never about my project. It was about which Node ran the command.
+
+## Wrong turn number one
+
+The obvious fix: stop relying on `PATH` and give the server an absolute path to npx.
+
+```
+"command": "/Users/you/.local/share/fnm/node-versions/v20.20.2/installation/bin/npx"
+```
+
+Reload, and the ENOENT was gone. Replaced by a new error:
+
+```
+env: node: No such file or directory
+```
+
+This one is sneakier, and it taught me what the first fix missed. An absolute path to `npx` isn't enough, because `npx` is itself a Node script. Its first line is a shebang:
+
+```
+#!/usr/bin/env node
+```
+
+When that script runs, the shebang asks `env` to find `node` on the `PATH`. Cursor's spawn `PATH` still doesn't have my fnm Node on it. So `npx` launches, immediately goes looking for `node`, finds nothing, and dies. Same closed connection, different line in the log.
+
+The lesson: pointing at the right `npx` solves half the problem. The `node` it depends on has to be findable too. It's the same `PATH` lesson I ran into when [setting up PHPStan for WordPress and WooCommerce](/phpstan-for-wordpress-and-woocommerce/), where a global tool only works once its `bin` directory is actually on `PATH`.
+
+## Wrong turn number two, hiding in the first fix
+
+Even once I knew to handle both `npx` and `node`, my path had `v20.20.2` baked into it. That works today. It breaks the next time fnm installs a newer Node, because the path points at a version directory that no longer exists. A fix that quietly expires isn't a fix. It's a reminder I'll forget to act on.
+
+fnm has a way out of this. It keeps a `default` alias as a symlink:
+
+```
+ls -la ~/.local/share/fnm/aliases/
+default -> /Users/you/.local/share/fnm/node-versions/v20.20.2/installation
+```
+
+That `default` symlink updates itself whenever I run `fnm default <version>`. So `~/.local/share/fnm/aliases/default/bin/npx` always points at my current default Node, with no version number written down anywhere. That's the stable target I actually wanted.
+
+## The fix that holds
+
+Two pieces, together. Point `command` at the `default` alias `npx`, and set `env.PATH` to include that same `bin` directory so the `node` shebang resolves. Here's the full config for one server:
+
+```
+"chrome-devtools": {
+  "command": "/Users/you/.local/share/fnm/aliases/default/bin/npx",
+  "args": ["-y", "chrome-devtools-mcp@latest"],
+  "env": {
+    "PATH": "/Users/you/.local/share/fnm/aliases/default/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+  }
+}
+```
+
+The config file lives at `~/.cursor/mcp.json` for global servers, or `.cursor/mcp.json` inside a project. Swap `you` for your own username. After editing, open Cursor Settings, go to MCP, and toggle the server off and on. Or just reload the window. The server connected on the first try.
+
+I added `/opt/homebrew/bin` to the `PATH` on purpose. If I ever remove the fnm default alias, Homebrew's Node is a working fallback, so the server degrades to "still runs" instead of "dead".
+
+## Don't make the PATH too minimal
+
+There's a trap hiding in that `env.PATH`, and I walked straight into it with a different server. Once you set an `env.PATH`, you've replaced the server's whole `PATH`, not added to it. Anything the server expected to find through your normal login `PATH` is gone unless you list it.
+
+I learned this the slow way. A server that launched fine started failing every request with a flat "access forbidden". The server was up, the package was current, nothing in the config looked wrong. The cause was that the server shells out to `scutil`, the macOS tool that reads the system's proxy settings, and `scutil` lives in `/usr/sbin`. My trimmed `PATH` had `/usr/bin` and `/bin` but not `/usr/sbin`. The proxy lookup failed without a sound, the requests went out the wrong way, and the backend refused them.
+
+That's why `/usr/sbin` and `/sbin` are on the `PATH` above. When you hand a process a new `PATH`, you're also deciding everything it can no longer find. The safe default for a macOS MCP server is to keep `/usr/bin:/bin:/usr/sbin:/sbin` in there alongside your Node `bin`.
+
+## The options, ranked
+
+If you hit the same wall, you have a few ways to solve it. Here's how I'd rank them.
+
+The fnm `default` alias, shown above, is my pick. No version numbers, no extra installs, and it follows your default Node automatically. The one thing to remember, once, is that when you upgrade Node and want it as your baseline, run `fnm default <version>` so the symlink moves with you.
+
+A Homebrew Node is the simplest if you don't mind a second Node install dedicated to tooling. Its paths are stable too:
+
+```
+"command": "/opt/homebrew/bin/npx",
+"env": { "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+```
+
+Calling `node` directly and passing `npx-cli.js` as the script avoids the shebang problem entirely, since you never rely on `env` finding `node`:
+
+```
+"command": "/Users/you/.local/share/fnm/aliases/default/bin/node",
+"args": [
+  "/Users/you/.local/share/fnm/aliases/default/lib/node_modules/npm/bin/npx-cli.js",
+  "-y",
+  "chrome-devtools-mcp@latest"
+]
+```
+
+It works, but it's the most verbose and the easiest to typo. I keep it as a backup, not a default.
+
+What I'd avoid is the version-pinned absolute path I started with. It's the one that looks done and then silently rots after your next Node upgrade.
+
+## One more warning, while you're in there
+
+After the servers connected, Cursor flagged a separate issue on one of them:
+
+```
+wporg-mcp-server: wporg-plugins--plugin-directory--get-plugin-status
+- Combined server and tool name length (66) exceeds 60 characters
+```
+
+This one isn't about Node at all. Cursor builds each tool's identifier as the server name plus the tool name, and caps it at 60 characters. The tool names come from the server, so you can't touch those. But the server name is yours, and mine was eating 16 characters as `wporg-mcp-server`.
+
+Renaming the JSON key to `wporg` dropped that 66 to 55, and the other two long tools came along under the limit. Nothing else referenced the key, so it was a safe rename. If a server ever ships tool names so long that even a short prefix can't get under 60, your only real moves are an even shorter server key or asking the maintainer to trim the names.
+
+If you run a version manager and a tool launches commands for you without a shell, this whole class of bug is waiting for you. The trigger is always the same: the process can't see the Node your terminal sees. Once you know that, the error path inside the app bundle stops being mysterious and starts being the first clue.
