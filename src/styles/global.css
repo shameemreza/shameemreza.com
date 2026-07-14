@@ -2404,6 +2404,19 @@ pre:hover .code-copy-btn {
 }
 
 /* Screenshot gallery */
+.theme-video {
+  margin-top: 24px;
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.theme-video video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .theme-screenshots {
   display: grid;
   grid-template-columns: 1fr 1fr;
