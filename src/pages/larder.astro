@@ -4,33 +4,78 @@ import { SITE, AUTHOR } from '../config';
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Larder',
-  applicationCategory: 'WordPress Theme',
-  operatingSystem: 'WordPress 6.7+',
-  url: new URL('/larder/', SITE.url).toString(),
-  author: {
-    '@type': 'Person',
-    name: AUTHOR.name,
-    url: SITE.url,
-  },
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
+  '@graph': [
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Larder',
+      applicationCategory: 'WordPress Theme',
+      operatingSystem: 'WordPress 6.7+',
+      softwareVersion: '1.0.7',
+      url: new URL('/larder/', SITE.url).toString(),
+      downloadUrl: 'https://wordpress.org/themes/larder/',
+      screenshot: new URL('/images/larder/larder-hero.jpg', SITE.url).toString(),
+      license: 'https://www.gnu.org/licenses/gpl-2.0.html',
+      author: {
+        '@type': 'Person',
+        name: AUTHOR.name,
+        url: SITE.url,
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Is Larder free?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. Larder is free and open source under the GPL v2 license. You can install it from the WordPress.org theme directory. There are no paid upgrades or locked features.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Does Larder require WooCommerce?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Larder activates without WooCommerce, but it was designed around it. The homepage patterns, product grids, cart, checkout, and mini cart all expect WooCommerce to be installed, so install it to get the theme working the way it was built.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'How do I customize the Larder homepage?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Open the Site Editor under Appearance and edit the Front Page template. Every section is a block pattern, so you can rearrange, remove, or modify the hero, category cards, and product grids without writing any code.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Does Larder load fonts from Google?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. Lora and Source Sans 3 are bundled with the theme and served from your own site. There are no third-party requests, which helps with GDPR compliance and page speed.',
+          },
+        },
+      ],
+    },
+  ],
 };
 ---
 
 <BaseLayout
-  title="Larder"
-  description="Larder is a warm WordPress block theme built for food shops, farm stores, and organic markets. WooCommerce ready, Full Site Editing, local fonts, GDPR compliant. Free on WordPress.org."
+  title="Larder: Free WooCommerce Theme for Food Shops"
+  description="Larder is a free WordPress block theme for grocery stores, farm shops, and organic markets. WooCommerce ready, Site Editor friendly, and fast with self-hosted fonts."
   jsonLd={jsonLd}
 >
   <main class="container">
     <div class="page-title">
       <h1>Larder</h1>
-      <p>A warm WordPress block theme for food shops, farm stores, and organic markets.</p>
+      <p>A free WordPress block theme for food shops, farm stores, and organic markets. Built for WooCommerce, edited entirely in the Site Editor.</p>
     </div>
 
     <div class="theme-actions">
@@ -42,60 +87,74 @@ const jsonLd = {
       </a>
     </div>
 
+    <div class="theme-video">
+      <video controls playsinline preload="metadata" poster="/images/larder/larder-poster.jpg" aria-label="Larder WordPress theme walkthrough video">
+        <source src="/images/larder/larder-promo.mp4" type="video/mp4" />
+        Your browser doesn't support embedded videos. You can
+        <a href="/images/larder/larder-promo.mp4">download the video</a> instead.
+      </video>
+    </div>
+
     <div class="prose" style="padding-top:24px">
 
       <h2>Why Larder</h2>
       <p>
-        Most WooCommerce themes try to do everything. Larder doesn't. It's built for one thing:
-        stores that sell fresh goods. Grocery shops, farmers markets, organic food stores, anything
-        where the product photography matters and the layout should get out of the way.
+        Most WooCommerce themes try to be everything for everyone. Larder picks one job: stores
+        that sell fresh goods. Grocery shops, farmers markets, bakeries, organic food stores,
+        anywhere the product photography matters and the layout should get out of the way.
       </p>
       <p>
-        The homepage comes ready with a hero banner, product category cards, featured products, sale
-        items, and new arrivals. All editable through the Site Editor, no code needed. If you don't
-        run a shop, Larder works fine as a blog or content site too.
+        The homepage comes ready with a hero banner, product category cards, featured products,
+        sale items, and new arrivals. Every section is a block pattern you can rearrange or remove
+        in the Site Editor, no code needed.
+      </p>
+      <p>
+        It's built to stay fast. Fonts are bundled and served from your own site, so there are no
+        requests to Google Fonts or any other third party. That keeps pages quick and avoids the
+        GDPR headaches of external font loading.
       </p>
       <p>
         Larder is free, open source, and hosted on
         <a href="https://wordpress.org/themes/larder/" target="_blank" rel="noopener noreferrer">WordPress.org</a>.
+        Looking for a dark blog theme instead? Have a look at <a href="/kairo/">Kairo</a>.
       </p>
 
       <h2>Screenshots</h2>
 
       <div class="theme-screenshots">
-        <figure class="theme-screenshot">
-          <img src="/images/larder/larder-preview.gif" alt="Larder theme full preview" loading="lazy" />
-          <figcaption>Full Preview</figcaption>
-        </figure>
-
         <figure class="theme-screenshot theme-screenshot--wide">
-          <img src="/images/larder/larder-1.png" alt="Larder theme hero section" loading="lazy" />
-          <figcaption>Hero Section</figcaption>
+          <img src="/images/larder/larder-hero.jpg" alt="Larder theme homepage hero with a full-width farm banner, headline, and call-to-action buttons" loading="lazy" />
+          <figcaption>Homepage hero</figcaption>
         </figure>
 
         <figure class="theme-screenshot">
-          <img src="/images/larder/larder-2.png" alt="Larder theme featured products section" loading="lazy" />
-          <figcaption>Featured Products Section</figcaption>
+          <img src="/images/larder/larder-categories.jpg" alt="Product category cards in the Larder theme showing bakery, beverages, dairy, and pantry sections" loading="lazy" />
+          <figcaption>Product categories</figcaption>
         </figure>
 
         <figure class="theme-screenshot">
-          <img src="/images/larder/larder-3.png" alt="Larder theme footer section" loading="lazy" />
-          <figcaption>Footer</figcaption>
+          <img src="/images/larder/larder-featured.jpg" alt="Featured products grid in the Larder WooCommerce theme" loading="lazy" />
+          <figcaption>Featured products</figcaption>
         </figure>
 
         <figure class="theme-screenshot">
-          <img src="/images/larder/larder-6.png" alt="Larder theme blog archive page" loading="lazy" />
-          <figcaption>Blog</figcaption>
-        </figure>
-
-        <figure class="theme-screenshot">
-          <img src="/images/larder/larder-4.png" alt="Larder theme single product page" loading="lazy" />
+          <img src="/images/larder/larder-product.jpg" alt="Single product page in Larder with gallery thumbnails, variation options, and add-to-cart button" loading="lazy" />
           <figcaption>Single product</figcaption>
         </figure>
 
         <figure class="theme-screenshot">
-          <img src="/images/larder/larder-5.png" alt="Larder theme shop archive page" loading="lazy" />
-          <figcaption>Shop Archive</figcaption>
+          <img src="/images/larder/larder-shop.jpg" alt="WooCommerce shop archive page styled by the Larder theme" loading="lazy" />
+          <figcaption>Shop archive</figcaption>
+        </figure>
+
+        <figure class="theme-screenshot">
+          <img src="/images/larder/larder-blog.jpg" alt="Blog archive layout in the Larder theme with featured images and sidebar widgets" loading="lazy" />
+          <figcaption>Blog</figcaption>
+        </figure>
+
+        <figure class="theme-screenshot">
+          <img src="/images/larder/larder-footer.jpg" alt="Larder theme newsletter call to action and footer with contact details" loading="lazy" />
+          <figcaption>Call to action and footer</figcaption>
         </figure>
       </div>
 
@@ -105,10 +164,10 @@ const jsonLd = {
         <li><strong>WooCommerce ready:</strong> Product Collection, Cart, Checkout, and Mini Cart work out of the box.</li>
         <li><strong>Local fonts:</strong> Lora and Source Sans 3, self-hosted for GDPR compliance and faster loads.</li>
         <li><strong>Warm color palette:</strong> designed around food, grocery, and organic store branding.</li>
-        <li><strong>Two style variations:</strong> Earth Tones and Forest Green for quick redesigns.</li>
+        <li><strong>Style variations:</strong> Earth Tones and Forest Green for one-click redesigns.</li>
         <li><strong>Homepage patterns:</strong> hero, categories, featured products, on sale, new arrivals, call to action.</li>
         <li><strong>Mobile friendly:</strong> slide-in menu and full-screen search overlay.</li>
-        <li><strong>Accessible:</strong> visible focus states, screen reader text, and reduced motion support.</li>
+        <li><strong>Accessible:</strong> visible focus states, screen reader text, skip link, and reduced motion support.</li>
         <li><strong>Translation ready:</strong> fully translatable with proper text domains.</li>
       </ul>
 
@@ -134,16 +193,43 @@ const jsonLd = {
 
       <h2>Requirements</h2>
       <ul>
-        <li>WordPress 6.7 or higher.</li>
+        <li>WordPress 6.7 or higher (tested up to 7.0).</li>
         <li>PHP 8.0 or higher.</li>
-        <li>WooCommerce (optional, only needed for shop features).</li>
+        <li>WooCommerce (the theme is built around it, so install it for the full experience).</li>
       </ul>
+
+      <h2>Frequently asked questions</h2>
+
+      <h3>Is Larder free?</h3>
+      <p>
+        Yes. Larder is free and open source under the GPL v2 license. There are no paid upgrades
+        or locked features.
+      </p>
+
+      <h3>Does Larder require WooCommerce?</h3>
+      <p>
+        It activates without WooCommerce, but the theme was designed around it. The homepage
+        patterns, product grids, cart, and checkout all expect WooCommerce, so install it to get
+        Larder working the way it was built.
+      </p>
+
+      <h3>How do I customize the homepage?</h3>
+      <p>
+        Open the Site Editor under Appearance and edit the Front Page template. Every section is
+        a block pattern, so you can rearrange, remove, or modify them without writing any code.
+      </p>
+
+      <h3>Does Larder load fonts from Google?</h3>
+      <p>
+        No. Lora and Source Sans 3 are bundled with the theme and served from your own site.
+        There are no third-party requests, which helps with both GDPR compliance and page speed.
+      </p>
 
       <h2>Support</h2>
       <p>
-        Larder is free and open source. For questions or bug reports, visit the
-        <a href="https://wordpress.org/support/theme/larder/" target="_blank" rel="noopener noreferrer">WordPress.org support forum</a>.
-        You can also open an issue on
+        Larder is actively maintained. For questions or bug reports, visit the
+        <a href="https://wordpress.org/support/theme/larder/" target="_blank" rel="noopener noreferrer">WordPress.org support forum</a>
+        or open an issue on
         <a href="https://github.com/shameemreza/larder" target="_blank" rel="noopener noreferrer">GitHub</a>.
       </p>
       <p>
