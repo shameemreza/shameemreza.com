@@ -98,7 +98,7 @@ function formatShortDate(d: Date): string {
   category={category}
   jsonLd={jsonLd}
 >
-  <div class="progress-bar" id="progress-bar"></div>
+  <div class="progress-bar" id="progress-bar" aria-hidden="true"></div>
   <main class="container">
     <header class="post-page-header">
       <p class="post-cat">
@@ -129,7 +129,7 @@ function formatShortDate(d: Date): string {
 
     <div class="share-row">
       <span>Share:</span>
-      <button class="share-btn" data-share="copy">Copy link</button>
+      <button class="share-btn" data-share="copy" aria-live="polite">Copy link</button>
       <a
         class="share-btn"
         href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(new URL(Astro.url.pathname, SITE.url).toString())}`}
@@ -296,6 +296,7 @@ function formatShortDate(d: Date): string {
         btn.className = 'code-copy-btn';
         btn.textContent = 'Copy';
         btn.setAttribute('aria-label', 'Copy code to clipboard');
+        btn.setAttribute('aria-live', 'polite');
         pre.style.position = 'relative';
         pre.appendChild(btn);
         btn.addEventListener('click', async () => {

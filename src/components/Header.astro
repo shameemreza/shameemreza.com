@@ -39,7 +39,7 @@ function isActive(href: string): boolean {
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle dark mode">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -229,6 +229,12 @@ function isActive(href: string): boolean {
     .mobile-nav-link[aria-current='page']:hover,
     .mobile-nav-link[aria-current='page']:active {
       color: #fff;
+    }
+
+    /* the yellow fill is too light for white text; this row goes dark instead */
+    .mobile-nav-link:nth-child(2):hover,
+    .mobile-nav-link:nth-child(2):active {
+      color: #1c1917;
     }
 
     .mobile-nav-link:nth-child(1) { border-left-color: #3498db; }
