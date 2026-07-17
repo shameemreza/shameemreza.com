@@ -1,7 +1,7 @@
 ---
 title: "Strict vs loose equality in JavaScript"
 date: 2023-01-20T12:39:30Z
-updated: 2026-04-24T10:00:00Z
+updated: 2026-07-14T10:00:00Z
 description: "JavaScript has two equality operators: === checks both value and type, while == only checks value with type coercion. Here's when to use each one."
 category: "Development"
 categorySlug: "development"
@@ -19,62 +19,54 @@ JavaScript has two equality operators that look almost identical but behave very
 
 ## Strict equality (===)
 
-
-
-Strict equality, also known as "triple equals", compares both the value and the type of two operands. It returns true if the operands are equal and of the same type.
-
-![JavaScript strict equality comparison table](/uploads/strict-equality.png)
-
-Source: [JavaScript equality table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/).
-
-Strict equality example:
-
+Strict equality, also known as "triple equals", compares both the value and the type of two operands. It returns true only if the operands are equal and of the same type.
 
 ```
 1 === 1 // true
 1 === "1" // false
 ```
 
-
-
-In the first example, both operands are of the same type (number) and have the same value, so the comparison returns true. In the second example, one operand is a number and the other is a string, so the comparison returns false.
-
+Both operands in the first comparison are numbers with the same value, so it returns true. The second mixes a number and a string, so it fails the type check before the values are even looked at.
 
 ## Loose equality (==)
 
-
-
-Loose equality, also known as "double equals", compares the values of two operands without considering their types. It returns true if the operands are equal, regardless of their type.
-
-![JavaScript loose equality comparison table](/uploads/loose-equality.png)
-
-Source: [JavaScript equality table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/).
-
-Loose equality example:
-
+Loose equality, also known as "double equals", coerces the two operands to a common type first and then compares the values. That's why the same comparison that failed above now passes:
 
 ```
 1 == 1 // true
 1 == "1" // true
 ```
 
+The string `"1"` gets converted to the number `1` before the comparison happens. Coercion sounds convenient until you see what it does with empty strings, arrays, and booleans.
 
+## The equality table
 
-In the first example, both operands are of the same type (number) and have the same value, so the comparison returns true. In the second example, one operand is a number and the other is a string, but their values are the same, so the comparison returns true.
+Here are the comparisons that trip people up, side by side. Every row is something I've seen cause a real bug:
 
+| Comparison | `==` | `===` |
+| --- | --- | --- |
+| `1 == "1"` | true | false |
+| `0 == ""` | true | false |
+| `0 == "0"` | true | false |
+| `"" == "0"` | false | false |
+| `0 == false` | true | false |
+| `"" == false` | true | false |
+| `null == undefined` | true | false |
+| `null == 0` | false | false |
+| `[] == ""` | true | false |
+| `[] == 0` | true | false |
+| `NaN == NaN` | false | false |
+
+Three rows are worth staring at. `0 == ""` and `0 == "0"` are both true, but `"" == "0"` is false, so loose equality isn't even transitive. `null == undefined` is true while `null == 0` is false, which is the one case where coercion is deliberately useful. And `NaN` isn't equal to anything, including itself, under either operator. Use `Number.isNaN()` for that check.
+
+If you want the full grid with every type combination, [Dorey's interactive equality table](https://dorey.github.io/JavaScript-Equality-Table/) is the reference I keep going back to.
 
 ## When to use each one
-
-
 
 In general, it's best to use strict equality whenever possible because it avoids the confusion that type coercion can cause. There are a few cases where loose equality is useful:
 
 - When comparing a variable to `null` or `undefined`.
-- When comparing a variable to a boolean.
 - When comparing a variable that may be a string or a number.
-
-
-
 
 ```
 // Use strict equality when comparing variables of the same type
@@ -92,12 +84,4 @@ let name;
 console.log(name == undefined); // true
 ```
 
-
-
 A simple rule: default to `===`. It's predictable, it avoids the type coercion traps in the [MDN sameness chart](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness), and it makes your intent clear. Reach for `==` only when you genuinely need to treat string and number versions of the same value as equal, or when you want `null` and `undefined` to match in a single check. In [JavaScript](/typescript-vs-javascript-what-are-the-differences/) projects with a linter, `eslint`'s `eqeqeq` rule will flag every `==` for you, which is a good safety net.
-
-**More resources:**
-
-- [MDN web docs: Equality comparisons and sameness](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness)
-- [JavaScript Equality Table by w3schools.com](https://www.w3schools.com/js/js_comparisons.asp)
-- [JavaScript Equality Comparison table by Dorey](https://dorey.github.io/JavaScript-Equality-Table/)
