@@ -129,7 +129,7 @@ function formatShortDate(d: Date): string {
 
     <div class="share-row">
       <span>Share:</span>
-      <button class="share-btn" data-share="copy">Copy Link</button>
+      <button class="share-btn" data-share="copy">Copy link</button>
       <a
         class="share-btn"
         href={`https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(new URL(Astro.url.pathname, SITE.url).toString())}`}
@@ -219,7 +219,7 @@ function formatShortDate(d: Date): string {
       relatedPosts.length > 0 && (
         <section class="related-section">
           <div class="section-divider" style="padding-top:0">
-            <h2 class="section-label">Keep Reading</h2>
+            <h2 class="section-label">Keep reading</h2>
           </div>
           <div class="related-grid">
             {relatedPosts.map((post) => (
@@ -240,7 +240,7 @@ function formatShortDate(d: Date): string {
     <!-- Comments (Giscus) -->
     <section class="post-comments" id="comments">
       <div class="section-divider" style="padding-top:24px">
-        <h2 class="section-label">Join the Conversation</h2>
+        <h2 class="section-label">Join the conversation</h2>
       </div>
       <p class="comments-intro">
         Have thoughts, questions, or a different take? I'd love to hear from you.
