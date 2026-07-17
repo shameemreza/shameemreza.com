@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { readingTime } from '../../utils/reading-time';
 import { SITE, POSTS_PER_PAGE } from '../../config';
 import type { GetStaticPaths } from 'astro';
 
@@ -28,10 +29,6 @@ function formatDate(d: Date): string {
     month: 'long',
     day: 'numeric',
   });
-}
-
-function estimateReadTime(description: string): number {
-  return Math.max(3, Math.ceil(description.length / 40));
 }
 
 const pageNum = page.currentPage;
@@ -99,7 +96,7 @@ const jsonLd = {
               <p class="blog-full-excerpt">{post.data.description}</p>
               <div class="blog-full-meta">
                 {formatDate(post.data.date)} ·{' '}
-                {estimateReadTime(post.data.description)} min read
+                {readingTime(post.body)} min read
               </div>
             </div>
           </a>

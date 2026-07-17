@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { SITE, AUTHOR, EXPERIENCE, PROJECTS, SOCIAL_LINKS } from '../config';
+import { readingTime } from '../utils/reading-time';
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
 const recentPosts = allPosts
@@ -13,10 +14,6 @@ const recentPosts = allPosts
 
 function formatShortDate(d: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function estimateReadTime(description: string): number {
-  return Math.max(3, Math.ceil(description.length / 40));
 }
 
 const jsonLd = {
@@ -110,7 +107,7 @@ const jsonLd = {
             </div>
             <div class="post-item-meta">
               {formatShortDate(post.data.date)} ·{' '}
-              {estimateReadTime(post.data.description)} min
+              {readingTime(post.body)} min
             </div>
           </a>
         ))

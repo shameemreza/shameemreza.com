@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { SITE, AUTHOR, GISCUS, MAILCHIMP_URL } from '../config';
+import { readingTime } from '../utils/reading-time';
 
 interface Props {
   title: string;
@@ -12,6 +13,7 @@ interface Props {
   categorySlug: string;
   featuredImage?: string;
   featuredImageAlt?: string;
+  body?: string;
 }
 
 const {
@@ -22,12 +24,11 @@ const {
   category,
   categorySlug,
   featuredImage,
+  body,
 } = Astro.props;
 
-const readingTime = Math.ceil(
-  (Astro.slots.has('default')
-    ? (await Astro.slots.render('default')).length / 5
-    : 1000) / 200
+const readMinutes = readingTime(
+  body ?? (Astro.slots.has('default') ? await Astro.slots.render('default') : '')
 );
 
 const allPosts = await getCollection('posts', ({ data }) => !data.draft);
@@ -85,9 +86,6 @@ function formatShortDate(d: Date): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
-function estimateReadTime(desc: string): number {
-  return Math.max(3, Math.ceil(desc.length / 40));
-}
 ---
 
 <BaseLayout
@@ -104,7 +102,7 @@ function estimateReadTime(desc: string): number {
   <main class="container">
     <header class="post-page-header">
       <p class="post-cat">
-        <a href={`/${categorySlug}/`}>{category}</a> · {readingTime} min read
+        <a href={`/${categorySlug}/`}>{category}</a> · {readMinutes} min read
       </p>
       <h1>{title}</h1>
       <div class="post-meta">
@@ -230,7 +228,7 @@ function estimateReadTime(desc: string): number {
                 <h3>{post.data.title}</h3>
                 <div class="rc-meta">
                   {formatShortDate(post.data.date)} ·{' '}
-                  {estimateReadTime(post.data.description)} min
+                  {readingTime(post.body)} min
                 </div>
               </a>
             ))}
