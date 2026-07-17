@@ -1,7 +1,7 @@
 ---
 title: "How to improve Largest Contentful Paint (LCP)"
 date: 2021-11-04T05:09:03Z
-updated: 2026-04-24T10:00:00Z
+updated: 2026-07-14T10:00:00Z
 description: "LCP measures how fast the largest visible element loads, and it counts for 25% of your PageSpeed score. Here's what actually moves the number on WordPress, with a list of second-order fixes at the end."
 category: "WordPress"
 categorySlug: "wordpress"
@@ -15,15 +15,27 @@ Largest Contentful Paint is the Core Web Vitals metric that measures how long it
 
 Google wants the LCP under 2.5 seconds for a "good" rating. LCP is weighted at 25% of the PageSpeed performance score, and it feeds directly into the Core Web Vitals signal for Search. If one number moves your speed score and your SEO at the same time, it's this one.
 
-![Shameem website speed report](/uploads/shameem-website-speed-1024x451.png)
+Here's this site's PageSpeed Insights report from July 2026, mobile test. LCP sits at 1.2 seconds:
+
+![PageSpeed Insights report for shameemreza.com showing a 100 performance score with LCP at 1.2 seconds](/uploads/shameemreza-pagespeed-2026.png)
 
 <Tldr>
   Fix the host, fix the LCP image. Those two changes move the number more than anything else. On WordPress, the host decides your server response time, which is the floor for every Core Web Vital. The LCP image decides your ceiling, because it's usually the largest file that has to download before the page feels ready. Everything else (minification, unused CSS, service workers, code-splitting) is second-order. It compounds on top of a fast host and an optimized hero image, not in place of them.
 </Tldr>
 
+## Find out where your LCP time actually goes
+
+Before you fix anything, run the page through [PageSpeed Insights](https://pagespeed.web.dev/) and open the "LCP breakdown" insight in the report. It splits your LCP into four subparts: time to first byte, resource load delay, resource load duration, and element render delay. Each subpart points at a different fix, so this one panel tells you where to spend your effort before you touch anything.
+
+It also shows which element is the LCP element, and that alone can save you from optimizing the wrong thing. On this site's homepage, the LCP element isn't an image at all. It's the bio paragraph:
+
+![PageSpeed Insights LCP breakdown showing the LCP element is a text paragraph with 1,240 ms of element render delay](/uploads/psi-lcp-breakdown-2026.png)
+
+All 1.2 seconds here is element render delay, which for a text element mostly means font loading and render-blocking CSS. If I'd assumed the LCP element was the profile photo and spent an afternoon compressing it, nothing would have changed.
+
 ## What causes a slow LCP
 
-Before you fix anything, run the page through PageSpeed Insights or the Core Web Vitals report in Search Console to see what your actual LCP is. From there, the usual suspects are:
+Once you know your LCP element and which subpart is eating the time, the usual suspects are:
 
 - **Slow server response time.** The browser can't render anything until the HTML arrives. If TTFB is bad, LCP can't be good.
 - **Render-blocking JavaScript and CSS.** Every synchronous script or external stylesheet in the `<head>` delays first paint. The more plugins and the heavier the theme, the worse this gets.
@@ -40,7 +52,7 @@ If you're on WordPress, I work at Automattic, so my go-tos are [WordPress.com](h
 
 ### Optimize the LCP image
 
-Open the PageSpeed Insights report and look at the "Largest Contentful Paint element" line. That's the one file you need to fix first.
+If the LCP breakdown insight shows an image as your LCP element, that's the one file you need to fix first. The "LCP request discovery" insight in the same report tells you whether the browser found the image early or had to wait for CSS or JavaScript to reveal it.
 
 - Serve it in WebP or AVIF if you can. Both cut file size by 30 to 60% compared to PNG at the same quality.
 - Resize it to the dimensions actually displayed. A hero image rendered at 1200 pixels wide doesn't need a 4000-pixel-wide source.
