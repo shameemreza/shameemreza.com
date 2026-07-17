@@ -24,7 +24,7 @@
    ============================================================ */
 :root {
   --font-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-serif: 'Fraunces', Georgia, serif;
+  --font-serif: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   --max: 700px;
   --r: 8px;
@@ -39,7 +39,7 @@
   --text-sm: 14px;
   --text-md: 15px;
   --text-base: 16px;
-  --text-prose: 16.5px;
+  --text-prose: 17px;
   --text-lg: 18px;
   --text-xl: 22px;
   --text-2xl: 24px;
@@ -1103,7 +1103,7 @@ img {
 }
 
 .prose h4 {
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   font-weight: 700;
   color: var(--ink);
   margin: 24px 0 8px;
@@ -2260,6 +2260,20 @@ pre:hover .code-copy-btn {
 .giscus-frame {
   border: none;
   color-scheme: auto;
+}
+
+/* ============================================================
+   NUMERIC ALIGNMENT — dates, read times, pagination
+   ============================================================ */
+.post-item-meta,
+.blog-full-meta,
+.rc-meta,
+.post-meta,
+.exp-period,
+.gh-event-card time,
+.pagination,
+.now-updated {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ============================================================
