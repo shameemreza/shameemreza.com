@@ -24,7 +24,7 @@
    ============================================================ */
 :root {
   --font-sans: 'Geist Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-serif: 'Fraunces', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
   --max: 700px;
   --r: 8px;
@@ -775,10 +775,10 @@ img {
 
 .hero h1 {
   font-family: var(--font-serif);
-  font-weight: 400;
-  font-size: clamp(32px, 5vw, 46px);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  font-weight: 420;
+  font-size: clamp(30px, 4.4vw, 42px);
+  line-height: 1.14;
+  letter-spacing: -0.025em;
   color: var(--ink);
   margin-bottom: 18px;
 }
