@@ -2406,10 +2406,10 @@ pre:hover .code-copy-btn,
 .theme-screenshot figcaption {
   padding: 10px 14px;
   font-size: var(--text-xs);
-  color: var(--muted);
+  color: var(--ink-muted);
   font-family: var(--font-sans);
   text-align: center;
-  background: var(--surface);
+  background: var(--bg-alt);
 }
 
 .theme-screenshot--wide {
