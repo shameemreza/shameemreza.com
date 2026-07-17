@@ -54,7 +54,8 @@
   --ink-faint: #d6d3d1;
   --border: #e7e5e4;
   --accent: #0d9488;
-  --accent-hover: #0f766e;
+  --accent-hover: #115e59;
+  --accent-fill: #0f766e; /* fills that carry --accent-on text; passes AA where raw accent cannot */
   --accent-soft: rgba(13, 148, 136, 0.06);
   --accent-ink: #0f766e;
   --tag-bg: rgba(13, 148, 136, 0.06);
@@ -80,11 +81,12 @@
   --bg-elevated: #1e293b;
   --ink: #e2e8f0;
   --ink-sub: #94a3b8;
-  --ink-muted: #64748b;
+  --ink-muted: #74869f; /* 4.81:1 on --bg; the old #64748b sat below AA at 3.75:1 */
   --ink-faint: #334155;
   --border: #1e293b;
   --accent: #5eead4;
   --accent-hover: #2dd4bf;
+  --accent-fill: #5eead4;
   --accent-soft: rgba(94, 234, 212, 0.1);
   --accent-ink: #7dd3c4;
   --tag-bg: rgba(94, 234, 212, 0.08);
@@ -118,8 +120,10 @@
   color: var(--selection-ink);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -165,6 +169,30 @@ img {
   outline: none;
 }
 
+/* Skip link — off-screen until a keyboard user focuses it */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 300;
+  padding: 10px 16px;
+  border-radius: var(--r);
+  background: var(--accent-fill);
+  color: var(--accent-on);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  box-shadow: var(--btn-shadow);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
 /* ============================================================
    SPOTLIGHT
    ============================================================ */
@@ -182,15 +210,16 @@ img {
 }
 
 /* ============================================================
-   REVEAL ANIMATION
+   REVEAL ANIMATION — hidden state only applies when JS is running,
+   so content stays visible if scripts fail or are disabled
    ============================================================ */
-.reveal {
+html.js .reveal {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
 
-.reveal.visible {
+html.js .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -349,7 +378,7 @@ img {
 
 .section-more:hover {
   gap: 8px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   border-color: var(--accent);
   transform: translateY(-1px);
@@ -466,7 +495,7 @@ img {
 .tech-tag:hover {
   box-shadow: var(--pill-shadow-hover);
   transform: translateY(-1px);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
 }
 
@@ -673,7 +702,7 @@ img {
 }
 
 .filter-pill.active {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   border-color: var(--accent);
   box-shadow: var(--pill-shadow-hover);
@@ -712,8 +741,8 @@ img {
 }
 
 .pagination .current {
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-fill);
+  color: var(--accent-on);
   font-weight: 600;
 }
 
@@ -1027,7 +1056,7 @@ img {
 }
 
 .back-to-blog:hover {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   border-color: var(--accent);
 }
@@ -1302,7 +1331,7 @@ img {
   gap: 6px;
   padding: 4px 10px 4px 8px;
   margin: 0 0 12px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   font-family: var(--font-sans);
   font-size: var(--text-2xs);
@@ -1379,7 +1408,7 @@ img {
 }
 
 .ptag:hover {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   box-shadow: var(--pill-shadow-hover);
   transform: translateY(-1px);
@@ -1805,7 +1834,7 @@ img {
 }
 
 .nf-chip.primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: var(--accent);
   color: var(--accent-on);
 }
@@ -1986,14 +2015,13 @@ img {
 
 .nl-form input:focus {
   border-color: var(--accent);
-  outline: none;
 }
 
 .nl-form button {
   padding: 8px 18px;
   border: none;
   border-radius: 6px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   font-family: var(--font-sans);
   font-size: var(--text-sm);
@@ -2020,7 +2048,7 @@ img {
 .prose .cta-button a {
   display: inline-block;
   padding: 12px 28px;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   font-family: var(--font-sans);
   font-size: var(--text-md);
@@ -2130,12 +2158,13 @@ img {
   transition: opacity 0.2s, background 0.2s, color 0.2s;
 }
 
-pre:hover .code-copy-btn {
+pre:hover .code-copy-btn,
+.code-copy-btn:focus-visible {
   opacity: 1;
 }
 
 .code-copy-btn:hover {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--accent-on);
   border-color: var(--accent);
 }
@@ -2319,14 +2348,14 @@ pre:hover .code-copy-btn {
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-on);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
-  color: #fff;
+  background: var(--accent-hover);
+  color: var(--accent-on);
 }
 
 .btn-secondary {
