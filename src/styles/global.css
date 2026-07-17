@@ -1912,7 +1912,7 @@ img {
 
 .gh-activity h2 {
   font-family: var(--font-serif);
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   font-weight: 400;
   color: var(--ink);
   margin: 0;
