@@ -47,14 +47,14 @@ export const EXPERIENCE = [
     company: 'Automattic',
     url: 'https://automattic.com',
     description:
-      'Supporting WooCommerce merchants with complex technical cases across Subscriptions, Bookings, WooPayments, Stripe, and more. Also a Woo Marketplace Product Ambassador, reviewing plugin submissions for code quality, security, and UX.',
+      'Supporting WooCommerce merchants with complex technical cases across Subscriptions, Bookings, Memberships, WooPayments, Stripe, and more. Also reviewing plugin submissions to WooCommerce.com for code quality, security, and UX.',
     tech: ['WooCommerce', 'WordPress', 'PHP', 'JavaScript', 'REST API'],
   },
   {
     period: '2026 - Now',
     title: 'Plugin Reviewer',
     company: 'WordPress.org Plugins Team',
-    url: 'https://make.wordpress.org/plugins/',
+    url: 'https://make.wordpress.org/plugins/handbook/the-team/',
     description:
       'Reviewing plugin submissions on WordPress.org for code quality, security, and guideline compliance. Working with the Plugins Team to maintain plugin directory standards.',
     tech: ['WordPress', 'PHP', 'Security', 'Code Review'],
@@ -71,6 +71,14 @@ export const EXPERIENCE = [
 ] as const;
 
 export const PROJECTS = [
+  {
+    period: '2026',
+    title: 'Heya',
+    url: 'https://github.com/shameemreza/heya',
+    description:
+      'Local-first AI agent for WordPress and WooCommerce support engineers. Takes a bug from ticket to proven answer on any model, including ones that never leave your machine.',
+    tech: ['Python', 'AI Agents', 'WordPress'],
+  },
   {
     period: '2026',
     title: 'Larder',
