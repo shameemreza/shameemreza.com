@@ -69,7 +69,7 @@
   --photo-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   --selection-bg: #7fdbe8;
   --selection-ink: #0a3d47;
-  --glow-color: rgba(13, 148, 136, 0.07);
+  --glow-color: rgba(14, 124, 140, 0.07);
   --glow-size: 550px;
   --accent-on: #ffffff;
   --dim: 0.35;
@@ -99,7 +99,7 @@
   --btn-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(214, 211, 209, 0.05);
   --photo-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --accent-on: #052730;
-  --glow-color: rgba(29, 78, 216, 0.15);
+  --glow-color: rgba(95, 208, 224, 0.12);
   --glow-size: 600px;
   --dim: 0.4;
 }
