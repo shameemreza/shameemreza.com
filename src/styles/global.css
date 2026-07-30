@@ -1144,9 +1144,9 @@ html.js .reveal.visible {
   color: #cdd6f4;
   border: 1px solid var(--border);
   max-width: 100%;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: pre;
+  tab-size: 4;
+  font-variant-ligatures: none;
 }
 
 .prose code {
