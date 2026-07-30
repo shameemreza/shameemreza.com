@@ -20,7 +20,7 @@ That PDF vs EPUB detail was the clue that eventually cracked it open (after I lo
 
 When someone clicks a WooCommerce download link, the request hits `WC_Download_Handler::download_product()` in `class-wc-download-handler.php`. Before it even looks at permissions or order status, it loads the product and checks if the downloadable file is valid.
 
-```
+```php
 $product_id = absint( $_GET['download_file'] );
 $product    = wc_get_product( $product_id );
 $downloads  = $product ? $product->get_downloads() : array();
@@ -30,7 +30,7 @@ That `get_downloads()` call is where things go wrong. It doesn't return the raw 
 
 During product loading, WooCommerce calls `read_downloads()`, which creates `WC_Product_Download` objects and passes them through `set_downloads()`. Inside `set_downloads()`, every single download goes through `check_is_valid()`:
 
-```
+```php
 try {
     $download->check_is_valid( $this->get_object_read() );
     $downloads[ $download_id ] = $download;
@@ -44,7 +44,7 @@ try {
 
 If validation throws an exception, the download object stays in the array but gets `enabled` set to `false`. Then the download handler checks this flag:
 
-```
+```php
 if (
     ! $product
     || empty( $key )
@@ -64,7 +64,7 @@ Inside `check_is_valid()`, there are three checks that can throw: `is_allowed_fi
 
 `is_allowed_filetype()` calls `wp_check_filetype()` and compares the result against WordPress's allowed MIME types:
 
-```
+```php
 public function is_allowed_filetype() {
     // ...
     return ! $this->get_file_extension()
@@ -74,7 +74,7 @@ public function is_allowed_filetype() {
 
 And `get_allowed_mime_types()` wraps the WordPress core function:
 
-```
+```php
 public function get_allowed_mime_types() {
     return apply_filters(
         'woocommerce_downloadable_file_allowed_mime_types',
@@ -107,7 +107,7 @@ The store owner tried disabling all plugins to isolate the issue. That didn't he
 
 The solution is to register the EPUB MIME type through the standard `upload_mimes` filter in a way that runs unconditionally. In a child theme's `functions.php` or a code snippets plugin:
 
-```
+```php
 add_filter( 'upload_mimes', function ( $mimes ) {
     $mimes['epub'] = 'application/epub+zip';
     return $mimes;
@@ -116,7 +116,7 @@ add_filter( 'upload_mimes', function ( $mimes ) {
 
 If you also sell MOBI files, add that too:
 
-```
+```php
 add_filter( 'upload_mimes', function ( $mimes ) {
     $mimes['mobi'] = 'application/x-mobipocket-ebook';
     $mimes['epub'] = 'application/epub+zip';

@@ -71,7 +71,7 @@ What we actually want is to tighten the contract. When the main product is added
 
 Before the four feature snippets, there's a small helper file that defines the pairs and keeps the pair flag in cart data across page loads. Each of the snippets below reuses these helpers, so this one goes in first.
 
-```
+```php
 /**
  * Define which products are paired with which.
  *
@@ -171,7 +171,7 @@ The cart page is too late. By the time the customer has added the Chemex, you're
 
 This snippet adds a small line under the Add to Cart button that says "Also added when you buy this: Paper Filters ($10)". It works on simple products and variable products, in classic themes and block themes, because it hooks into the standard add-to-cart form template that all of them render.
 
-```
+```php
 /**
  * Show the paired companion product under the Add to Cart button on the
  * single product page.
@@ -255,7 +255,7 @@ This is the snippet that does the actual pairing. When the customer adds the Che
 
 The snippet hooks `woocommerce_add_to_cart`, which fires on every add-to-cart action regardless of whether the customer is using the classic cart, the cart block, or the Store API directly. WooCommerce core fires this action from `WC_Cart::add_to_cart()`. The Store API mirrors the same contract from its own `CartController::add_to_cart()` and fires `woocommerce_add_to_cart` with the same six arguments. One handler covers both flows.
 
-```
+```php
 /**
  * Automatically add the configured companion product when the main product
  * is added to the cart.
@@ -367,7 +367,7 @@ For some pairings, the companion isn't optional. The Chemex ships with one speci
 
 This snippet locks the pair so the customer can't change the companion's quantity or remove it independently. It hits the right hooks for the classic cart and the cart block in one block of code, so the same snippet works regardless of which cart UI your store uses.
 
-```
+```php
 /*
  * Lock paired companion items in the cart so the customer cannot change
  * the quantity or remove them independently.
@@ -540,7 +540,7 @@ After adding this snippet, paired companion items in the cart show up with the q
 
 The lock above stops the customer from changing the companion's quantity directly. This snippet keeps the companion's quantity matched to the main product's quantity automatically. If the customer increases the Chemex from 1 to 3, the paper filters go from 1 to 3 in the same update.
 
-```
+```php
 /**
  * Sync the paired companion quantity to the main product quantity.
  *
@@ -613,7 +613,7 @@ The companion lands at the bottom of the cart instead of right under the parent.
 
 This snippet bundles the polish for those cases. Six functions, all using the `paired_with` flag the earlier snippets set, all hooked into cart lifecycle events that fire across both cart UIs.
 
-```
+```php
 /*
  * Polish the pair across the cart's lifecycle so the cart looks and behaves
  * the way the customer expects in every state:
@@ -879,7 +879,7 @@ add_action( 'woocommerce_ordered_again', 'wooninja_reapply_paired_flag_on_reorde
 
 For the visual nesting in the classic cart, drop this CSS into your theme's stylesheet, a Customizer additional CSS field, or a snippets plugin that supports CSS:
 
-```
+```css
 .cart_item.companion-child {
 	background: #fafafa;
 }

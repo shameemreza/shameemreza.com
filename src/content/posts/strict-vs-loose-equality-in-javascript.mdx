@@ -21,7 +21,7 @@ JavaScript has two equality operators that look almost identical but behave very
 
 Strict equality, also known as "triple equals", compares both the value and the type of two operands. It returns true only if the operands are equal and of the same type.
 
-```
+```js
 1 === 1 // true
 1 === "1" // false
 ```
@@ -32,7 +32,7 @@ Both operands in the first comparison are numbers with the same value, so it ret
 
 Loose equality, also known as "double equals", coerces the two operands to a common type first and then compares the values. That's why the same comparison that failed above now passes:
 
-```
+```js
 1 == 1 // true
 1 == "1" // true
 ```
@@ -68,7 +68,7 @@ In general, it's best to use strict equality whenever possible because it avoids
 - When comparing a variable to `null` or `undefined`.
 - When comparing a variable that may be a string or a number.
 
-```
+```js
 // Use strict equality when comparing variables of the same type
 let age = 25;
 let legalAge = 21;

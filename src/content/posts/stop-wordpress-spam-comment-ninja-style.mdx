@@ -99,7 +99,7 @@ Real commenters almost never miss this field. You can't imagine how often they w
 
 A lot of comment spam doesn't come through your actual comment form. Bots `POST` directly to `wp-comments-post.php` from their own scripts. You can block that at the `.htaccess` level by requiring the request to come from your own domain:
 
-```
+```apache
 RewriteEngine On
 RewriteCond %{REQUEST_METHOD} POST
 RewriteCond %{REQUEST_URI} .wp-comments-post\.php*
@@ -116,7 +116,7 @@ Always take a backup before editing `.htaccess`. A typo in this file will break 
 
 Every so often a single IP or small range will hammer you repeatedly. You can block specific IPs straight from **Settings → Discussion → Disallowed Comment Keys** (just paste the IP), or from `.htaccess` if you want to block all traffic, not just comments:
 
-```
+```apache
 Order allow,deny
 Deny from 88.136.129.110
 Allow from all

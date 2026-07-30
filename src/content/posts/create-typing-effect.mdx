@@ -21,7 +21,7 @@ Source: [Typed.js by Matt Boldt](http://www.mattboldt.com/demos/typed-js/).
 
 টাইপড জেএস প্লাগিন সেটাপ করা খুব সহজ। এই প্লাগিন ব্যবহার করার জন্য তোমাকে নিচের কোড গুলো তোমার টেমপ্লেটে বা অ্যাপ্লিকেশনে যোগ করে দাও। ভালো হবে যদি তুমি হেড ট্যাগের মধ্যে রাখো।
 
-```create-css-typing-effect-script
+```html
 <script src="typed.js"></script>
 <script>
   $(function(){
@@ -47,12 +47,12 @@ Source: [Typed.js by Matt Boldt](http://www.mattboldt.com/demos/typed-js/).
 
 প্রথমে আমাদের একটি এইচটিএমল প্যারাগ্রাফ নিতে হবে, এবং তার মধ্যে আমরা ঐ লেখা গুলো রাখবো, যার মধ্যে টাইপিং ইফেক্ট ব্যবহার করবো।
 
-```create-css-typing-effect-html
+```html
 <p class="css-typing">This is a paragraph that is being typed by CSS animation.</p>
 ```
 এবার ইফেক্ট তৈরি করার পালা। প্রথমে আমাদেরকে প্যারাগ্রাফের width ডিফাইন করতে হবে, তারপর ওভারফ্লো হিডেন, এবং সব শেষে অ্যানিমেশন ইফেক্ট।
 
-```create-css-typing-effect-css
+```css
 .css-typing
 {
     width: 30em;

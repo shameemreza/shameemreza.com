@@ -22,7 +22,7 @@ I went into the WooCommerce source to understand exactly what was happening. The
 
 Here is the relevant section:
 
-```
+```php
 if ( in_array( $this->id, array( 'new_order', 'cancelled_order', 'failed_order' ), true ) ) {
     if ( $this->object && $this->object->get_billing_email() && ( $this->object->get_billing_first_name() || $this->object->get_billing_last_name() ) ) {
         $header .= 'Reply-to: ' . $this->object->get_billing_first_name() . ' ' . $this->object->get_billing_last_name() . ' <' . $this->object->get_billing_email() . ">\r\n";
@@ -40,7 +40,7 @@ But for a team, that convenience becomes a risk. Imagine someone replying with i
 
 After reading through the method, I noticed the final line before the headers are returned:
 
-```
+```php
 return apply_filters( 'woocommerce_email_headers', $header, $this->id, $this->object, $this );
 ```
 
@@ -52,7 +52,7 @@ So the plan was straightforward. Catch the filter, check if it is one of the thr
 
 Here is the snippet I put together after testing it across the full email flow:
 
-```
+```php
 /**
  * Remove the customer's billing email from the Reply-To header on admin
  * order notification emails (New Order, Cancelled Order, Failed Order)

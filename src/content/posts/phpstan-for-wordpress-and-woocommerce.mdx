@@ -16,13 +16,13 @@ The good news is: [PHPStan](https://phpstan.org/) isn't hard to set up, and use.
 
 First, I recommend installing PHPStan globally for quick checks anywhere on your system:
 
-```
+```bash
 composer global require phpstan/phpstan
 ```
 
 Make sure global composer bin is in PATH:
 
-```
+```bash
 echo 'export PATH="$HOME/.composer/vendor/bin:$HOME/.config/composer/vendor/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
@@ -31,7 +31,7 @@ This gives you a global phpstan command. But for real projects, always add PHPSt
 
 Once done, inside your plugin folder, run:
 
-```
+```bash
 composer require --dev phpstan/phpstan
 composer require --dev phpstan/extension-installer
 composer require --dev szepeviktor/phpstan-wordpress
@@ -47,7 +47,7 @@ If you want to learn more about WordPress extensions for PHPStan, you can check 
 
 Next, create a `phpstan.neon` in your extension root. Start at level 0. That's important, don't jump to level 8 on day one.
 
-```
+```yaml
 includes:
   # The WordPress extension is auto-included via extension-installer
   # - vendor/szepeviktor/phpstan-wordpress/extension.neon
@@ -91,7 +91,7 @@ This tells PHPStan where to look, what to ignore, and how to load WooCommerce sy
 
 PHPStan doesn't know what `ABSPATH` or `MY_PLUGIN_DIR` is unless you tell it. That's where a simple bootstrap file comes in.
 
-```
+```php
 <?php
 /**
  * PHPStan Bootstrap File
@@ -140,7 +140,7 @@ Create composer.json
 
 If you don't have one already, create one like:
 
-```
+```json
 {
   "name": "yourname/your-plugin",
   "description": "Your WordPress/WooCommerce Plugin",
@@ -176,13 +176,13 @@ If you don't have one already, create one like:
 
 If you did everything correctly, it's time to tun. Now try:
 
-```
+```bash
 vendor/bin/phpstan analyse
 ```
 
 At level 0, it'll catch undefined functions, missing classes, and other low-hanging bugs. Fix those, then move up:
 
-```
+```bash
 vendor/bin/phpstan analyse --level=1
 vendor/bin/phpstan analyse --level=2
 ```
@@ -191,19 +191,19 @@ The idea is simple: fix everything at your current level, then raise the bar.
 
 If you want to analyze specific files or directories, you can run:
 
-```
+```bash
 vendor/bin/phpstan analyse includes/
 ```
 
 If you want to show progress, that also easy, just run:
 
-```
+```bash
 vendor/bin/phpstan analyse --verbose
 ```
 
 You even can generate baseline for existing issues running:
 
-```
+```bash
 vendor/bin/phpstan analyse --generate-baseline
 ```
 
@@ -216,7 +216,7 @@ vendor/bin/phpstan analyse --generate-baseline
 
 However, you may also get false positive. You can use inline comments to ignore specific lines:
 
-```
+```php
 // @phpstan-ignore-next-line
 $value = $undefined_variable;
 
@@ -229,7 +229,7 @@ $value = $undefined_variable;
 
 If you want to mirror review checks, run PHPStan in GitHub Actions. Here's a minimal workflow:
 
-```
+```yaml
 name: PHPStan
 on: [push, pull_request]
 

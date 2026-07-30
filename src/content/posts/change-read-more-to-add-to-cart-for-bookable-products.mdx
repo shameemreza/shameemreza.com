@@ -16,7 +16,7 @@ But what if you'd rather show Add to Cart instead of Read More? While the button
 
 Here's a simple snippet to make that change:
 
-```
+```php
 add_filter('woocommerce_product_add_to_cart_text', function($text, $product) {
      if ($product->get_type() === 'booking') {
        return __('Add to Cart', 'woocommerce');

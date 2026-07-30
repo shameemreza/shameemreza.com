@@ -107,17 +107,17 @@ WEIGHT | BENEFIT |
 
 যদি আইটেম ভ্যালু থাকে ১০ এবং ওয়েট থাকে ৫, আর তুমি যদি সম্পূর্ণ জিনিসই নিতে চাও, তাহলে বেনিফট হিসাবের পদ্ধতি হবেঃ
 
-```fractional-knapsack-1
+```
 benefit = (weight taken) x (total value of the item / total weight of the item)
 ```
 আবার তুমি যদি কোন জিনিসের ১/২ নিতে চাও, তাহলে বেনিফিট হিসাব করতে হবেঃ``
 
-```fractional-knapsack-2
+```
 weight taken = 5 x (1/2) = 5/2 (as we are taking 1/2 item)
 ```
 ইমপ্লিমেন্টেশন দেখলে আরো ভালো করে বুঝতে পারবেঃ
 
-```fractional-knapsack-implementation
+```c
 #include <stdio.h>
 
 struct Item {
@@ -206,7 +206,7 @@ void fractionalKnapsack(Item items[], int n, int W) {
 ```
 উপরের কোডের আউটপুট আসবেঃ
 
-```fractional-knapsack-output
+```
 Selected Item: i5  Weight: 1  Value: 3        Total Weight: 1.000000  Total Benefit: 3.000000
 Selected Item: i6  Weight: 3  Value: 5        Total Weight: 4.000000  Total Benefit: 8.000000
 Selected Item: i4  Weight: 5  Value: 8        Total Weight: 9.000000  Total Benefit: 16.000000

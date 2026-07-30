@@ -80,7 +80,7 @@ Now go to All-in-One WP Migration, Import. The upload area will read "Maximum up
 
 If you'd rather paste code than install one more thing, here's the equivalent as a standalone snippet. Drop it in a child theme's `functions.php`, use a code snippets plugin like [SnipDrop](https://github.com/shameemreza/snipdrop) or [WPCode](https://wordpress.org/plugins/insert-headers-and-footers/), or save it as `wp-content/mu-plugins/ai1wm-unlock.php` for something that survives theme switches.
 
-```
+```php
 <?php
 // Practical ceiling for the JS gate. JavaScript's Number.MAX_SAFE_INTEGER,
 // so the value stays exact when it crosses the PHP-to-JS boundary.
@@ -152,7 +152,7 @@ Then you edit the `.htaccess` file and add the config at the bottom.
 
 The lines you'd add look like this:
 
-```
+```apache
 php_value upload_max_filesize 256M
 php_value post_max_size 256M
 php_value memory_limit 512M
@@ -160,7 +160,7 @@ php_value memory_limit 512M
 
 Or the equivalent in `.user.ini` if your host uses Nginx with PHP-FPM:
 
-```
+```ini
 upload_max_filesize = 256M
 post_max_size = 256M
 memory_limit = 512M

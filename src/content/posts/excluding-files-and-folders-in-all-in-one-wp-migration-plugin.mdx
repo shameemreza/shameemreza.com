@@ -42,7 +42,7 @@ If you're hitting the upload size limit on the destination rather than the size 
 
 If you look inside `lib/model/export/class-ai1wm-export-enumerate-content.php`, the first thing the export does is pre-populate the exclude list with three things:
 
-```
+```php
 $exclude_filters = array_merge(
     array( ai1wm_get_uploads_dir(), ai1wm_get_plugins_dir() ),
     ai1wm_get_themes_dirs()
@@ -53,7 +53,7 @@ Then it iterates `wp-content`. Anything under `themes/`, `plugins/`, or `uploads
 
 So when you write something like this:
 
-```
+```php
 add_filter( 'ai1wm_exclude_content_from_export', function( $paths ) {
     $paths[] = 'themes/astra/cache';
     return $paths;
@@ -68,7 +68,7 @@ The content iterator never even visits the themes folder. Your entry goes into a
 
 Use `ai1wm_exclude_themes_from_export`. The themes iterator walks starting at `wp-content/themes`, so paths are relative to that.
 
-```
+```php
 add_filter( 'ai1wm_exclude_themes_from_export', function( $paths ) {
     $paths[] = 'astra/cache';
     $paths[] = 'hello-elementor/node_modules';
@@ -80,7 +80,7 @@ add_filter( 'ai1wm_exclude_themes_from_export', function( $paths ) {
 
 Use `ai1wm_exclude_plugins_from_export`. The plugins iterator walks `wp-content/plugins`.
 
-```
+```php
 add_filter( 'ai1wm_exclude_plugins_from_export', function( $paths ) {
     $paths[] = 'wordfence';
     $paths[] = 'elementor/data';
@@ -95,7 +95,7 @@ Note: you almost never want to exclude the entire `plugins` directory with this 
 
 Use `ai1wm_exclude_media_from_export`. The media iterator walks `wp-content/uploads`.
 
-```
+```php
 add_filter( 'ai1wm_exclude_media_from_export', function( $paths ) {
     $paths[] = '2019';
     $paths[] = '2020';
@@ -111,7 +111,7 @@ Common targets here are old year folders, page-builder caches, and the `woocomme
 
 Use `ai1wm_exclude_content_from_export` only for paths that aren't inside themes, plugins, or uploads. Things like `cache`, a rogue `backups-dup-pro`, `languages`, or custom folders some host dropped in there.
 
-```
+```php
 add_filter( 'ai1wm_exclude_content_from_export', function( $paths ) {
     $paths[] = 'backups-dup-pro';
     $paths[] = 'cache';
@@ -126,7 +126,7 @@ Quick heads-up: the All-in-One WP Migration export UI already has a "Do not expo
 
 Reading `lib/vendor/servmask/filter/class-ai1wm-recursive-exclude-filter.php`, the filter compares three things against your exclude array on every file:
 
-```
+```php
 $this->getInnerIterator()->getSubPathname()   // path relative to the iterator root
 $this->getInnerIterator()->getPathname()      // full absolute path
 $this->getInnerIterator()->getPath()          // parent absolute path
@@ -147,7 +147,7 @@ Put it in a child theme's `functions.php`, or use a code snippets plugin like [W
 
 Another option, and the one I prefer for client sites, is a tiny mu-plugin. Create `wp-content/mu-plugins/ai1wm-exclusions.php`:
 
-```
+```php
 <?php
 add_filter( 'ai1wm_exclude_media_from_export', function( $paths ) {
     $paths[] = 'elementor';

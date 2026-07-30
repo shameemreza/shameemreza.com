@@ -16,7 +16,7 @@ If your workflow depends on Global IDs, showing them directly in the order scree
 
 Here's a simple snippet to make that change:
 
-```
+```php
 // Display Global ID in regular order view
 add_action( 'woocommerce_after_order_itemmeta', function( $item_id, $item, $order ) {
     if ( is_admin() && $item->is_type( 'line_item' ) ) {

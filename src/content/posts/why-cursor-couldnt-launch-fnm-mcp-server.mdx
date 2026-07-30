@@ -42,7 +42,7 @@ That path stopped me for a second. `/Applications/Cursor.app/Contents/Resources/
 
 My config looked ordinary:
 
-```
+```json
 "chrome-devtools": {
   "command": "npx",
   "args": ["-y", "chrome-devtools-mcp@latest"],
@@ -52,7 +52,7 @@ My config looked ordinary:
 
 First instinct: maybe the package is broken or doesn't exist. Quick check from my terminal:
 
-```
+```bash
 npm view chrome-devtools-mcp version
 1.5.0
 ```
@@ -63,7 +63,7 @@ It exists. It installs. So the server wasn't the problem. The problem was the `n
 
 In my terminal, everything resolves to fnm:
 
-```
+```bash
 which node npm npx
 /Users/you/.local/state/fnm_multishells/31226_.../bin/node
 /Users/you/.local/state/fnm_multishells/31226_.../bin/npm
@@ -78,7 +78,7 @@ Cursor ships its own Node helper inside the app bundle, at `/Applications/Cursor
 
 The obvious fix: stop relying on `PATH` and give the server an absolute path to npx.
 
-```
+```json
 "command": "/Users/you/.local/share/fnm/node-versions/v20.20.2/installation/bin/npx"
 ```
 
@@ -104,7 +104,7 @@ Even once I knew to handle both `npx` and `node`, my path had `v20.20.2` baked i
 
 fnm has a way out of this. It keeps a `default` alias as a symlink:
 
-```
+```bash
 ls -la ~/.local/share/fnm/aliases/
 default -> /Users/you/.local/share/fnm/node-versions/v20.20.2/installation
 ```
@@ -115,7 +115,7 @@ That `default` symlink updates itself whenever I run `fnm default <version>`. So
 
 Two pieces, together. Point `command` at the `default` alias `npx`, and set `env.PATH` to include that same `bin` directory so the `node` shebang resolves. Here's the full config for one server:
 
-```
+```json
 "chrome-devtools": {
   "command": "/Users/you/.local/share/fnm/aliases/default/bin/npx",
   "args": ["-y", "chrome-devtools-mcp@latest"],
@@ -145,14 +145,14 @@ The fnm `default` alias, shown above, is my pick. No version numbers, no extra i
 
 A Homebrew Node is the simplest if you don't mind a second Node install dedicated to tooling. Its paths are stable too:
 
-```
+```json
 "command": "/opt/homebrew/bin/npx",
 "env": { "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
 ```
 
 Calling `node` directly and passing `npx-cli.js` as the script avoids the shebang problem entirely, since you never rely on `env` finding `node`:
 
-```
+```json
 "command": "/Users/you/.local/share/fnm/aliases/default/bin/node",
 "args": [
   "/Users/you/.local/share/fnm/aliases/default/lib/node_modules/npm/bin/npx-cli.js",

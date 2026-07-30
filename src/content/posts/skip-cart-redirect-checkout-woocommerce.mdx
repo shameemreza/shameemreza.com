@@ -60,7 +60,7 @@ In cases like that, sending customers straight to checkout made the flow feel fa
 
 I shared this code to add to their child theme's functions.php.
 
-```
+```php
 add_filter('woocommerce_add_to_cart_redirect', 'wooninja_skip_cart_redirect_to_checkout_page');
 function wooninja_skip_cart_redirect_to_checkout_page() {
  global $woocommerce;

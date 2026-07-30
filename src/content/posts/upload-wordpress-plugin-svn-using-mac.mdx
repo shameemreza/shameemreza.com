@@ -54,14 +54,14 @@ Once it's approved, you're ready.
 
 I created a clean folder on my Mac. I didn't reuse an old project directory. That helped more than I expected. This is what I ran:
 
-```
+```bash
 mkdir assistify-svn
 cd assistify-svn
 ```
 
 Then I checked out the plugin repository. That single command created the trunk, tags, and assets folders for me.
 
-```
+```bash
 svn co https://plugins.svn.wordpress.org/your-plugin-slug .
 ```
 
@@ -71,7 +71,7 @@ I copied screenshots, banners, and icons into the assets folder.
 
 At this point, SVN didn't know about any of my files yet. So I added trunk and assets once and committed everything together.
 
-```
+```bash
 svn add trunk assets
 svn ci -m "Initial release" --username YourWPUsername
 ```
@@ -80,7 +80,7 @@ That was my first mistake-free commit.
 
 After that, I created a tag from the trunk for version 1.0.0 and committed the tag.
 
-```
+```bash
 svn cp trunk tags/1.0.0
 svn ci -m "Tagging version 1.0.0" --username YourWPUsername
 ```
@@ -113,7 +113,7 @@ I changed my code inside the trunk. I updated the plugin version in the main fil
 
 After making code changes and updating the version and stable tag, I run this:
 
-```
+```bash
 svn status
 ```
 
@@ -127,13 +127,13 @@ This is where I kept messing up.
 
 You do not run svn add on everything. You only add the new files. For new files, I add only the specific file.
 
-```
+```bash
 svn add trunk/includes/integrations/class-hotel-booking-integration.php
 ```
 
 Once the new files are added, you commit to the trunk.
 
-```
+```bash
 svn ci -m "Update trunk for version 1.1.0" --username YourWPUsername
 ```
 
@@ -141,7 +141,7 @@ At this point, nothing is released yet. You've only updated the trunk.
 
 To release the update, you copy the trunk into a new tag, like tags/1.1.0, and commit that tag.
 
-```
+```bash
 svn cp trunk tags/1.1.0
 svn ci -m "Tagging version 1.1.0" --username YourWPUsername
 ```
@@ -158,7 +158,7 @@ No version bump. No new tag.
 
 I just commit the assets and wait for WordPress.org to refresh.
 
-```
+```bash
 svn add assets/new-screenshot.png
 svn ci -m "Update plugin assets" --username YourWPUsername
 ```
@@ -181,7 +181,7 @@ ShameemReza is not the same as shameemreza.
 
 What fixed it permanently was always committing with an explicit username, and clearing SVN's cached credentials when things felt off.
 
-```
+```bash
 rm -rf ~/.subversion/auth
 svn ci -m "Commit message" --username ShameemReza
 ```
@@ -212,7 +212,7 @@ The good news is SVN is very hard to break if you know where to look.
 
 The first thing I always run is this.
 
-```
+```bash
 svn status
 ```
 
@@ -222,19 +222,19 @@ If I see a file marked with `?`, it means SVN doesn't know about it yet. Nothing
 
 If I added a file by mistake and haven't committed yet, I undo it like this.
 
-```
+```bash
 svn revert path/to/file.php
 ```
 
 If I want to discard all local changes and start fresh, I do this.
 
-```
+```bash
 svn revert . --recursive
 ```
 
 If my local copy feels outdated or strange, I update it.
 
-```
+```bash
 svn up
 ```
 

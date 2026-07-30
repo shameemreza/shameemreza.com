@@ -27,7 +27,7 @@ I run PHPCS two ways: globally (for quick checks) and project-local (so teams ge
 
 Global install:
 
-```
+```bash
 composer global require squizlabs/php_codesniffer
 ```
 
@@ -37,13 +37,13 @@ To check it works, you can run `phpcs -i`. You'll see a list of built-in standar
 
 Once PHPCS installed, it's time to install WordPress coding standard. To install it globally, you can run this:
 
-```
+```bash
 composer global require wp-coding-standards/wpcs
 ```
 
 Then tell PHPCS where to find the rules:
 
-```
+```bash
 phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
 ```
 
@@ -53,7 +53,7 @@ Now `phpcs` knows about the WordPress rules, and you can check again using `phpc
 
 For teams, lock PHPCS and WPCS into your repo, so everyone runs the same version:
 
-```
+```bash
 composer require --dev squizlabs/php_codesniffer wp-coding-standards/wpcs dealerdirect/phpcodesniffer-composer-installer
 ```
 
@@ -61,7 +61,7 @@ This locks versions in your repo, so new devs don't have to fiddle with configs.
 
 Then I add a `.phpcs.xml`:
 
-```
+```xml
 <?xml version="1.0"?>
 <ruleset name="WordPress">
   <file>./</file>
@@ -74,13 +74,13 @@ Then I add a `.phpcs.xml`:
 
 This checks everything except vendor files. If I need to disable Yoda conditions (I usually do):
 
-```
+```xml
 <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
 ```
 
 You can also tweak properties (like text domains):
 
-```
+```xml
 <rule ref="WordPress.WP.I18n">
   
 
@@ -93,13 +93,13 @@ You can also tweak properties (like text domains):
 
 \<p\>It's simple, just run:
 
-```
+```bash
 vendor/bin/phpcs
 ```
 
 To auto-fix issues where possible:
 
-```
+```bash
 vendor/bin/phpcbf
 ```
 
@@ -113,7 +113,7 @@ I use VS Code with the [PHP Sniffer & Beautifier](https://marketplace.visualstud
 
 If your project is on GitHub, adding a quick Action means every push runs PHPCS. Example `.github/workflows/phpcs.yml`:
 
-```
+```yaml
 name: PHPCS
 on: [push, pull_request]
 jobs:
