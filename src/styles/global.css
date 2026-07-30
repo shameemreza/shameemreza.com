@@ -1180,7 +1180,12 @@ html.js .reveal.visible {
 
 .prose img {
   border-radius: var(--r);
-  margin: 24px 0;
+  display: block;
+  margin: 24px auto;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: 640px;
 }
 
 .prose .table-wrap {
