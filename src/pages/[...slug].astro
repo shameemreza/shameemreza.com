@@ -21,7 +21,7 @@ const { Content } = await render(post);
   updated={post.data.updated}
   category={post.data.category}
   categorySlug={post.data.categorySlug}
-  featuredImage={post.data.featuredImage}
+  featuredImage={post.data.featuredImage?.src}
   featuredImageAlt={post.data.featuredImageAlt}
   body={post.body}
 >

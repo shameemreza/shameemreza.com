@@ -4,7 +4,7 @@ date: 2025-12-03T21:42:50Z
 description: "I ran into a tricky case where Min/Max Quantities pushed its \"Group of\" rules onto bundled items, breaking the whole bundle flow. There was no UI switch to control it, so I traced both plugins' code, found the right filters, and wrote a snippet that fixes the product page, cart, and Store API in one go. The bundle now works as expected without changing how the standalone products behave."
 category: "Code Snippets"
 categorySlug: "code-snippets"
-featuredImage: "/uploads/fixing-min-max-rules-inside-product-bundles.jpg"
+featuredImage: "../../assets/uploads/fixing-min-max-rules-inside-product-bundles.jpg"
 draft: false
 ---
 
@@ -12,9 +12,9 @@ I ran into an interesting case while helping a customer who was mixing [Product 
 
 That combination should work fine. But it didn't.
 
-![](/uploads/cleanshot-2025-12-03-at-20.40.30402x.png)
+![](../../assets/uploads/cleanshot-2025-12-03-at-20.40.30402x.png)
 
-![](/uploads/cleanshot-2025-12-03-at-20.39.57402x.png)
+![](../../assets/uploads/cleanshot-2025-12-03-at-20.39.57402x.png)
 
 The rule from Min/Max Quantities was bleeding into the bundle. Instead of letting each bundled item stay at quantity one, the plugin forced each of them to follow the group of 6 rule. The result was a huge jump in quantity and a bundle that could not be added to the cart at all.
 
@@ -36,7 +36,7 @@ At that point, I knew what I needed: a full patch that disables these checks onl
 
 After testing several rounds, this is the final snippet that fixes the product page, admin screen, classic cart, block checkout, and Store API. It works across the full flow.
 
-![](/uploads/cleanshot-2025-12-03-at-20.39.27402x.png)
+![](../../assets/uploads/cleanshot-2025-12-03-at-20.39.27402x.png)
 
 ```php
 /**

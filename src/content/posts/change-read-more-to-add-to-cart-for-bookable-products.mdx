@@ -4,7 +4,7 @@ date: 2025-08-18T08:17:15Z
 description: "By default, WooCommerce Bookings shows Read More instead of Add to Cart. Here's a simple code snippet to change that while keeping the booking flow intact."
 category: "Code Snippets"
 categorySlug: "code-snippets"
-featuredImage: "/uploads/change-read-more-to-add-to-cart-for-bookable-products.png"
+featuredImage: "../../assets/uploads/change-read-more-to-add-to-cart-for-bookable-products.png"
 draft: false
 ---
 
@@ -30,8 +30,6 @@ add_filter('woocommerce_product_add_to_cart_text', function($text, $product) {
 ### How this works
 
 This filter checks the product type. If the product is a booking, it replaces the default Read More text with Add to Cart. For all other products, WooCommerce keeps the usual button text.
-
-![](/uploads/57401aba-0fcf-43a6-a309-23143d1e9710)
 
 It's important to note that this change only affects the label. Clicking Add to Cart for a bookable product will still take the customer to the booking form on the product page. That behavior doesn't change, because the system still needs booking details to complete the purchase.
 

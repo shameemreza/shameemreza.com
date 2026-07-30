@@ -4,7 +4,6 @@ date: 2026-04-29T11:00:00Z
 description: "WooCommerce cross-sells live on the cart page and wait for the customer to click. Here is how they work in core, where the contract stops short, and five snippets that turn passive suggestions into automatic pairings."
 category: "Code Snippets"
 categorySlug: "code-snippets"
-featuredImage: "/uploads/how-to-extend-woocommerce-cross-sells-for-more-sales.png"
 draft: true
 ---
 
@@ -247,8 +246,6 @@ After adding this snippet, every product page with a configured companion shows 
 
 The line styles itself as a `<small>` paragraph with the class `companion-product-notice`, so you can style it through your theme if you want it bigger, centered, or boxed. It does not change anything about the cart yet. The customer still has to click Add to Cart for both items to appear, and the next snippet handles that.
 
-![Paired companion notice rendered under the Add to Cart button on the Chemex product page](/uploads/PLACEHOLDER-companion-on-product-page.gif)
-
 ## Auto-adding a companion when the main product is added
 
 This is the snippet that does the actual pairing. When the customer adds the Chemex, the filters add themselves to the cart, in the same quantity, in the same step.
@@ -358,8 +355,6 @@ The `wc_add_notice()` call shows a one-line success message at the top of the pa
 After adding this snippet, clicking Add to Cart on a paired product adds both items in one step. The customer sees the main product as the line they clicked, and the companion appears below it with the same quantity. A success notice shows at the top of the page explaining the pairing.
 
 The customer can still adjust quantities or remove either item from the cart. That's intentional. This snippet is the soft pair. The next snippet handles the hard pair where the companion follows the parent and the customer can't break them apart.
-
-![Adding the Chemex to the cart and the Paper Filters appearing automatically with a success notice](/uploads/PLACEHOLDER-auto-add-companion.gif)
 
 ## Locking the pair in both carts
 
@@ -534,8 +529,6 @@ This snippet pairs naturally with the auto-add snippet above. Without auto-add, 
 
 After adding this snippet, paired companion items in the cart show up with the quantity locked, no remove link, and a "Pairs with: Main Product" caption below the title. Removing the main item removes the companion in the same step. The customer sees the same behavior in the classic cart and the cart block.
 
-![Paper Filters in the cart locked to a static quantity, no remove link, with a Pairs with Chemex caption](/uploads/PLACEHOLDER-locked-pair-cart.gif)
-
 ## Syncing the paired quantity
 
 The lock above stops the customer from changing the companion's quantity directly. This snippet keeps the companion's quantity matched to the main product's quantity automatically. If the customer increases the Chemex from 1 to 3, the paper filters go from 1 to 3 in the same update.
@@ -602,8 +595,6 @@ This snippet uses the `paired_with` flag set by the auto-add snippet, so install
 ### What to expect
 
 After adding this snippet, changing the main product's quantity in the cart updates the companion's quantity to match. It works in both the classic cart and the cart block. If the companion is sold individually, the snippet leaves its quantity alone and the customer keeps the single companion no matter how many of the main product they buy.
-
-![Increasing the Chemex quantity from 1 to 3 in the cart and the Paper Filters quantity matching automatically](/uploads/PLACEHOLDER-quantity-sync.gif)
 
 ## Polishing the pair across the cart's lifecycle
 
@@ -939,8 +930,6 @@ After adding the PHP and the CSS:
 - The Undo link after removing a parent brings the companion back too, not just the parent.
 - A customer who already had the companion in their cart no longer sees a duplicate line item after adding the parent.
 - Clicking Order again on a past order rebuilds the cart with the companion locked to its parent, instead of as a regular item.
-
-![Cart contents reordered with the companion under the parent, indented with an arrow, and a clean Undo flow that restores both](/uploads/PLACEHOLDER-cart-polish.gif)
 
 ## When a snippet stops being enough
 

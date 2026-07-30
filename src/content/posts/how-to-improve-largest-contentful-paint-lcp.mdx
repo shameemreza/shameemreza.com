@@ -5,7 +5,7 @@ updated: 2026-07-14T10:00:00Z
 description: "LCP measures how fast the largest visible element loads, and it counts for 25% of your PageSpeed score. Here's what actually moves the number on WordPress, with a list of second-order fixes at the end."
 category: "WordPress"
 categorySlug: "wordpress"
-featuredImage: "/uploads/how-to-improve-largest-contentful-paint-lcp.jpg"
+featuredImage: "../../assets/uploads/how-to-improve-largest-contentful-paint-lcp.jpg"
 draft: false
 ---
 
@@ -17,7 +17,7 @@ Google wants the LCP under 2.5 seconds for a "good" rating. LCP is weighted at 2
 
 Here's this site's PageSpeed Insights report from July 2026, mobile test. LCP sits at 1.2 seconds:
 
-![PageSpeed Insights report for shameemreza.com showing a 100 performance score with LCP at 1.2 seconds](/uploads/shameemreza-pagespeed-2026.png)
+![PageSpeed Insights report for shameemreza.com showing a 100 performance score with LCP at 1.2 seconds](../../assets/uploads/shameemreza-pagespeed-2026.png)
 
 <Tldr>
   Fix the host, fix the LCP image. Those two changes move the number more than anything else. On WordPress, the host decides your server response time, which is the floor for every Core Web Vital. The LCP image decides your ceiling, because it's usually the largest file that has to download before the page feels ready. Everything else (minification, unused CSS, service workers, code-splitting) is second-order. It compounds on top of a fast host and an optimized hero image, not in place of them.
@@ -29,7 +29,7 @@ Before you fix anything, run the page through [PageSpeed Insights](https://pages
 
 It also shows which element is the LCP element, and that alone can save you from optimizing the wrong thing. On this site's homepage, the LCP element isn't an image at all. It's the bio paragraph:
 
-![PageSpeed Insights LCP breakdown showing the LCP element is a text paragraph with 1,240 ms of element render delay](/uploads/psi-lcp-breakdown-2026.png)
+![PageSpeed Insights LCP breakdown showing the LCP element is a text paragraph with 1,240 ms of element render delay](../../assets/uploads/psi-lcp-breakdown-2026.png)
 
 All 1.2 seconds here is element render delay, which for a text element mostly means font loading and render-blocking CSS. If I'd assumed the LCP element was the profile photo and spent an afternoon compressing it, nothing would have changed.
 

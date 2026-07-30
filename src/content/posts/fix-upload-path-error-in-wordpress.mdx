@@ -5,7 +5,7 @@ updated: 2026-04-24T10:00:00Z
 description: "If images stop loading after a WordPress migration, the upload path is almost always the cause. Here's how to set it explicitly in wp-config.php, or fix it with a plugin."
 category: "WordPress"
 categorySlug: "wordpress"
-featuredImage: "/uploads/fix-upload-path-error-in-wordpress.jpg"
+featuredImage: "../../assets/uploads/fix-upload-path-error-in-wordpress.jpg"
 draft: false
 ---
 
@@ -39,11 +39,11 @@ If your uploads directory is somewhere custom, swap in the right relative path. 
 
 If editing `wp-config.php` isn't an option (restricted hosting, managed WordPress, etc.), [WP Original Media Path](https://wordpress.org/plugins/wp-original-media-path/) does the same job through the UI.
 
-![WP Original Media Path plugin in the repository](/uploads/wp-original-media-path-1024x463.png)
+![WP Original Media Path plugin in the repository](../../assets/uploads/wp-original-media-path-1024x463.png)
 
 After installing, you'll see a new entry under **Settings**.
 
-![WP Original Media Path settings screen](/uploads/wp-original-media-path-setting-1024x468.png)
+![WP Original Media Path settings screen](../../assets/uploads/wp-original-media-path-setting-1024x468.png)
 
 You don't need expert mode for the common case. Just enter the path from your domain root (usually `/wp-content/uploads`) and save. The plugin writes the value into the database and WordPress picks it up on the next request.
 

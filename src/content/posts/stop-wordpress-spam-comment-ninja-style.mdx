@@ -5,7 +5,7 @@ updated: 2026-04-24T10:00:00Z
 description: "You don't need six anti-spam plugins to keep spam comments under control. Akismet, a few Discussion setting tweaks, and stripping HTML from the comment form does most of the work."
 category: "WordPress"
 categorySlug: "wordpress"
-featuredImage: "/uploads/stop-wordpress-spam-comment-ninja-style.jpg"
+featuredImage: "../../assets/uploads/stop-wordpress-spam-comment-ninja-style.jpg"
 draft: false
 ---
 
@@ -23,7 +23,7 @@ You don't need a stack of plugins for this. Most WordPress spam is handled by th
 
 [Akismet](https://akismet.com/) ships with every WordPress install. It's made by Automattic (where I work) and it catches most comment spam at the API level before the comment ever hits your database.
 
-![Akismet plugin page inside the WordPress admin](/uploads/Akismet-plugin-info-shameem.png)
+![Akismet plugin page inside the WordPress admin](../../assets/uploads/Akismet-plugin-info-shameem.png)
 
 Setup is short:
 
@@ -31,7 +31,7 @@ Setup is short:
 2. Go to **Plugins → Akismet** in WordPress, paste the key, and save.
 3. Open Akismet's settings and enable **Silently discard the worst and most pervasive spam**.
 
-![Akismet settings panel](/uploads/akismet-setting-shameem.png)
+![Akismet settings panel](../../assets/uploads/akismet-setting-shameem.png)
 
 That last option matters. Without it, Akismet still catches the obvious spam, but it dumps it into the Spam queue for you to eyeball. "Silently discard" throws away the worst of it automatically, so your queue only contains edge cases. On a busy blog, it's the difference between scanning 50 spam comments a week and scanning 500.
 
@@ -39,7 +39,7 @@ That last option matters. Without it, Akismet still catches the obvious spam, bu
 
 **Settings → Discussion** already has enough levers to handle a lot of spam without any code. The combination I use on every site I run:
 
-![WordPress Discussion settings screen](/uploads/wordpress-comment-setting-shameem.png)
+![WordPress Discussion settings screen](../../assets/uploads/wordpress-comment-setting-shameem.png)
 
 - **Comment must be manually approved.** On low-traffic sites, I just approve everything myself. On busier sites, I drop this and rely on the next two settings.
 - **Comment author must have a previously approved comment.** After someone's first approved comment, they can post freely. First-time commenters wait for review.
@@ -50,7 +50,7 @@ That last option matters. Without it, Akismet still catches the obvious spam, bu
 
 The **Comment Moderation** and **Disallowed Comment Keys** boxes at the bottom of the Discussion screen let you list words or phrases that should trigger moderation or auto-rejection.
 
-![Disallowed keys configuration in Discussion settings](/uploads/wordpress-comment-black-list-shameem.png)
+![Disallowed keys configuration in Discussion settings](../../assets/uploads/wordpress-comment-black-list-shameem.png)
 
 Instead of building a block list from scratch, look at whatever ends up in your own Spam queue for a week and pick out the recurring patterns, product names, pharmacy terms, gambling keywords, casino URLs, and so on. A short, actual list from your own site is better than a generic list you copied off someone else's blog.
 

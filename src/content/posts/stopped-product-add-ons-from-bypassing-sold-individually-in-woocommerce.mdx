@@ -4,7 +4,7 @@ date: 2025-09-11T10:25:29Z
 description: "When Product Add-ons is active, the Sold individually setting stops working because each add-on configuration creates a unique cart item. This code snippet ensures products can only be added once per order, regardless of the add-on options selected."
 category: "Code Snippets"
 categorySlug: "code-snippets"
-featuredImage: "/uploads/stopped-product-add-ons-from-bypassing-sold-individually-in-woocommerce.png"
+featuredImage: "../../assets/uploads/stopped-product-add-ons-from-bypassing-sold-individually-in-woocommerce.png"
 draft: false
 ---
 
@@ -36,13 +36,13 @@ Cart ID: xyz789
 
 Since the IDs don't match, WooCommerce happily allows both. The Sold individually setting technically fires, but because it only checks against matching IDs, it passes.
 
-![](/uploads/woocommerce-_individual_sale_rule.png)
+![](../../assets/uploads/woocommerce-_individual_sale_rule.png)
 
 ### The solution
 
 After diving through the WooCommerce cart handling code, I found that we need to intercept the validation process before the add-on data creates that unique identifier. Here's the fix:
 
-![](/uploads/stopped-product-add-ons-from-bypassing-sold-individually-in-woocommerce.png)
+![](../../assets/uploads/stopped-product-add-ons-from-bypassing-sold-individually-in-woocommerce.png)
 
 ```php
 /**

@@ -5,7 +5,7 @@ updated: 2026-04-23T00:00:00Z
 description: "The 512 MB upload limit in All-in-One WP Migration isn't a server setting. It's a JavaScript check. Here's what actually stops large imports and how to raise the limit for free, without editing constants.php."
 category: "WordPress"
 categorySlug: "wordpress"
-featuredImage: "/uploads/increase-upload-limit-for-all-in-one-wp-migration-plugin.jpg"
+featuredImage: "../../assets/uploads/increase-upload-limit-for-all-in-one-wp-migration-plugin.jpg"
 draft: false
 ---
 
@@ -27,7 +27,7 @@ So I went looking for what actually controls the limit now. What I found surpris
 
 All-in-One WP Migration has three top-level options in the admin: Export, Import, and Backups. You can export a 3 GB archive without breaking a sweat, store it in Dropbox or Google Drive, or download it locally. Import is where the wall shows up.
 
-![All-in-One WP Migration export options](/uploads/export-options.png)
+![All-in-One WP Migration export options](../../assets/uploads/export-options.png)
 
 Look at the free plugin's import page and the upload UI binds itself to `wp_max_upload_size()`, which WordPress computes from your PHP `upload_max_filesize` and `post_max_size`. That number gets written into a JS variable at page render time, and the frontend refuses to start an upload if the selected file exceeds it. That's the label everyone sees above the drop zone:
 
@@ -74,7 +74,7 @@ Download the zip from the [GitHub releases page](https://github.com/shameemreza/
 
 Now go to All-in-One WP Migration, Import. The upload area will read "Maximum upload file size: Unlimited" and the file picker will accept any size. As a bonus, the Restore button on the Backups page will also work, which is otherwise locked behind their paid extension.
 
-![All-in-One WP Migration import page showing Unlimited upload size after installing the plugin](/uploads/preview-1024x366.png)
+![All-in-One WP Migration import page showing Unlimited upload size after installing the plugin](../../assets/uploads/preview-1024x366.png)
 
 ## The snippet version if you'd rather not add another plugin
 
@@ -144,11 +144,11 @@ I don't raise `max_execution_time` anywhere. All-in-One WP Migration already cal
 
 The usual advice you'll find online is to open your hosting panel, turn on "show hidden files" in the file manager, open `.htaccess` at the WordPress root, and paste a few `php_value` lines.
 
-![File manager with show hidden files enabled in cPanel](/uploads/show-hidden-files.png)
+![File manager with show hidden files enabled in cPanel](../../assets/uploads/show-hidden-files.png)
 
 Then you edit the `.htaccess` file and add the config at the bottom.
 
-![Editing .htaccess file in the file manager](/uploads/edit-htaccess.png)
+![Editing .htaccess file in the file manager](../../assets/uploads/edit-htaccess.png)
 
 The lines you'd add look like this:
 

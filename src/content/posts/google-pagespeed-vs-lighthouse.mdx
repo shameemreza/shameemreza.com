@@ -5,7 +5,7 @@ updated: 2026-07-14T10:00:00Z
 description: "PageSpeed Insights and Lighthouse both use the same engine but differ in scope and test conditions. Here's what each measures, why the scores don't match, and when to use which."
 category: "WordPress"
 categorySlug: "wordpress"
-featuredImage: "/uploads/google-pagespeed-vs-lighthouse.jpg"
+featuredImage: "../../assets/uploads/google-pagespeed-vs-lighthouse.jpg"
 draft: false
 ---
 
@@ -25,11 +25,11 @@ Lighthouse is an open-source audit tool from Google. It's built into Chrome DevT
 
 Here's a Lighthouse 13 run against this site from the command line, July 2026:
 
-![Lighthouse 13 report for shameemreza.com showing an 87 performance score with LCP at 3.5 seconds](/uploads/lighthouse-report-2026.png)
+![Lighthouse 13 report for shameemreza.com showing an 87 performance score with LCP at 3.5 seconds](../../assets/uploads/lighthouse-report-2026.png)
 
 Each category comes with specific, actionable audits. Newer Lighthouse versions group the performance ones under an "Insights" section, things like LCP breakdown, render-blocking requests, and network dependency tree. I used the LCP breakdown insight to find the real bottleneck in my post on [improving Largest Contentful Paint](/how-to-improve-largest-contentful-paint-lcp/). The same insights show up in the Chrome DevTools Performance panel when you record a trace.
 
-![Lighthouse insights section listing LCP breakdown, network dependency tree, and render-blocking requests](/uploads/lighthouse-insights-2026.png)
+![Lighthouse insights section listing LCP breakdown, network dependency tree, and render-blocking requests](../../assets/uploads/lighthouse-insights-2026.png)
 
 ## What is PageSpeed Insights?
 
@@ -37,7 +37,7 @@ PageSpeed Insights is the web-hosted version at [pagespeed.web.dev](https://page
 
 This is the same site, tested on PageSpeed Insights the same morning as the Lighthouse run above:
 
-![PageSpeed Insights report for shameemreza.com showing a 100 performance score with LCP at 1.2 seconds](/uploads/shameemreza-pagespeed-2026.png)
+![PageSpeed Insights report for shameemreza.com showing a 100 performance score with LCP at 1.2 seconds](../../assets/uploads/shameemreza-pagespeed-2026.png)
 
 The "field data" section is the important part. That's real-world performance for your site, based on actual Chrome users over the last 28 days. If your site doesn't have enough traffic for CrUX data, that section will be empty and you'll only see lab data from the Lighthouse run, which is the same thing you'd get from Lighthouse directly.
 

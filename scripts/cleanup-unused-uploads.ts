@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const UPLOADS_DIR = path.resolve('public/uploads');
+const UPLOADS_DIR = path.resolve('src/assets/uploads');
 const POSTS_DIR = path.resolve('src/content/posts');
 const SCAN_DIRS = ['src'];
 
