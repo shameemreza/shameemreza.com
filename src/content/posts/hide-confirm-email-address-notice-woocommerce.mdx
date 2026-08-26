@@ -1,0 +1,80 @@
+---
+title: "Hide the confirm your email address notice in WooCommerce"
+date: 2026-08-26T10:30:00Z
+description: "WooCommerce 11.0 added a confirm your email address notice to the My Account page, and no setting turns it off. Here's why the email toggle doesn't remove it, and a small snippet that does."
+category: "Code Snippets"
+categorySlug: "code-snippets"
+featuredImage: "../../assets/uploads/hide-confirm-email-address-notice-woocommerce.png"
+featuredImageAlt: "Illustration of a browser window with an email confirmation notice crossed out and an eye-off badge"
+draft: false
+---
+
+A support ticket landed this week that looked like a thirty-second answer. A store owner wanted to remove the notice WooCommerce prints at the top of the My Account page: "Confirm your email address to check for past orders and link them to your account". They had already done the sensible thing. They found **WooCommerce > Settings > Emails > Confirm email address**, disabled it, and cleared every cache on the site. The notice didn't move.
+
+My first instinct matched theirs: somewhere under Accounts & Privacy there must be a checkbox for this. I went looking. There isn't one.
+
+**TLDR**
+
+> The notice comes from the customer email verification feature added in WooCommerce 11.0. The toggle under Emails only stops the confirmation email itself, and there is no setting or filter that turns off the on-page prompt. You can hide it with a short snippet that unhooks the callback rendering it, or confirm customers one at a time from their profile in wp-admin.
+
+### The setting that doesn't exist
+
+The feature lives in `src/Internal/CustomerEmailVerification/` inside WooCommerce. The prompt is printed by [`VerificationController::render_prompt()`](https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce/src/Internal/CustomerEmailVerification/VerificationController.php), which the class hooks onto `woocommerce_before_account_orders` in its constructor. That's the same investigation path as the time [an EPUB download kept failing with an invalid link error](https://shameemreza.com/woocommerce-epub-downloads-invalid-link-error/): the answer wasn't on a settings screen, it was in the source.
+
+I grepped the whole subsystem for `get_option` and `apply_filters`. Zero results. Nothing in it reads a setting and nothing in it offers a filter, so the prompt renders unconditionally for every logged-in customer whose email address isn't confirmed yet. The toggle the merchant flipped controls only the email class, `CustomerVerifyEmail`. Right instinct, wrong surface.
+
+One more detail surprised me. The notice appears whether or not the customer has any past guest orders. That's deliberate: a code comment in `should_show_prompt()` explains the check must not depend on matching guest orders, because that would disclose whether orders exist for an email address before the customer proves they own it.
+
+### Before you hide it
+
+The feature does something useful. When a customer confirms their email, WooCommerce links any past guest orders placed with that address to their account, so they can see their full order history without asking you.
+
+Hiding the prompt takes away that self-serve path, so keep two things in mind before you decide. You can confirm a customer yourself from **Users > edit the user > Email confirmation** in wp-admin, which also links their guest orders. And a completed password reset confirms the address automatically, since it proves the customer controls the inbox. If your store rarely sees guest checkout, though, the notice is mostly noise, and hiding it is a fair call.
+
+### The snippet
+
+```php
+/**
+ * Hide the "Confirm your email address" notice on My Account.
+ *
+ * Removes the customer email confirmation prompt that WooCommerce 11.0+
+ * renders on the My Account > Orders page.
+ */
+add_action( 'init', 'sr_hide_wc_email_confirmation_notice' );
+
+function sr_hide_wc_email_confirmation_notice() {
+	if ( ! function_exists( 'wc_get_container' ) ) {
+		return;
+	}
+
+	$controller_class = 'Automattic\WooCommerce\Internal\CustomerEmailVerification\VerificationController';
+
+	if ( ! class_exists( $controller_class ) ) {
+		return; // WooCommerce below 11.0, nothing to remove.
+	}
+
+	try {
+		$controller = wc_get_container()->get( $controller_class );
+	} catch ( \Throwable $e ) {
+		return;
+	}
+
+	remove_action( 'woocommerce_before_account_orders', array( $controller, 'render_prompt' ) );
+}
+```
+
+[View this snippet on Gist](https://gist.github.com/shameemreza/b339c5def9a088e24ee6ba096e933626)
+
+### Where to add the code
+
+Add it to your child theme's `functions.php`, or manage it with a plugin like [Code Snippets](https://wordpress.org/plugins/code-snippets/) or [WPCode](https://wordpress.org/plugins/wpcode/). No settings to configure, it starts working on save.
+
+### How it works
+
+`remove_action()` only removes a callback when it gets the exact same object instance that registered it. WooCommerce registers this one from inside a class it resolves through its dependency injection container, and the container always hands back that same shared instance. So the snippet asks the container for the controller and unhooks its `render_prompt` callback. Nothing else about the feature is touched: if a customer opens a confirmation link from an email they received earlier, verification still completes and the success message still shows, because only the prompt callback is removed.
+
+The guards matter here. The class sits in WooCommerce's `Internal` namespace, which carries no backward compatibility promise, so a future release is free to move or rename it. If that happens, the `class_exists` check and the `try/catch` make the snippet do nothing instead of taking the site down. The worst case is the notice coming back, which you'll notice, not a fatal error, which your customers would.
+
+I tested this on WooCommerce 11.0.1 with a fresh, unverified customer account. Before the snippet, the Orders page rendered the confirm prompt. After it, the notice area was empty and the rest of the page was untouched.
+
+If a later WooCommerce release ships a real setting for this, delete the snippet and use the checkbox. Until then, this is the whole fix, and the merchant's My Account page is quiet again. If you've hit another WooCommerce notice with no off switch, I'd like to hear which one.
